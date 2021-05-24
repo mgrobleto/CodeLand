@@ -1,4 +1,3 @@
-from models.user import Users
 from mongoengine import connect
 from mongoengine import *
 from dotenv import dotenv_values
@@ -13,4 +12,3 @@ def database():
 database()
 # data = Users(name="test", email="test@gmail.com", password="221412")
 # data.save()
-data=Users.objects(name="test").update_one(name="no test")

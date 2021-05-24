@@ -1,5 +1,6 @@
 import datetime
 from mongoengine import *
+from flask_mongoengine import BaseQuerySet
 
 class Users(Document):
     name=StringField(required=True)
@@ -8,7 +9,7 @@ class Users(Document):
     createdAt=DateTimeField()
     updatedAt=DateTimeField(default=datetime.datetime.now())
     __v=IntField(default=0)
-    meta= {'collection': 'users', 'strict': False,}
+    meta= {'collection': 'users', 'strict': False, 'queryset_class': BaseQuerySet}
 
     def save(self, *args, **kwargs):
         if not self.createdAt:
