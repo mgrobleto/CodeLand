@@ -1,7 +1,7 @@
-.env
 __pycache__
 .vscode
-.venv
+.env
 .vercel
 Scripts
+Include
 Lib
