@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_session import Session
 from flask_mongoengine import MongoEngine
@@ -30,7 +30,7 @@ toolbar = DebugToolbarExtension(app)
 
 
 class Users(db.Document):
-    name=db.StringField(required=True)
+    username=db.StringField(required=True)
     email=db.StringField(required=True)
     password=db.StringField(required=True)
     createdAt=db.DateTimeField()
@@ -49,7 +49,13 @@ def home():
 
 @app.route('/login', methods= ['GET', 'POST'])
 def login():
-    user = Users.objects.get_or_404(name="Miguel")
+    user = Users.objects.get_or_404(username="Miguel")
+    print(user.username)
+    print(request.method)
+        # user = request.method.get('username')
+        # email = request.method.get('email')
+        # password = request.method.get('password')
+
     return render_template('login/index.html', user=user)
 
 if __name__ == '__main__':
