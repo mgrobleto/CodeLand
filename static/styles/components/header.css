@@ -107,7 +107,7 @@
     color: #000;
 }
 
-.dropdown {
+.dropdown-container {
     background: #fff;
 }
 
@@ -146,22 +146,26 @@
     display: flex;
     align-items: center;
     height: 100%;
-    padding: 10px;
     -webkit-tap-highlight-color: transparent;
 }
 
 @media screen and (max-width: 995px) {
-    .dropdown {
+    .dropdown-container {
         max-height: 0;
         transition: max-height 0.15s ease-out;
         overflow: hidden;
         background: #fff;
     }
+
+    .sidenav {
+        overflow: auto;
+    }
     
-    .example.active .dropdown {
+    .example.active .dropdown-container {
         max-height: 350px;
         transition: max-height 0.25s ease-in;
     }
+
 }
 
 /* Esto es como un if, donde el ancho va de [996px, + infinito) */
@@ -204,7 +208,7 @@
         border: none;
     }
 
-    .dropdown::before { /* triangulo del menu */
+    .dropdown-container::before { /* triangulo del menu */
         content: '';
         background-color: #fff;
         position: absolute;
@@ -216,7 +220,7 @@
         z-index: 8;
     }
 
-    .dropdown {
+    .dropdown-container {
         transition: transform ease-in-out .2s;
         left: 10px;
         top: 67px;
@@ -238,7 +242,7 @@
     /* Cuando el mouse hace 'hover' en la opción, o cuando el mouse esta en el dropdown */
     /* Contexto: */
     /* https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Selectors/Combinators */
-    .example:hover > .dropdown, .dropdown:hover {
+    .example:hover > .dropdown-container, .dropdown-container:hover {
         opacity: 1;
         transform: translateY(0px);
         pointer-events: auto;

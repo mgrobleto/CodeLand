@@ -26,7 +26,7 @@
                         <a href="/#">
                             Example
                         </a>
-                        <div class="dropdown">
+                        <div class="dropdown-container">
                             <ul class="dropdown-list">
                                 <li class="dropdown-list-item">
                                     <a href="/examples/array">Arrays</a>
@@ -58,8 +58,12 @@
                         </div>
                     </li>
                     <li class="list-item"><a href="/explorer">Explorer</a></li>
-                    <li class="list-item"><a href="/profile">Profile</a></li>
-                    <li class="list-item"><a href="sign-out">Sign out</a></li>
+                    {% if user %}
+                        <li class="list-item"><a href="/profile">Profile</a></li>
+                        <li class="list-item"><a href="/logout">Sign out</a></li>
+                    {% else %}
+                        <li class="list-item"><a href="/login">Log in</a></li>
+                    {% endif %}
                     <li class="list-item"><a href="/about-us">About us</a></li>
                 </ul>
             </nav>
@@ -87,4 +91,11 @@
         </div>
     </div>
 </header>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert alert-primary">
+        <p>{{ messages | join(' ') }}</p>
+    </div>
+  {% endif %}
+{% endwith %}
 <div class="overlay" id="overlay"></div>
