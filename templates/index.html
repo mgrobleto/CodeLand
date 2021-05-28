@@ -1,63 +1,9 @@
-{% extends "layout/layout.html" %}
+{% extends "layout/index.html" %}
+
+{% block title %}
+<title>Welcome to CodeLand</title>
+{% endblock %}
 
 {% block body %}
-<header class="header-site">
-    <div class="header-left">
-        <div class="header-logo">
-            <a href="/">
-                <img src="/static/images/logo.png" class="responsive-img" alt="logo">
-            </a>
-        </div>
-        <div class="header-nav">
-            <nav>
-                <ul class="header-list">
-                    <li class="list-item"><a href="/">Home</a></li>
-                    <li class="list-item example"><a href="/example">Ejemplos</a></li>
-                    <li class="list-item"><a href="/explorer">Explorer</a></li>
-                    <li class="list-item"><a href="/profile">Profile</a></li>
-                    <li class="list-item"><a href="sign-out">Sign out</a></li>
-                    <li class="list-item"><a href="/about-us">About us</a></li>
-                    <div class="dropdown-menu">
-                        <ul class="dropdown-list">
-                            <li class="dropdown-list-item">
-                                <a href="/examples/array">Arreglos</a>
-                            </li>
-                            <li class="dropdown-list-item">
-                                <a href="/examples/array/sort">Algoritmos de ordenamiento</a>
-                            </li>
-                            <li class="dropdown-list-item">
-                                <a href="/examples/array/binary-search">Búsqueda binaria</a>
-                            </li>
-                            <li class="dropdown-list-item">
-                                <a href="/examples/revert">Invertir un arreglo</a>
-                            </li>
-                        </ul>
-                        <ul class="dropdown-list">
-                            <li class="dropdown-list-item">
-                                <a href="/examples/struct/">Estructuras</a>
-                            </li>
-                            <li class="dropdown-list-item">
-                                <a href="/examples/intro">Introducción</a>
-                            </li>
-                            <li class="dropdown-list-item">
-                                <a href="/examples/node">Nodos</a>
-                            </li>
-                            <li class="dropdown-list-item">
-                                <a href="/examples/hash-table">Hash Tables</a>
-                            </li>
-                        </ul>
-                    </div>
-                </ul>
-            </nav>
-        </div>
-    </div>
-    <div class="header-right">
-        <i>
-            <svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9.5 9C9.5 13.962 13.538 18 18.5 18C23.462 18 27.5 13.962 27.5 9C27.5 4.038 23.462 0 18.5 0C13.538 0 9.5 4.038 9.5 9ZM34.5 38H36.5V36C36.5 28.282 30.218 22 22.5 22H14.5C6.78 22 0.5 28.282 0.5 36V38H34.5Z" fill="#000"/>
-            </svg>                
-        </i>
-    </div>
-</header>
-
+<h1>Home</h1>
 {% endblock %}

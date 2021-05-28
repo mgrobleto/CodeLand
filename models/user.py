@@ -1,9 +1,9 @@
 import datetime
-from mongoengine import *
+from mongoengine import StringField, DateTimeField, IntField, Document
 from flask_mongoengine import BaseQuerySet
 
 class Users(Document):
-    name=StringField(required=True)
+    username=StringField(required=True)
     email=StringField(required=True)
     password=StringField(required=True)
     createdAt=DateTimeField()

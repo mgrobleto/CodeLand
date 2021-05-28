@@ -1,0 +1,293 @@
+.header-site {
+    height: 70px;
+    box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-left {
+    height: 100%;
+}
+
+.sidenav {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 80%;
+    transition: transform .23s ease-in-out;
+    transform: translateX(-2000px); /* Se va lejos :v */
+    display: block;
+}
+
+.sidenav-profile {
+    position: relative;
+    height: auto;
+    overflow: hidden;
+}
+
+.sidenav.active {
+    transform: translateX(0);
+}
+
+.background {
+    position: absolute;
+    background-image: url(/static/images/background.webp);
+    background-size: cover;
+    background-repeat: no-repeat;
+    inset: 0;
+    z-index: -1;
+}
+
+.user-info {
+    padding: 32px 32px 12px;
+}
+
+.avatar img {
+    width: 30%;
+    border-radius: 50%;
+}
+
+.user-info a {
+    font-size: 12px;
+    text-decoration: none;
+    color: #fff;
+    display: block;
+}
+
+.header-logo {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.block {
+    display: inline-block;
+    vertical-align: middle;
+    width: 1px;
+    height: 70px;
+}
+
+.header-nav {
+    height: 100%;
+}
+
+.header-nav nav {
+    height: 100%;
+}
+
+.header-list {
+    position: relative;
+    background-color: #fff;
+    z-index: 10;
+    padding-left: 0;
+    margin: 0;
+    height: inherit;
+}
+
+.list-item {
+    list-style: none;
+}
+
+.list-item a {
+    display: inline-block;
+    padding: 12px;
+    width: 100%;
+    height: 100%;
+    color: #959DA5;
+    font-size: 14px;
+    text-decoration: none;
+    border-bottom: 1px solid #333;
+}
+
+.list-item:hover {
+    background-color: rgb(217 217 217);
+}
+
+.list-item:hover > a {
+    color: #000;
+}
+
+.dropdown-container {
+    background: #fff;
+}
+
+.dropdown-list {
+    list-style: none;
+    position: relative;
+    padding-left: 0;
+}
+
+.dropdown-list-item {
+    transition-property: background-color, border;
+    transition-duration: .2s;
+    transition-timing-function: ease;
+}
+
+/* agrega borde al pasar el mosue, a todos menos al primer elemento */
+.dropdown-list-item:not(:first-child):hover {
+    border-left: 2px solid #09f;
+}
+
+.dropdown-list-item a {
+    color: #000;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    padding: 12px;
+    font-size: 14px;
+}
+
+.user-profile {
+    display: none;
+}
+
+.btn-sidenav {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media screen and (max-width: 995px) {
+    .dropdown-container {
+        max-height: 0;
+        transition: max-height 0.15s ease-out;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .sidenav {
+        overflow: auto;
+    }
+    
+    .example.active .dropdown-container {
+        max-height: 350px;
+        transition: max-height 0.25s ease-in;
+    }
+
+}
+
+/* Esto es como un if, donde el ancho va de [996px, + infinito) */
+@media screen and (min-width: 996px) {
+    .block {
+        display: none;
+    }
+    
+    .sidenav {
+        position: static;
+        width: auto;
+        vertical-align: middle;
+        display: inline-block;
+        transform: translateX(0);
+    }
+    
+    .user {
+        display: none;
+    }
+
+    .list-item {
+        display: inline-block;
+        height: 100%;
+        line-height: 70px;
+    }
+
+    .list-item:hover {
+        background-color: #fff;
+    }
+
+    /* Inicia del 2 al final */
+    .list-item + .list-item {
+        margin-left: 12px;
+    }
+
+    .list-item a {
+        padding: 0;
+        display: inline-block;
+        height: 100%;
+        border: none;
+    }
+
+    .dropdown-container::before { /* triangulo del menu */
+        content: '';
+        background-color: #fff;
+        position: absolute;
+        top: -10px;
+        left: 60px;
+        width: 20px;
+        height: 20px;
+        transform: rotate(45deg);
+        z-index: 8;
+    }
+
+    .dropdown-container {
+        transition: transform ease-in-out .2s;
+        left: 10px;
+        top: 67px;
+        position: absolute;
+        z-index: 9;
+        padding: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        opacity: 0;
+        box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.15);
+        transform: translateY(-10px);
+        pointer-events: none;
+        height: auto;
+        max-height: unset;
+        overflow: initial;
+    }
+
+    /* Cuando el mouse hace 'hover' en la opción, o cuando el mouse esta en el dropdown */
+    /* Contexto: */
+    /* https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Selectors/Combinators */
+    .example:hover > .dropdown-container, .dropdown-container:hover {
+        opacity: 1;
+        transform: translateY(0px);
+        pointer-events: auto;
+    }
+
+    .dropdown-list-item {
+        height: 30px;
+        line-height: 30px;
+        border-left: 2px solid #fff
+    }
+
+    .dropdown-list li:first-child {
+        border-bottom: 1px solid #000;
+    }
+
+    .dropdown-list-item + .dropdown-list-item  {
+        margin-top: 12px;
+    }
+
+    /* Perfil de la clase .header-right */
+    .user-profile {
+        display: block;
+        height: 100%;
+    }
+    
+    .user-profile i {
+        display: inline-block;
+        line-height: 70px;
+    }
+    
+    .user-profile i svg {
+        vertical-align: middle;
+    }
+    .btn-menu {
+        display: none;
+    }
+}
+
+.overlay.active {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.15);
+    z-index: 9;
+}
