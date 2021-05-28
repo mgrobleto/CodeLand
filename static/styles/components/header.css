@@ -138,14 +138,13 @@
     font-size: 14px;
 }
 
-.user-profile {
-    display: none;
-}
-
-.btn-sidenav {
+.header-right {
     display: flex;
     align-items: center;
     height: 100%;
+}
+
+.btn-sidenav {
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -162,8 +161,12 @@
     }
     
     .example.active .dropdown-container {
-        max-height: 350px;
+        max-height: 380px;
         transition: max-height 0.25s ease-in;
+    }
+
+    .login-desktop {
+        display: none;
     }
 
 }
@@ -262,21 +265,11 @@
         margin-top: 12px;
     }
 
-    /* Perfil de la clase .header-right */
-    .user-profile {
-        display: block;
-        height: 100%;
+    .btn-sidenav {
+        display: none;
     }
-    
-    .user-profile i {
-        display: inline-block;
-        line-height: 70px;
-    }
-    
-    .user-profile i svg {
-        vertical-align: middle;
-    }
-    .btn-menu {
+
+    .login {
         display: none;
     }
 }

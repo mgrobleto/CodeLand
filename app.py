@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, session, flash
-import flask
+import base64
+from flask import Flask, render_template, request, redirect, session, flash, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_session import Session
 from flask_pymongo import PyMongo
@@ -7,6 +7,7 @@ from bson.objectid import ObjectId
 from dotenv import dotenv_values
 from tempfile import mkdtemp
 import datetime
+from base64 import encodebytes
 
 ENV_AUTH = dotenv_values(".env")
 USER_DB = ENV_AUTH["USER_DB"]
@@ -45,7 +46,7 @@ def login():
         session['user_id'] = get_user['_id']
         return redirect('/')
 
-    return render_template('login/index.html')
+    return render_template('auth/login/index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -70,14 +71,48 @@ def register():
         if not username or not password or not email:
             flash("username or password is empty")
             return redirect('/register')
+        
+        if request.files['image'].filename != '':
+            mimetype = request.files['image'].mimetype
+            image = request.files['image'].read()
+            image = encodebytes(image)
+        else:
+            image = open('./static/images/user_default_logo.png', 'rb').read()
+            mimetype = 'image/png'
+            image = encodebytes(image)
 
         user = mongo.db.users.insert( # inserta un usuario
-            {"username": username, "password": password, "email": email, "created_at": datetime.datetime.now(datetime.timezone.utc), "updated_at": datetime.datetime.now(datetime.timezone.utc)})
+            {"username": username, "password": password, "email": email, "created_at": datetime.datetime.now(datetime.timezone.utc), "updated_at": datetime.datetime.now(datetime.timezone.utc), "perfil": image, "contentType": mimetype})
+
         session['user_id'] = user
 
         return redirect('/')
 
-    return render_template('register/index.html')
+    return render_template('auth/register/index.html')
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    if request.method == 'POST':
+        image = request.files['image'].read()
+        byte = encodebytes(image)
+        mongo.db.test.insert(
+            { "image": byte }
+        )
+        return jsonify(image=image)
+
+@app.route('/profile')
+def profile():
+    if session.get('user_id') == None:
+        flash("You are not logged in. Please log in to see the profile.")
+        return redirect('/login')
+
+    user_id = ObjectId(session.get('user_id'))
+    user = mongo.db.users.find_one({"_id": user_id})
+    return render_template('user/profile/index.html', data=None, user=user)
+
+@app.route('/add-project')
+def addProject():
+    return render_template('user/addCode.html')
 
 @app.route('/logout')
 def logout():
