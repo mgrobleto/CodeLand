@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from flask_debugtoolbar import DebugToolbarExtension
+#from flask_debugtoolbar import DebugToolbarExtension
 from flask_session import Session
 from flask_mongoengine import MongoEngine
 from dotenv import dotenv_values
@@ -26,7 +26,7 @@ app.config['SESSION_KEY_PREFIX'] = ENV_AUTH['SESSION_KEY']
 app.config['SECRET_KEY'] = ENV_AUTH['SESSION_KEY']
 
 db = MongoEngine(app)
-toolbar = DebugToolbarExtension(app)
+#toolbar = DebugToolbarExtension(app)
 
 
 class Users(db.Document):
