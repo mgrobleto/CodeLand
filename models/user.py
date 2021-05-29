@@ -2,7 +2,7 @@ import datetime
 from mongoengine import *
 from flask_mongoengine import BaseQuerySet
 
-class Users(Document):
+class Users(db.Document):
     name=StringField(required=True)
     email=StringField(required=True)
     password=StringField(required=True)
