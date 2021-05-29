@@ -19,16 +19,16 @@
     <section>
         <h3>Project</h3>
         <div class='row'>
-        {% if data == None %}
-        {% for project in data.projects %}
+        {% if user['projects'] %}
+        {% for project in user['projects'] %}
                 <div class='col col-lg-4'>
                     <div class='card' style='width: 18rem;'>
-                        <img src="data:image/{{project.contentType}};base64,{{project.image.enconce('base64')}}" alt="{{project.title}}">
+                        <img src="data:image/{{project.contentType}};base64,{{project.image.decode('ascii')}}" alt="{{project.title}}">
                         <div class='card-body'>
                             <h5 class='card-title'>{{project.title}}</h5>
                             <p class='card-text'>
                                 {{project.description}}</p>
-                            <a href='/user/{{user.username}}/{{project.title}}' class='btn btn-primary'>Go somewhere</a>
+                            <a href='/project/{{user.username}}/{{project.title}}' class='btn btn-primary'>Go somewhere</a>
                         </div>
                     </div>
                 </div>
