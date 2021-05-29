@@ -6,7 +6,7 @@
 
 {% block body %}
 <div class="container mt-5">
-    <form action="/register" method="POST" enctype="multipart/form-data">
+    <form id="form">
         <div class="mb-3">
           <label for="username" class="form-label">Username</label>
           <input type="text" name="username" class="form-control" id="username" placeholder="name: John Doe" aria-describedby="emailHelp">
@@ -22,9 +22,12 @@
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">Perfil</label>
-          <input type="file" name="image" placeholder="password" class="form-control" id="images">
+          <input type="file" name="image" placeholder="password" accept="image/png, image/jpeg" class="form-control" id="images">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
 </div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/scripts/register.js" type="module"></script>
 {% endblock %}

@@ -2,6 +2,6 @@ __pycache__
 .vscode
 .env
 .vercel
-Scripts
+/Scripts/
 Include
 Lib
