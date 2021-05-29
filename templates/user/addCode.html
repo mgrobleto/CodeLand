@@ -5,24 +5,24 @@
 {% endblock %}
 
 {% block body %}
-<form class="container my-5">
+<form class="container my-5" method="POST" action="/add-project" enctype="multipart/form-data">
     <div class="row mb-3">
-      <label for="inputEmail3" class="col-sm-2 col-form-label">Title</label>
+      <label for="inputName" class="col-sm-2 col-form-label">Title</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="inputEmail3">
+        <input type="text" name="title" class="form-control" id="inputName">
       </div>
     </div>
     <div class="row mb-3">
-      <label for="inputPassword3" class="col-sm-2 col-form-label">Description</label>
+      <label for="inputDescription" class="col-sm-2 col-form-label">Description</label>
       <div class="col-sm-10">
-        <input type="password" class="form-control" id="inputPassword3">
+        <input type="text" name="description" form-control" id="inputDescription">
       </div>
     </div>
     <fieldset class="row mb-3">
       <legend class="col-form-label col-sm-2 pt-0 my-4">Select info:</legend>
       <div class="mb-3">
         <label for="formFile" class="form-label">Select file project</label>
-        <input class="form-control" type="file" id="formFile">
+        <input class="form-control" name="files" multiple type="file" id="formFile">
     </div>
     <div class="mb-3">
           <label for="image" class="form-label">Select image project</label>
@@ -31,4 +31,7 @@
     </fieldset>
     <button type="submit" class="btn btn-primary">Sign in</button>
   </form>
+{% endblock %}
+{% block scripts %}
+<script src="/static/scripts/addCode.js"></script>
 {% endblock %}
