@@ -1,0 +1,42 @@
+{% extends "layout/index.html" %}
+{% block title %}
+<title>{{ user.username }} | CodeLand</title>
+{% endblock %}
+
+{% block body %}
+<main class="container">
+    <section class="my-5">
+        <h2>Bienvenido {{ user.username}}</h2>
+        <h3>Agrega un proyecto</h3>
+        <a href="/add-project"  class="btn btn-primary">Submit code</a>
+    </section>
+    <section>
+        <h1>{{ user.username }}</h1>
+        <h3>Perfil edit</h3>
+        <a href="/edit/{{user._id}}" class="btn btn-primary">Edit</a>
+        <img src="data:image/{{user.contentType}};base64,{{user.perfil.decode('ascii')}}" alt="user profile" alt="">
+    </section>
+    <section>
+        <h3>Project</h3>
+        <div class='row'>
+        {% if data == None %}
+        {% for project in data.projects %}
+                <div class='col col-lg-4'>
+                    <div class='card' style='width: 18rem;'>
+                        <img src="data:image/{{project.contentType}};base64,{{project.image.enconce('base64')}}" alt="{{project.title}}">
+                        <div class='card-body'>
+                            <h5 class='card-title'>{{project.title}}</h5>
+                            <p class='card-text'>
+                                {{project.description}}</p>
+                            <a href='/user/{{user.username}}/{{project.title}}' class='btn btn-primary'>Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+        {% endfor %}
+        {% else %}
+        <h4>Project is empty</h4>
+        {% endif %}
+        </div>    
+    </section>
+</main>
+{% endblock %}
