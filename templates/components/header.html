@@ -21,44 +21,48 @@
             </div>
             <nav>
                 <ul class="header-list">
-                    <li class="list-item"><a href="/">Home</a></li>
+                    <li class="list-item"><a href="/"> Inicio </a></li>
                     <li class="list-item example" id="dropdown-btn">
                         <a href="/#">
-                            Example
+                            Explorar
                         </a>
                         <div class="dropdown-container">
                             <ul class="dropdown-list">
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/array">Arrays</a>
+                                    <a href="/examples/array"> Ejemplos </a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/array/sort">Sorting algorithms</a>
+                                    <a href="/examples/array/sort"> Arreglos </a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/array/binary-search">Binary Search</a>
+                                    <a href="/examples/array/binary-search"> Estructuras </a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/reversed">Reversed array</a>
+                                    <a href="/examples/reversed"> Ficheros </a>
                                 </li>
                             </ul>
                             <ul class="dropdown-list">
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/struct/">Struct</a>
+                                    <a href="/examples/struct/"> Proyectos en Turbo C</a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/intro">Introduction</a>
+                                    <a href="/examples/intro"> Modo Texto </a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/node">Nodos</a>
+                                    <a href="/examples/node"> Modo Gráfico </a>
+                                </li>
+                            </ul>
+                            <ul class="dropdown-list">
+                                <li class="dropdown-list-item">
+                                    <a href="/examples/documentation/"> Documentación </a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/hash-table">Hash Tables</a>
+                                    <a href="/examples/basicos"> Lenguaje C </a>
                                 </li>
                             </ul>
                         </div>
                     </li>
-                    <li class="list-item"><a href="/explorer">Explorer</a></li>
-                    <li class="list-item"><a href="/about-us">About us</a></li>
+                    <li class="list-item"><a href="/about-us"> Acerca de </a></li>
                     <div class="login m-3">
                         <button class="btn btn-primary">Login</button>
                     </div>
@@ -73,13 +77,13 @@
             {{ user.username }}
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li><a class="dropdown-item" href="/profile">Profile</a></li>
-              <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+              <li><a class="dropdown-item" href="/profile"> Perfil </a></li>
+              <li><a class="dropdown-item" href="/logout"> Salir </a></li>
             </ul>
         </div>
         {% else %}
         <div class="login-desktop">
-            <a href="/login" class="btn btn-primary">Login</a>
+            <a href="/login" class="btn btn-primary"> Ingresar </a>
         </div>
         {% endif %}
         <div class="btn-sidenav">
