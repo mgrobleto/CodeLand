@@ -1,3 +1,5 @@
+'use strict'
+
 console.log(':D')
 // const $form = document.querySelector('#form')
 // $form.addEventListener('submit', async event => {

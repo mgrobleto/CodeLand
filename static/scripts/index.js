@@ -1,3 +1,4 @@
+'use strict'
 const $btnMenu = document.querySelector('#btn-menu')
 const $sidenav = document.querySelector('#sidenav')
 const $overlay = document.querySelector('#overlay')

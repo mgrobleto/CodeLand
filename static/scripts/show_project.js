@@ -1,3 +1,5 @@
+'use strict'
+
 const elements = document.querySelectorAll('#file')
 const root_code = document.querySelector('#show_code')
 const CURRENT_PATH = location.pathname
@@ -6,7 +8,7 @@ const CURRENT_PATH = location.pathname
 Array.prototype.forEach.call(elements, (element) => {
     element.addEventListener('click', async (event) => {
         console.log(CURRENT_PATH)
-        filename = event.currentTarget.dataset.filename
+        const filename = event.currentTarget.dataset.filename
         const response = await fetch(`${CURRENT_PATH}`, {
             method: 'POST',
             headers: {

@@ -3,6 +3,7 @@
 <title>{{ user.username }} | CodeLand</title>
 {% endblock %}
 
+
 {% block body %}
 <main class="container">
     <section class="my-5">
@@ -18,25 +19,36 @@
     </section>
     <section>
         <h3>Project</h3>
-        <div class='row'>
-        {% if user['projects'] %}
-        {% for project in user['projects'] %}
-                <div class='col col-lg-4'>
-                    <div class='card' style='width: 18rem;'>
-                        <img src="data:image/{{project.contentType}};base64,{{project.image.decode('ascii')}}" alt="{{project.title}}">
-                        <div class='card-body'>
-                            <h5 class='card-title'>{{project.title}}</h5>
-                            <p class='card-text'>
-                                {{project.description}}</p>
-                            <a href='/project/{{user.username}}/{{project.title}}' class='btn btn-primary'>Go somewhere</a>
-                        </div>
+        <div class='row' id="projects">
+            {% if user['projects'] %}
+            {% for project in user['projects'] %}
+            <div class='col col-lg-4'>
+                <div class='card' style='width: 18rem;'>
+                    <img src="data:image/{{project.contentType}};base64,{{project.image.decode('ascii')}}" alt="{{project.title}}">
+                    <div class='card-body'>
+                        <h5 class='card-title'>{{project.title}}</h5>
+                        <p class='card-text'>
+                            {{project.description}}
+                        </p>
+                        <a href='/project/{{user.username}}/{{project.title}}' class='btn btn-primary'>Ver y editar</a>
+                        <form id="delete-project">
+                            <input type="hidden" name="id" value="{{project._id}}">
+                            <button class='btn btn-danger'>Borrar proyecto</button>
+                        </form>
+                        <a class='btn btn-primary' href="/download-project/{{project._id}}" download>Descargar</a>
                     </div>
                 </div>
-        {% endfor %}
+            </div>
+                {% endfor %}
         {% else %}
-        <h4>Project is empty</h4>
+        <h4>No tienes proyectos :(</h4>
+        <a href="/add-project">Agrega un proyecto a tu cuenta</a>
         {% endif %}
-        </div>    
-    </section>
+    </div>    
+</section>
 </main>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/scripts/profile.js"></script>
 {% endblock %}
