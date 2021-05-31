@@ -144,7 +144,7 @@ def addProject():
     if request.method == 'POST':
         if session.get('user_id') != None:
             user = mongo.db.users.find_one({ '_id':  ObjectId(session.get('user_id'))})
-            if 'file' not in request.files:
+            if 'files' not in request.files:
                 flash('No file')
                 return redirect('/add-project')
 
@@ -213,7 +213,7 @@ def show_project(username, project_name):
     if request.method == 'POST':
         file = (request.get_json())['filename']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
-        code = open(path.join(project_path, file)).read()
+        code = open(path.join(project_path, file), 'r', encoding='utf-8').read()
         code_md = f'```{file_ext}\n{code}\n```'
 
         md_template_string = markdown.markdown(
@@ -222,8 +222,8 @@ def show_project(username, project_name):
         formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
 
         css_string = formatter.get_style_defs()
-        # print(css_string)
         md_css_string = "<style>" + css_string + "</style>"
+        
         md_template = md_css_string + md_template_string
 
         return jsonify({
