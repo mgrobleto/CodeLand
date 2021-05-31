@@ -35,7 +35,7 @@ Array.prototype.forEach.call($formList, function ($form) {
         const { data, delete_info} = await response.json()
         const code = ''
         $project.innerHTML = ''
-        console.log(data)
+        console.log(JSON.parse(data))
         console.log(delete_info)
         for(const project of JSON.parse(data)) {
             code += renderTemplate(project)

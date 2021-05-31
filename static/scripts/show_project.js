@@ -23,6 +23,14 @@ Array.prototype.forEach.call(elements, (element) => {
         // const content = document.createTextNode()
         // div.appendChild(content)
         // document.body.insertBefore(div, root_code)
-        root_code.innerHTML = data.info
+        if(data.type === 'code') {
+            root_code.innerHTML = data.info
+        } else {
+            let parse_binary = JSON.parse(data.info)
+            console.log(parse_binary)
+            root_code.innerHTML = `
+                <img src="data:image/${parse_binary.file_ext};base64,${atob(parse_binary.$binary)}" alt="XD">
+            `.trim()
+        }
     })
 })
