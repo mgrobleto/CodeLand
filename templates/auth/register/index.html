@@ -4,6 +4,10 @@
 <title>CodeLand | Register</title>
 {% endblock %}
 
+{% block style %}
+<link rel="stylesheet" href="/static/styles/register.css">
+{% endblock %}
+
 {% block body %}
 <div class="container mt-5">
     <form id="form">
@@ -26,6 +30,11 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+</div>
+<div class="modal-a" id="modal-a">
+  <div class="modal-dialog">
+      <p id="message"></p>
+  </div>
 </div>
 {% endblock %}
 {% block scripts %}

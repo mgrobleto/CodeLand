@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block title %}
-<title>project/{{ name }} | CodeLand</title>
+<title>{{ username }}/{{ name }} | CodeLand</title>
 {% endblock %}
 
 {% block body %}
@@ -16,6 +16,10 @@
     <li id="file" data-filename="{{ file_name }}" class="item-filename">{{ file_name }}</li>
     {%endfor%}
 </ul>
+{% if session.get('user_id') %}
+<button>submit file</button>
+{% endif %}
+
 {% endif %}
 <div class="container code_container">
     <div class="header_code">

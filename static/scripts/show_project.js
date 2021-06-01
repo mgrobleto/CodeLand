@@ -1,3 +1,5 @@
+'use strict'
+
 const elements = document.querySelectorAll('#file')
 const root_code = document.querySelector('#show_code')
 const CURRENT_PATH = location.pathname
@@ -5,8 +7,7 @@ const CURRENT_PATH = location.pathname
 
 Array.prototype.forEach.call(elements, (element) => {
     element.addEventListener('click', async (event) => {
-        console.log(CURRENT_PATH)
-        filename = event.currentTarget.dataset.filename
+        const filename = event.currentTarget.dataset.filename
         const response = await fetch(`${CURRENT_PATH}`, {
             method: 'POST',
             headers: {
@@ -21,6 +22,13 @@ Array.prototype.forEach.call(elements, (element) => {
         // const content = document.createTextNode()
         // div.appendChild(content)
         // document.body.insertBefore(div, root_code)
-        root_code.innerHTML = data.info
+        if(data.type === 'code') {
+            root_code.innerHTML = data.info
+        } else {
+            let parse_binary = JSON.parse(data.info)
+            root_code.innerHTML = `
+                <img src="data:image/${parse_binary.file_ext};base64,${atob(parse_binary.$binary)}" alt="XD">
+            `.trim()
+        }
     })
 })

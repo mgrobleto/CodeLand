@@ -1,10 +1,15 @@
-from os import path, getcwd, makedirs, listdir
-from flask import Flask, render_template, request, redirect, session, flash, jsonify
-from flask.templating import render_template_string
+from io import BytesIO
+from os import path, makedirs, listdir, walk
+from shutil import rmtree
+from zipfile import ZipFile
+from flask import Flask, render_template, request, redirect, session, flash, jsonify, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_session import Session
+from werkzeug.utils import secure_filename
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
+from bson import json_util
+from json import dumps
 from dotenv import dotenv_values
 from tempfile import mkdtemp
 import datetime
@@ -28,7 +33,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 mongo = PyMongo(app)
 
-ALLOWED_EXTENSIONS = {'txt', 'c', '.js', '.py', '.html', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'txt', 'c', 'js', 'py', 'html', 'h', 'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -37,6 +42,19 @@ def allowed_file(filename):
 def timestamp():
     return {"created_at": datetime.datetime.now(datetime.timezone.utc), "updated_at": datetime.datetime.now(datetime.timezone.utc)}
 
+def get_user_and_project(user_id):
+    user_cursor = mongo.db.users.aggregate([
+        {
+            '$lookup': {
+                "from": 'projects',
+                "localField": '_id',
+                "foreignField": 'users_id',
+                "as": 'projects'
+            }
+        },
+        { "$match": { "_id": ObjectId(user_id) } }
+    ])
+    return list(user_cursor)[0]
 
 @app.route('/')
 def home():
@@ -50,6 +68,8 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if session.get('user_id') != None:
+        return redirect('/profile')
     if request.method == 'POST':
         get_user = mongo.db.users.find_one(
             {"email": request.form.get("email")})
@@ -65,6 +85,8 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if session.get('user_id') != None:
+        return redirect('/profile')
     if(request.method == 'POST'):
         email = request.form.get("email")
         username = request.form.get("username")
@@ -78,7 +100,6 @@ def register():
                 { "username": username }
             ]
         }) # busca un usuario donde uno de esos dos campos tenga ese valor
-        print(email)
         if find_user != None:
             flash(f"{username} already exist")
             return redirect('/register')
@@ -101,23 +122,11 @@ def register():
 
         user = mongo.db.users.insert( # inserta un usuario
             {"username": username, "password": password, "email": email, **timestamp(), "perfil": image, "contentType": mimetype})
-
         session['user_id'] = user
 
         return redirect('/profile')
 
     return render_template('auth/register/index.html')
-
-@app.route('/upload', methods=['POST'])
-def upload():
-    if request.method == 'POST':
-        image = request.files['image'].read()
-        print(type(image))
-        byte = encodebytes(image)
-        mongo.db.test.insert(
-            { "image": image }
-        )
-        return jsonify({ "image": byte})
 
 @app.route('/profile')
 def profile():
@@ -126,18 +135,7 @@ def profile():
         return redirect('/login')
 
     user_id = ObjectId(session.get('user_id'))
-    user_cursor = mongo.db.users.aggregate([
-        {
-            '$lookup': {
-                "from": 'projects',
-                "localField": '_id',
-                "foreignField": 'users_id',
-                "as": 'projects'
-            }
-        },
-        { "$match": { "_id": ObjectId(user_id) } }
-    ])
-    user = list(user_cursor)[0]
+    user = get_user_and_project(user_id)
 
     return render_template('user/profile/index.html', user=user)
 
@@ -155,52 +153,97 @@ def addProject():
             description = request.form.get('description')
             image = request.files['image'].read()
             file_names = []
-            directory = path.join(getcwd(), 'project', user['username'], title)
+            directory = path.join('.', 'project', user['username'], title)
             
             if path.exists(directory) is False:
-                print('directorio creado')
                 makedirs(directory)
             else:
                 flash('project already exist')
                 return redirect('/add-project')
 
-            print(path.exists(directory))
             for file in files:
-                filename = file.filename
-                file_names.append(filename)
-                file.save(path.join(directory, filename))
-            mongo.db.projects.insert({ "title": title, "path": directory, "users_id": ObjectId(session.get('user_id')), "image": encodebytes(image), **timestamp(), "description": description})
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file_names.append(filename)
+                    file.save(path.join(directory, filename))
+
+            mongo.db.projects.insert({ "title": title, 'author': user['username'], "description": description, "users_id": user['_id'], "path": directory, **timestamp(), "image": encodebytes(image)})
             return redirect('/profile')
         else:
             flash('You are not logged in')
             return redirect('/login')
     return render_template('user/addCode.html')
 
+@app.route('/download-project/<project_id>', methods=['GET'])
+def download_project(project_id):
+    project = mongo.db.projects.find_one({ '_id': ObjectId(project_id)})
+    project_title = project['title']
+    memory_file = BytesIO()
+    with ZipFile(memory_file, 'w') as zf:
+        for root, dirs, files in walk(project['path']):
+            for file in files:
+                zf.write(path.join(root, file),
+                        path.relpath(path.join(root, file), 
+                                        path.join(project['path'], '..')))
+    # send_file
+    memory_file.seek(0)
+
+    return send_file(memory_file, attachment_filename=f'{project_title}.zip', as_attachment=True)
+
+@app.route('/delete-project', methods=['DELETE'])
+def delete_project():
+    if session.get('user_id'):
+        project_id = ObjectId(request.form.get('id'))
+        project = mongo.db.projects.find_one_and_delete({ 'users_id': ObjectId(session.get('user_id')), '_id': project_id}, {'_id': False, 'image': False, 'users_id': False})
+        if project is None:
+            flash('El proyecto no existe')
+            return redirect('/profile')
+        rmtree(project['path'])
+        data_cursor = mongo.db.projects.find({ 'users_id': ObjectId(session.get('user_id'))})
+        data_list = [doc for doc in data_cursor]
+        data = dumps(data_list,default=json_util.default)
+        return { 'data': data, 'delete_info': project }
+    else:
+        flash('You are not logged in')
+        return redirect('login')
+
 @app.route('/project/<username>/<project_name>/', methods=['GET', 'POST'])
 def show_project(username, project_name):
-    project_path = path.join(getcwd(), 'project', username, project_name)
+    project_path = path.join('.', 'project', username, project_name)
     if request.method == 'POST':
         file = (request.get_json())['filename']
-        # print(path.join(project_path, file['filename']))
-        file_ext = file.split('.')[1]
-        code = open(path.join(project_path, file)).read()
-        code_md = f'```{file_ext}\n{code}\n```'
+        file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
+        if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
+            code = open(path.join(project_path, file), 'r', encoding='utf-8').read()
+            code_md = f'```{file_ext}\n{code}\n```'
 
-        md_template_string = markdown.markdown(
-        code_md, extensions=["fenced_code", "codehilite"]
-        )
-        formatter = HtmlFormatter(style="emacs", full=True, cssclass="codehilite")
+            md_template_string = markdown.markdown(
+            code_md, extensions=["fenced_code", "codehilite"]
+            )
+            formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
 
-        css_string = formatter.get_style_defs()
-        md_css_string = "<style>" + css_string + "</style>"
-        md_template = md_css_string + md_template_string
+            css_string = formatter.get_style_defs()
+            md_css_string = "<style>" + css_string + "</style>"
+            
+            md_template = md_css_string + md_template_string
 
-        return jsonify({
-            "info": f'{md_template}'
-        })
+            return jsonify({
+                "info": f'{md_template}',
+                'file_ext': file_ext,
+                'type': 'code'
+            })
+        else:
+            code = open(path.join(project_path, file), 'rb').read()
+            image = encodebytes(code)
+            json_image = dumps(image,default=json_util.default)
+            
+            return jsonify({
+                'info': json_image,
+                'type': 'binary'
+            })
         
     directory = listdir(project_path)
-    return render_template('show_project/index.html', directory=directory, name=project_name)
+    return render_template('show_project/index.html', directory=directory, name=project_name, username=username)
 
 @app.route('/about-us')
 def about():
