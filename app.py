@@ -1,5 +1,4 @@
 from io import BytesIO
-from logging import info
 from os import path, makedirs, listdir, walk
 from shutil import rmtree
 from zipfile import ZipFile
@@ -245,6 +244,10 @@ def show_project(username, project_name):
         
     directory = listdir(project_path)
     return render_template('show_project/index.html', directory=directory, name=project_name, username=username)
+
+@app.route('/about-us')
+def about():
+    return render_template("about us/about.html")
 
 @app.route('/logout')
 def logout():
