@@ -7,7 +7,7 @@ body {
     margin: 0;
 }
 /*.contenedorHome {
-    /* HOME 
+    /* HOME*
     position: relative;
     width: 1440px;
     height: 3725px;
@@ -196,31 +196,6 @@ body {
     box-sizing: border-box;
     box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
-.contenedorCompiladorTC20 {
-    /*info del compilador*/
-
-    position: absolute;
-    width: 1180px;
-    height: 336px;
-    left: 57px;
-    top: 401px;
-
-    background: rgba(114, 104, 104, 0.96);
-    backdrop-filter: blur(4px);
-
-    border-radius: 3px;
-}
-.contenedorHeader {
-    /*cabecera .h <informacion>*/
-    position: absolute;
-    width: 1176px;
-    height: 285px;
-    left: 206px;
-    top: 773px;
-
-    background: #726868;
-    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
 .textoC {
     position: absolute;
     width: 586px;
@@ -242,4 +217,174 @@ body {
     height: 243px;
     left: 900px;
     top: 76px;
+}
+.contenedorCompiladorTC20 {
+    /*info del compilador*/
+
+    position: absolute;
+    width: 1180px;
+    height: 336px;
+    left: 57px;
+    top: 401px;
+
+    background: rgba(114, 104, 104, 0.96);
+    backdrop-filter: blur(4px);
+
+    border-radius: 3px;
+}
+.compilador {
+    position: absolute;
+    width: 684px;
+    height: 137px;
+    left: 360px;
+    top: 109px;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 42px;
+    text-align: center;
+
+    color: #fafafa;
+}
+.imagenCompilador {
+    position: absolute;
+    width: 263px;
+    height: 306px;
+    left: 75px;
+    top: -31px;
+}
+.contenedorHeader {
+    /*cabecera .h <informacion>*/
+    position: absolute;
+    width: 1176px;
+    height: 285px;
+    left: 206px;
+    top: 773px;
+
+    background: #726868;
+    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.cabeceraH {
+    position: absolute;
+    width: 682px;
+    height: 232px;
+    left: 12px;
+    top: 22px;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 42px;
+
+    color: #fafafa;
+}
+.imagenCabeceraH {
+    /*CabeceraH*/
+    position: sticky;
+    width: 380px;
+    height: 306px;
+    left: 971px;
+    top: 720px;
+}
+.entrada-documentacion {
+    position: absolute;
+    width: 1440px;
+    height: 792px;
+    left: 0px;
+    top: 2703px;
+
+    background: linear-gradient(90deg, #485563 0%, #29323c 100%);
+}
+.tituloDoc {
+    /* Documentacion de el lenguaje C en español */
+    position: absolute;
+    width: 709px;
+    height: 127px;
+    left: 377px;
+    top: 50px;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 48px;
+    line-height: 56px;
+    text-align: center;
+
+    color: #fafafa;
+}
+.descripcionDoc {
+    /**/
+    position: absolute;
+    width: 416px;
+    height: 529px;
+    left: 52px;
+    top: 140px;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 40px;
+    line-height: 47px;
+    color: #ffffff;
+}
+.imagenDocumentacion {
+    position: absolute;
+    width: 409px;
+    height: 301px;
+    left: 783px;
+    top: 252px;
+    backdrop-filter: blur(4px);
+}
+.entrada-pieDePagina {
+    /* Entrada-PieDePagina */
+    position: absolute;
+    width: 1440px;
+    height: 230px;
+    left: 0px;
+    top: 3495px;
+
+    background: #0f1527;
+}
+.tituloPieDePagina {
+    /* CodeLand */
+    position: absolute;
+    width: 245px;
+    height: 63px;
+    left: 95px;
+    top: 35px;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 54px;
+    line-height: 63px;
+
+    color: #fafafa;
+}
+.imagenLogo {
+    /* Logo */
+    position: absolute;
+    width: 136px;
+    height: 88px;
+    left: 0px;
+    top: 0px;
+}
+.titulo2PieDePagina {
+    /* ©2021 CodeLand */
+    position: absolute;
+    width: 222px;
+    height: 30px;
+    left: 5px;
+    top: 197px;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 28px;
+
+    color: #fafafa;
 }
