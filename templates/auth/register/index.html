@@ -1,0 +1,33 @@
+{% extends 'layout/index.html' %}
+
+{% block title %}
+<title>CodeLand | Register</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <form id="form">
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" name="username" class="form-control" id="username" placeholder="name: John Doe" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" name="email" class="form-control" id="email" placeholder="Email: me@gmail.com" aria-describedby="emailHelp">
+          <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" name="password" placeholder="password" class="form-control" id="password">
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Perfil</label>
+          <input type="file" name="image" placeholder="password" accept="image/png, image/jpeg" class="form-control" id="images">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/scripts/register.js" type="module"></script>
+{% endblock %}

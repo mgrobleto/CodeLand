@@ -1,8 +1,8 @@
-<header class="header-site">
+<header class="header-site px-3">
     <div class="header-left">
         <div class="header-logo">
             <a href="/">
-                <img src="/static/images/logo.png" class="responsive-img" alt="logo">
+                <img src="/static/images/logos.png" class="responsive-img" alt="logo">
             </a>
         </div>
         <div class="block"></div>
@@ -21,58 +21,71 @@
             </div>
             <nav>
                 <ul class="header-list">
-                    <li class="list-item"><a href="/">Home</a></li>
+                    <li class="list-item"><a href="/"> Inicio </a></li>
                     <li class="list-item example" id="dropdown-btn">
                         <a href="/#">
-                            Example
+                            Explorar
                         </a>
-                        <div class="dropdown">
+                        <div class="dropdown-container">
                             <ul class="dropdown-list">
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/array">Arrays</a>
+                                    <a href="/examples/array"> Ejemplos </a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/array/sort">Sorting algorithms</a>
+                                    <a href="/examples/array/sort"> Arreglos </a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/array/binary-search">Binary Search</a>
+                                    <a href="/examples/array/binary-search"> Estructuras </a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/reversed">Reversed array</a>
+                                    <a href="/examples/reversed"> Ficheros </a>
                                 </li>
                             </ul>
                             <ul class="dropdown-list">
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/struct/">Struct</a>
+                                    <a href="/examples/struct/"> Proyectos en Turbo C</a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/intro">Introduction</a>
+                                    <a href="/examples/intro"> Modo Texto </a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/node">Nodos</a>
+                                    <a href="/examples/node"> Modo Gráfico </a>
+                                </li>
+                            </ul>
+                            <ul class="dropdown-list">
+                                <li class="dropdown-list-item">
+                                    <a href="/examples/documentation/"> Documentación </a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/hash-table">Hash Tables</a>
+                                    <a href="/examples/basicos"> Lenguaje C </a>
                                 </li>
                             </ul>
                         </div>
                     </li>
-                    <li class="list-item"><a href="/explorer">Explorer</a></li>
-                    <li class="list-item"><a href="/profile">Profile</a></li>
-                    <li class="list-item"><a href="sign-out">Sign out</a></li>
-                    <li class="list-item"><a href="/about-us">About us</a></li>
+                    <li class="list-item"><a href="/about-us"> Acerca de </a></li>
+                    <div class="login m-3">
+                        <button class="btn btn-primary">Login</button>
+                    </div>
                 </ul>
             </nav>
         </div>
     </div>
     <div class="header-right">
-        <div class="user-profile">
-            <i>
-                <svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.5 9C9.5 13.962 13.538 18 18.5 18C23.462 18 27.5 13.962 27.5 9C27.5 4.038 23.462 0 18.5 0C13.538 0 9.5 4.038 9.5 9ZM34.5 38H36.5V36C36.5 28.282 30.218 22 22.5 22H14.5C6.78 22 0.5 28.282 0.5 36V38H34.5Z" fill="#000"/>
-                </svg>                
-            </i>
+        {% if user %}
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ user.username }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li><a class="dropdown-item" href="/profile"> Perfil </a></li>
+              <li><a class="dropdown-item" href="/logout"> Salir </a></li>
+            </ul>
         </div>
+        {% else %}
+        <div class="login-desktop">
+            <a href="/login" class="btn btn-primary"> Ingresar </a>
+        </div>
+        {% endif %}
         <div class="btn-sidenav">
             <button class="btn btn-menu" id="btn-menu">
                 <i>
@@ -84,4 +97,11 @@
         </div>
     </div>
 </header>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert alert-primary">
+        <p>{{ messages | join(' ') }}</p>
+    </div>
+  {% endif %}
+{% endwith %}
 <div class="overlay" id="overlay"></div>

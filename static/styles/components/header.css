@@ -78,9 +78,9 @@
 .header-list {
     position: relative;
     background-color: #fff;
-    z-index: 10;
+    z-index: 0;
     padding-left: 0;
-    margin: 0;
+    margin: auto;
     height: inherit;
 }
 
@@ -107,7 +107,7 @@
     color: #000;
 }
 
-.dropdown {
+.dropdown-container {
     background: #fff;
 }
 
@@ -138,30 +138,37 @@
     font-size: 14px;
 }
 
-.user-profile {
-    display: none;
-}
-
-.btn-sidenav {
+.header-right {
     display: flex;
     align-items: center;
     height: 100%;
-    padding: 10px;
+}
+
+.btn-sidenav {
     -webkit-tap-highlight-color: transparent;
 }
 
 @media screen and (max-width: 995px) {
-    .dropdown {
+    .dropdown-container {
         max-height: 0;
         transition: max-height 0.15s ease-out;
         overflow: hidden;
         background: #fff;
     }
+
+    .sidenav {
+        overflow: auto;
+    }
     
-    .example.active .dropdown {
-        max-height: 350px;
+    .example.active .dropdown-container {
+        max-height: 380px;
         transition: max-height 0.25s ease-in;
     }
+
+    .login-desktop {
+        display: none;
+    }
+
 }
 
 /* Esto es como un if, donde el ancho va de [996px, + infinito) */
@@ -204,7 +211,7 @@
         border: none;
     }
 
-    .dropdown::before { /* triangulo del menu */
+    .dropdown-container::before { /* triangulo del menu */
         content: '';
         background-color: #fff;
         position: absolute;
@@ -216,7 +223,7 @@
         z-index: 8;
     }
 
-    .dropdown {
+    .dropdown-container {
         transition: transform ease-in-out .2s;
         left: 10px;
         top: 67px;
@@ -238,7 +245,7 @@
     /* Cuando el mouse hace 'hover' en la opción, o cuando el mouse esta en el dropdown */
     /* Contexto: */
     /* https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Selectors/Combinators */
-    .example:hover > .dropdown, .dropdown:hover {
+    .example:hover > .dropdown-container, .dropdown-container:hover {
         opacity: 1;
         transform: translateY(0px);
         pointer-events: auto;
@@ -258,21 +265,11 @@
         margin-top: 12px;
     }
 
-    /* Perfil de la clase .header-right */
-    .user-profile {
-        display: block;
-        height: 100%;
+    .btn-sidenav {
+        display: none;
     }
-    
-    .user-profile i {
-        display: inline-block;
-        line-height: 70px;
-    }
-    
-    .user-profile i svg {
-        vertical-align: middle;
-    }
-    .btn-menu {
+
+    .login {
         display: none;
     }
 }

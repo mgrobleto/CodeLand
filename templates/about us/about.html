@@ -1,0 +1,80 @@
+{% extends 'layout/index.html' %}
+
+{% block title %}
+<title> Acerca de </title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/static/styles/about/about.css" />
+{% endblock %}
+
+{% block body %}
+<body>
+    <section class="who-we-are">
+        <div class="box">
+            <div class="single-box">
+                <div class="img-area"></div>
+                <div class="img-text">
+                    <span class="header"><strong>¿Quiénes somos?</strong></span>
+                    <p>
+                        Una pagina creada para dar soporte a los estudiantes que utilizan
+                        el compilador de Turbo C 2.0.
+                    </p>
+                </div>
+            </div>
+            <div class="single-box">
+                <div class="img-area"></div>
+                <div class="img-text">
+                    <span class="header"><strong>Objetivos</strong></span>
+                    <div class="list-ob">
+                        <ul>
+                            <li class="text"> <i class="bi bi-check-lg" role="img"></i>No se </li>
+                            <li class="text"> <i class="bi bi-check-lg" role="img"></i>No se </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="developers">
+        <div class="container">
+            <h1 class="heading3"> Desarrolladores </h1>
+            <div class="profiles">
+                <div class="profile">
+                    <img src="/static/styles/about/images/Miguel.jpeg" class="profile-img">
+                    <h3 class="user-name"> Miguel Hernandez </h3>
+                    <h5> Managua, Nicaragua </h5>
+                    <div class="social">
+                        <ul>
+                            <li> <a href="https://github.com/MiguelHG2351"> <i class="bi bi-github" role="img" aria-label="GitHub"> </i></a></li>
+                            <li> <a href="https://www.instagram.com/miguelhg2351/"> <i class="bi bi-instagram" role="img" aria-label="Instagram"> </i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="profile">
+                    <img src="/static/styles/about/images/Gabriela.jpeg" class="profile-img">
+                    <h3 class="user-name"> Gabriela Robleto </h3>
+                    <h5> Masaya, Nicaragua </h5>
+                    <div class="social">
+                        <ul>
+                            <li> <a href="https://github.com/cafeconlechee"> <i class="bi bi-github" role="img" aria-label="GitHub"> </i></a></li>
+                            <li> <a href="https://www.instagram.com/cafeeeeconleche/"> <i class="bi bi-instagram" role="img" aria-label="Instagram"> </i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="profile">
+                    <img src="/static/styles/about/images/Michelle.jpeg" class="profile-img">
+                    <h3 class="user-name"> Michelle Calderon </h3>
+                    <h5> Managua, Nicaragua </h5>
+                    <div class="social">
+                        <ul>
+                            <li> <a href="https://github.com/Mitch-coder"> <i class="bi bi-github" role="img" aria-label="GitHub"> </i></a></li>
+                            <li> <a href="https://instagram.com/mitch007_?utm_medium=copy_link"> <i class="bi bi-instagram" role="img" aria-label="Instagram"> </i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+{% endblock %}
