@@ -6,20 +6,19 @@ body {
     font-family: "Roboto", Arial, Helvetica, sans-serif;
     margin: 0;
 }
-/*.contenedorHome {
-    /* HOME*
-    position: relative;
+.contenedorHome {
+    /* HOME*/
+    position:static;
     width: 1440px;
+    margin: 0% auto;
     height: 3725px;
-    background: #ffffff;
-}*/
+    background: #fafafa;
+}
 .entrada {
     /* Entrada */
-    position: absolute;
     width: 1440px;
+    margin: 0% auto;
     height: 784px;
-    left: 0px;
-    top: 0px;
 }
 .contenedor-de-textos {
     /* hero_title */
@@ -31,8 +30,6 @@ body {
     justify-content: center;
     align-items: center;
     padding: 0px;
-
-    position: absolute;
     width: 514px;
     height: 496px;
     left: 103px;
@@ -40,7 +37,7 @@ body {
 }
 .contenedor-imagenInicioHome {
     /*Imagen de inicio del home*/
-    position: absolute;
+  
     width: 586px;
     height: 551.19px;
     left: 720px;
@@ -125,7 +122,7 @@ body {
     color: #ffffff;
 }
 .entrada-explorer {
-    position: absolute;
+  
     width: 1440px;
     height: 702px;
     left: 0px;
@@ -133,7 +130,7 @@ body {
     background: linear-gradient(90deg, #4776e6 0%, #8e54e9 100%);
 }
 .titulo1 {
-    position: absolute;
+   
     width: 1345px;
     height: 93px;
     left: 50px;
@@ -153,7 +150,7 @@ body {
 }
 .contenedor-imagenInicioHomeExplorer1 {
     /* explora */
-    position: absolute;
+   
     width: 406px;
     height: 306px;
     left: 103px;
@@ -161,7 +158,7 @@ body {
 }
 .contenedor-imagenInicioHomeExplorer2 {
     /* descarga */
-    position: absolute;
+   
     width: 406px;
     height: 306px;
     left: 519px;
@@ -177,7 +174,6 @@ body {
 }
 .entrada-informacion {
     /* Bloque de info */
-    position: absolute;
     width: 1440px;
     height: 1050px;
     left: 0px;
@@ -185,7 +181,7 @@ body {
 }
 .contenedorLenguajeC {
     /*Lenguaje C*/
-    position: absolute;
+  
     width: 1180px;
     height: 329px;
     left: 191px;
@@ -197,7 +193,7 @@ body {
     box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 .textoC {
-    position: absolute;
+  
     width: 586px;
     height: 241px;
     left: 14px;
@@ -212,7 +208,6 @@ body {
     color: rgba(250, 250, 250, 0.85);
 }
 .imagenLenguajeC {
-    position: absolute;
     width: 303px;
     height: 243px;
     left: 900px;
@@ -221,7 +216,6 @@ body {
 .contenedorCompiladorTC20 {
     /*info del compilador*/
 
-    position: absolute;
     width: 1180px;
     height: 336px;
     left: 57px;
@@ -233,7 +227,7 @@ body {
     border-radius: 3px;
 }
 .compilador {
-    position: absolute;
+    
     width: 684px;
     height: 137px;
     left: 360px;
@@ -249,7 +243,7 @@ body {
     color: #fafafa;
 }
 .imagenCompilador {
-    position: absolute;
+    
     width: 263px;
     height: 306px;
     left: 75px;
@@ -257,7 +251,7 @@ body {
 }
 .contenedorHeader {
     /*cabecera .h <informacion>*/
-    position: absolute;
+   
     width: 1176px;
     height: 285px;
     left: 206px;
@@ -267,7 +261,7 @@ body {
     box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 .cabeceraH {
-    position: absolute;
+   
     width: 682px;
     height: 232px;
     left: 12px;
@@ -290,7 +284,7 @@ body {
     top: 720px;
 }
 .entrada-documentacion {
-    position: absolute;
+    
     width: 1440px;
     height: 792px;
     left: 0px;
@@ -300,7 +294,7 @@ body {
 }
 .tituloDoc {
     /* Documentacion de el lenguaje C en español */
-    position: absolute;
+    
     width: 709px;
     height: 127px;
     left: 377px;
@@ -317,7 +311,7 @@ body {
 }
 .descripcionDoc {
     /**/
-    position: absolute;
+   
     width: 416px;
     height: 529px;
     left: 52px;
@@ -331,7 +325,7 @@ body {
     color: #ffffff;
 }
 .imagenDocumentacion {
-    position: absolute;
+   
     width: 409px;
     height: 301px;
     left: 783px;
@@ -340,7 +334,7 @@ body {
 }
 .entrada-pieDePagina {
     /* Entrada-PieDePagina */
-    position: absolute;
+   
     width: 1440px;
     height: 230px;
     left: 0px;
@@ -350,7 +344,7 @@ body {
 }
 .tituloPieDePagina {
     /* CodeLand */
-    position: absolute;
+   
     width: 245px;
     height: 63px;
     left: 95px;
@@ -366,7 +360,7 @@ body {
 }
 .imagenLogo {
     /* Logo */
-    position: absolute;
+   
     width: 136px;
     height: 88px;
     left: 0px;
@@ -374,7 +368,7 @@ body {
 }
 .titulo2PieDePagina {
     /* ©2021 CodeLand */
-    position: absolute;
+   
     width: 222px;
     height: 30px;
     left: 5px;
