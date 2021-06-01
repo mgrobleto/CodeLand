@@ -1,5 +1,6 @@
 from os import path, getcwd, makedirs, listdir
 from flask import Flask, render_template, request, redirect, session, flash, jsonify
+from flask.templating import render_template_string
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_session import Session
 from flask_pymongo import PyMongo
@@ -200,6 +201,10 @@ def show_project(username, project_name):
         
     directory = listdir(project_path)
     return render_template('show_project/index.html', directory=directory, name=project_name)
+
+@app.route('/about-us')
+def about():
+    return render_template("about us/about.html")
 
 @app.route('/logout')
 def logout():
