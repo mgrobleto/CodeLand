@@ -7,7 +7,6 @@ const CURRENT_PATH = location.pathname
 
 Array.prototype.forEach.call(elements, (element) => {
     element.addEventListener('click', async (event) => {
-        console.log(CURRENT_PATH)
         const filename = event.currentTarget.dataset.filename
         const response = await fetch(`${CURRENT_PATH}`, {
             method: 'POST',
@@ -27,7 +26,6 @@ Array.prototype.forEach.call(elements, (element) => {
             root_code.innerHTML = data.info
         } else {
             let parse_binary = JSON.parse(data.info)
-            console.log(parse_binary)
             root_code.innerHTML = `
                 <img src="data:image/${parse_binary.file_ext};base64,${atob(parse_binary.$binary)}" alt="XD">
             `.trim()
