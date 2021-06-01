@@ -5,6 +5,7 @@
 {% endblock %}
 <!--Aqui modifico para darle el estilo al home--->
 {% block body %}
+<div class="container-entrada">
     <div class="entrada">
         <div class="contenedor-de-textos">
             <h2 class = "bienvenida">Bienvenido</h2>
@@ -21,14 +22,16 @@
             <h1 class = "principal">Explorar el código que otros han creado</h1>
             <h2 class = "secundario">Explora, descarga y aprende</h2>
         </div>
-        <div class="contenedor-imagenInicioHomeExplorer1">
-            <img src="static\images\explora.svg" alt="">
-        </div>
-        <div class="contenedor-imagenInicioHomeExplorer2">
-            <img src="static\images\descarga.svg" alt="">
-        </div>
-        <div class="contenedor-imagenInicioHomeExplorer3">
-            <img src="static\images\aprende.svg" alt="">
+        <div class="contenedor-imagenInicioHomeExplorer">
+            <div class="imagenInicioHomeExplorer1">
+                <img src="static\images\explora.svg" alt="">
+            </div>
+            <div class="imagenInicioHomeExplorer2">
+                <img src="static\images\descarga.svg" alt="">
+            </div>
+            <div class="imagenInicioHomeExplorer3">
+                <img src="static\images\aprende.svg" alt="">
+            </div>
         </div>
     </div>
 
@@ -66,13 +69,13 @@
             <img src="static\images\documentacionHome.svg" alt="">
         </div>
     </div>
-
-   <div class="entrada-pieDePagina">
+</div>
+   <footer class="entrada-pieDePagina">
        <div class="imagenLogo">
          <img src="static\images\Logo.svg" alt="">
         </div>
         <h1 class="tituloPieDePagina">CodeLand</h1>
         <h2 class="titulo2PieDePagina"> ©2021 CodeLand</h2>
-   </div>
+   </footer>
 
 {% endblock %}

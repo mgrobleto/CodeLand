@@ -9,16 +9,30 @@ body {
 .contenedorHome {
     /* HOME*/
     position:static;
-    width: 1440px;
+    max-width: 1440px;
+    width: 100%;
     margin: 0% auto;
-    height: 3725px;
     background: #fafafa;
 }
+
+.container-entrada > [class*="entrada"] {
+    margin-top: 24px;
+}
+
+.entrada-informacion > [class*="contenedor"] {
+    margin-top: 24px;
+}
+
+.entrada-informacion > [class*="contenedor"]:nth-child(2n+1) {
+    align-self: flex-end;
+}
+
 .entrada {
     /* Entrada */
-    width: 1440px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 8px;
     margin: 0% auto;
-    height: 784px;
 }
 .contenedor-de-textos {
     /* hero_title */
@@ -31,7 +45,6 @@ body {
     align-items: center;
     padding: 0px;
     width: 514px;
-    height: 496px;
     left: 103px;
     top: 237px;
 }
@@ -39,14 +52,12 @@ body {
     /*Imagen de inicio del home*/
   
     width: 586px;
-    height: 551.19px;
     left: 720px;
     top: 114px;
 }
 .bienvenida {
     position: static;
     width: 514px;
-    height: 33px;
     left: 0px;
     top: 55px;
 
@@ -71,7 +82,6 @@ body {
 .descripcion {
     position: static;
     width: 514px;
-    height: 246px;
     left: 0px;
     top: 60px;
 
@@ -100,7 +110,6 @@ body {
 
     position: static;
     width: 332px;
-    height: 49px;
     left: 91px;
     top: 392px;
 
@@ -122,9 +131,9 @@ body {
     color: #ffffff;
 }
 .entrada-explorer {
-  
-    width: 1440px;
-    height: 702px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     left: 0px;
     top: 827px;
     background: linear-gradient(90deg, #4776e6 0%, #8e54e9 100%);
@@ -132,7 +141,6 @@ body {
 .titulo1 {
    
     width: 1345px;
-    height: 93px;
     left: 50px;
     top: 91px;
 
@@ -148,11 +156,16 @@ body {
 .secundario {
     color: rgba(0, 0, 0, 0.32);
 }
+
+.contenedor-imagenInicioHomeExplorer {
+    display: flex;
+    justify-content: center;
+}
+
 .contenedor-imagenInicioHomeExplorer1 {
     /* explora */
    
     width: 406px;
-    height: 306px;
     left: 103px;
     top: 267px;
 }
@@ -160,22 +173,19 @@ body {
     /* descarga */
    
     width: 406px;
-    height: 306px;
     left: 519px;
     top: 275px;
 }
 .contenedor-imagenInicioHomeExplorer3 {
     /* aprende */
-    position: absolute;
     width: 406px;
-    height: 306px;
     left: 923px;
     top: 266px;
 }
 .entrada-informacion {
     /* Bloque de info */
-    width: 1440px;
-    height: 1050px;
+    display: flex;
+    flex-direction: column;
     left: 0px;
     top: 1529px;
 }
@@ -183,7 +193,6 @@ body {
     /*Lenguaje C*/
   
     width: 1180px;
-    height: 329px;
     left: 191px;
     top: 38px;
 
@@ -195,7 +204,6 @@ body {
 .textoC {
   
     width: 586px;
-    height: 241px;
     left: 14px;
     top: 40px;
 
@@ -209,7 +217,6 @@ body {
 }
 .imagenLenguajeC {
     width: 303px;
-    height: 243px;
     left: 900px;
     top: 76px;
 }
@@ -217,7 +224,6 @@ body {
     /*info del compilador*/
 
     width: 1180px;
-    height: 336px;
     left: 57px;
     top: 401px;
 
@@ -229,7 +235,6 @@ body {
 .compilador {
     
     width: 684px;
-    height: 137px;
     left: 360px;
     top: 109px;
 
@@ -245,7 +250,6 @@ body {
 .imagenCompilador {
     
     width: 263px;
-    height: 306px;
     left: 75px;
     top: -31px;
 }
@@ -253,7 +257,6 @@ body {
     /*cabecera .h <informacion>*/
    
     width: 1176px;
-    height: 285px;
     left: 206px;
     top: 773px;
 
@@ -263,7 +266,6 @@ body {
 .cabeceraH {
    
     width: 682px;
-    height: 232px;
     left: 12px;
     top: 22px;
 
@@ -279,24 +281,23 @@ body {
     /*CabeceraH*/
     position: sticky;
     width: 380px;
-    height: 306px;
     left: 971px;
     top: 720px;
 }
 .entrada-documentacion {
-    
-    width: 1440px;
-    height: 792px;
-    left: 0px;
-    top: 2703px;
-
+    display: grid;
+    grid-template-areas: "title title"
+                         "text image";
+    align-items: center;
+    justify-content: space-between;
+    grid-gap: 20px 10px;
+    padding: 0 50px;
     background: linear-gradient(90deg, #485563 0%, #29323c 100%);
 }
 .tituloDoc {
     /* Documentacion de el lenguaje C en español */
-    
-    width: 709px;
-    height: 127px;
+    grid-area: title;
+    width: 100%;
     left: 377px;
     top: 50px;
 
@@ -309,11 +310,15 @@ body {
 
     color: #fafafa;
 }
+
+.tituloDoc h1 {
+    text-align: center;
+}
+
 .descripcionDoc {
     /**/
-   
+   grid-area: text;
     width: 416px;
-    height: 529px;
     left: 52px;
     top: 140px;
 
@@ -325,18 +330,15 @@ body {
     color: #ffffff;
 }
 .imagenDocumentacion {
-   
+    grid-area: image;
     width: 409px;
-    height: 301px;
     left: 783px;
     top: 252px;
     backdrop-filter: blur(4px);
 }
 .entrada-pieDePagina {
     /* Entrada-PieDePagina */
-   
-    width: 1440px;
-    height: 230px;
+   padding: 20px;
     left: 0px;
     top: 3495px;
 
@@ -346,7 +348,6 @@ body {
     /* CodeLand */
    
     width: 245px;
-    height: 63px;
     left: 95px;
     top: 35px;
 
@@ -362,15 +363,13 @@ body {
     /* Logo */
    
     width: 136px;
-    height: 88px;
     left: 0px;
     top: 0px;
 }
 .titulo2PieDePagina {
     /* ©2021 CodeLand */
-   
+    margin-bottom: 0;
     width: 222px;
-    height: 30px;
     left: 5px;
     top: 197px;
 
