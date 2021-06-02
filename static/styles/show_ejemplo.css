@@ -1,0 +1,36 @@
+.project-file {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    grid-gap: 15px;
+}
+
+.item-filename {
+    padding: 12px;
+    color: #eee;
+    background-color: #09f;
+    cursor: pointer;
+}
+
+.code_container {
+    padding: 0;
+    background-color: #333;
+}
+
+.header_code {
+    display: flex;
+    padding: 10px;
+    gap: 6px;
+    border: 1px solid gray;
+}
+
+.circle {
+    border-radius: 50%;
+    width: 1px;
+    height: 1px;
+}
+
+#show_code {
+    padding: 10px;
+}
