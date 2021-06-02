@@ -10,9 +10,10 @@
 .who-we-are {
     min-height: 100vh;
     width: 100%;
-    background-color: gray;
+    background-color: #000814;
     background-position: center;
     background-size: cover;
+    /*position: relative;*/
 }
 
 .who {
@@ -49,8 +50,9 @@
 }
 
 .single-box:hover {
-    background: #24285B;
-    color: #fff;
+    /*background: #d6d6d666;
+    color: #fff;*/
+    transform: translate(0, -10px);
 }
 
 .single-box:nth-child(1) .img-area{
@@ -125,7 +127,7 @@
 
     min-height: 100vh;
     width: 100%;
-    background-color: #24285B;
+    background-color: #003566;
     background-position: center;
     background-size: cover;
     position: relative;
@@ -150,9 +152,14 @@
     margin: 20px 80px;
 }
 
+/*.profile:not(:last-child) {
+    margin-bottom: 10px;
+}*/
+
 .profile {
     color: #fff;
     flex-basis: 290px;
+    margin-bottom: 10px;
 }
 
 .profile .profile-img {

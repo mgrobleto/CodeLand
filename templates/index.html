@@ -3,7 +3,79 @@
 {% block title %}
 <title>Welcome to CodeLand</title>
 {% endblock %}
-
+<!--Aqui modifico para darle el estilo al home--->
 {% block body %}
-<h1>Home</h1>
+<div class="container-entrada">
+    <div class="entrada">
+        <div class="contenedor-de-textos">
+            <h2 class = "bienvenida">Bienvenido</h2>
+            <h1 class = "descripcion">Comparte tu código<br>escrito en<br> lenguaje C<br> con otros!</h1>
+            <a href="#" class="btnSignInHome">Sign in</a>
+        </div>
+        <div class="contenedor-imagenInicioHome">
+            <img src="static\images\home.svg" alt="">
+        </div>
+    </div>
+    <!--hay un ligero problema con el ancho del frame--->
+    <div class="entrada-explorer">
+        <div class="titulo1">
+            <h1 class = "principal">Explorar el código que otros han creado</h1>
+            <h2 class = "secundario">Explora, descarga y aprende</h2>
+        </div>
+        <div class="contenedor-imagenInicioHomeExplorer">
+            <div class="imagenInicioHomeExplorer1">
+                <img src="static\images\explora.svg" alt="">
+            </div>
+            <div class="imagenInicioHomeExplorer2">
+                <img src="static\images\descarga.svg" alt="">
+            </div>
+            <div class="imagenInicioHomeExplorer3">
+                <img src="static\images\aprende.svg" alt="">
+            </div>
+        </div>
+    </div>
+
+    <div class="entrada-informacion">
+        <div class="contenedorLenguajeC">
+            <h1 class = "textoC">Encuentra codigo escrito en un<br>lenguaje de programacion complejo <br> como lo es C.Desde lo basico en el,<br> hasta proyectos mas elaborados<br>tanto en modo texto como grafico.</h1>
+            <div class="imagenLenguajeC">
+                <img src="static\images\lenguajeC.svg" alt="">
+            </div>
+        </div>
+        
+        <div class="contenedorCompiladorTC20">
+            <h1 class = "compilador">Los codigos proporcionados pueden ser<br>compilados desde la version turbo c 2.0<br>en adelante.</h1>
+            <div class="imagenCompilador">
+                <img src="static\images\compilador.svg" alt="">
+            </div>
+        </div>
+        <div class="contenedorHeader">
+            <h1 class = "cabeceraH">Podras obtener librerias que son<br>personalizadas de los desarrolladores<br> que proporcionan funciones para el C<br> principal</h1>
+            <div class="imagenCabeceraH">
+                <img src="static\images\cabeceraH.svg" alt="">
+            </div>
+        </div>
+        
+    </div>
+
+    <div class = "entrada-documentacion">
+        <div class="tituloDoc">
+            <h1>Documentación del lenguaje C<br>en español</h1>
+        </div>
+        <div class="descripcionDoc">
+            <h1> CodeLand te ofrece<br> una coleccion de libros<br> traducidos al idioma<br> espanol donde <br>encontraras desde lo<br> mas basico de la<br> sintaxis hasta <br>algoritmos complejos<br> aplicados en las<br>primitivas graficas.</h1>
+        </div>
+        <div class="imagenDocumentacion">
+            <img src="static\images\documentacionHome.svg" alt="">
+        </div>
+    </div>
+</div>
+   <footer class="entrada-pieDePagina">
+       <div class="imagenLogo">
+         <img src="static\images\Logo.svg" alt="">
+        </div>
+        <h1 class="tituloPieDePagina">CodeLand</h1>
+        <h2 class="titulo2PieDePagina"> ©2021 CodeLand</h2>
+   </footer>
+
 {% endblock %}
