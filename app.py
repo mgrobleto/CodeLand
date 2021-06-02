@@ -141,7 +141,7 @@ def profile():
         flash("You are not logged in. Please log in to see the profile.")
         return redirect('/login')
 
-    user_id = ObjectId(session.get('user_id'))
+    user_id = session.get('user_id')
     user = get_user_and_project(user_id)
 
     return render_template('user/profile/index.html', user=user)
@@ -218,9 +218,9 @@ def delete_project():
         flash('You are not logged in')
         return redirect('login')
 
-@app.route('/project/<username>/<project_name>/', methods=['GET', 'POST'])
+@app.route('/project/<username>/text_mode/<project_name>/', methods=['GET', 'POST'])
 def show_project(username, project_name):
-    project_path = path.join('.', 'project', username, project_name)
+    project_path = path.join('.', 'project', username, 'text_mode', project_name)
     if request.method == 'POST':
         file = (request.get_json())['filename']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
