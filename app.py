@@ -34,6 +34,8 @@ Session(app)
 mongo = PyMongo(app)
 
 ALLOWED_EXTENSIONS = {'txt', 'c', 'js', 'py', 'html', 'h', 'png', 'jpg', 'jpeg', 'gif'}
+IMAGE_MIMETYPE = ['image/png', 'image/jpeg', 'image/jpg']
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -109,12 +111,15 @@ def register():
             return redirect('/register')
         
         if request.files['image'].filename != '':
-            if request.files['image'].mimetype != 'image/png' or 'image/jpeg' or 'image/jpg':
+            if any(request.files['image'].mimetype == mimetype for mimetype in IMAGE_MIMETYPE):
+                mimetype = request.files['image'].mimetype
+                image = request.files['image'].read()
+                image = encodebytes(image)
+            else:
+                print('Ahhhhhhhhhhhhhhhhhhhhhhhhhhhh')
                 flash('error mimetype')
                 return redirect('/register')
-            mimetype = request.files['image'].mimetype
-            image = request.files['image'].read()
-            image = encodebytes(image)
+
         else:
             image = open('./static/images/user_default_logo.png', 'rb').read()
             mimetype = 'image/png'
@@ -244,6 +249,44 @@ def show_project(username, project_name):
         
     directory = listdir(project_path)
     return render_template('show_project/index.html', directory=directory, name=project_name, username=username)
+
+@app.route('/ejemplos/<ejemplo_name>/', methods=['GET', 'POST'])
+def show_ejemplo(ejemplo_name):
+    ejemplo_path = path.join('.', 'ejemplos', ejemplo_name)
+    if request.method == 'POST':
+        file = (request.get_json())['filename']
+        file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
+        if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
+            code = open(path.join(ejemplo_path, file), 'r', encoding='utf-8').read()
+            code_md = f'```{file_ext}\n{code}\n```'
+
+            md_template_string = markdown.markdown(
+            code_md, extensions=["fenced_code", "codehilite"]
+            )
+            formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
+
+            css_string = formatter.get_style_defs()
+            md_css_string = "<style>" + css_string + "</style>"
+            
+            md_template = md_css_string + md_template_string
+
+            return jsonify({
+                "info": f'{md_template}',
+                'file_ext': file_ext,
+                'type': 'code'
+            })
+        else:
+            code = open(path.join(ejemplo_path, file), 'rb').read()
+            image = encodebytes(code)
+            json_image = dumps(image,default=json_util.default)
+            
+            return jsonify({
+                'info': json_image,
+                'type': 'binary'
+            })
+        
+    directory = listdir(ejemplo_path)
+    return render_template('show_project/index.html', directory=directory, name=ejemplo_name)
 
 @app.route('/about-us')
 def about():
