@@ -213,9 +213,9 @@ def delete_project():
         return redirect('login')
 
 # Ruta para ver los proyectos en modo texto
-@app.route('/project/<username>/modo_texto/<project_name>/', methods=['GET', 'POST'])
+@app.route('/project/<username>/text_mode/<project_name>/', methods=['GET', 'POST'])
 def show_project(username, project_name):
-    project_path = path.join('.', 'project', username, 'modo_texto', project_name)
+    project_path = path.join('.', 'project', username, 'text_mode', project_name)
     if request.method == 'POST':
         file = (request.get_json())['filename']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
@@ -294,8 +294,8 @@ def about():
     return render_template("about us/about.html")
 
 @app.route('/examples/intro')
-def text_mod():
-    return render_template("Modo texto/texto.html")
+def text_mode():
+    return render_template("text_mode/text.html")
 
 @app.route('/logout')
 def logout():

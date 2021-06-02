@@ -16,10 +16,10 @@
                 <img src="/static/styles/modo_texto/IMG/reg.png" class="project-img">
                 <h5> Registro Academico </h5>
                 <div class="watch-code">
-                    {% if session.get("user_id") %}
+                    {% if session.get("username") %}
                     <a href="/project/text_mode/Registro_1/BIN/Registro Academico.C" class="btn btn-primary"> Ver código </a>
                     {% else %}
-                    <a href="/register">Registrate para ver el codigo :)</a>
+                    <a href="/login">Inicia sesion para ver el codigo :)</a>
                     {% endif %}
                 </div>
             </div>
