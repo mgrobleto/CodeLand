@@ -71,10 +71,10 @@
         </div>
     </div>
     <div class="header-right">
-        {% if user %}
+        {% if session.get('user_id') %}
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-            {{ user.username }}
+            {{ session.get('username') }}
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li><a class="dropdown-item" href="/profile"> Perfil </a></li>

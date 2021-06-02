@@ -81,6 +81,7 @@ def login():
             return redirect('/login')
 
         session['user_id'] = get_user['_id']
+        session['username'] = get_user['username']
         return redirect('/')
 
     return render_template('auth/login/index.html')
@@ -128,6 +129,7 @@ def register():
         user = mongo.db.users.insert( # inserta un usuario
             {"username": username, "password": password, "email": email, **timestamp(), "perfil": image, "contentType": mimetype})
         session['user_id'] = user
+        session['username'] = username
 
         return redirect('/profile')
 
@@ -153,12 +155,16 @@ def addProject():
                 flash('No file')
                 return redirect('/add-project')
 
+            modo = request.form.get('modo')
+            if not (modo != 'modo_texto' or modo != 'modo_grafico'):
+                flash('Ahh sos retroll')
+                return redirect('/add-project')
             files = request.files.getlist('files')
             title = request.form.get('title')
             description = request.form.get('description')
             image = request.files['image'].read()
             file_names = []
-            directory = path.join('.', 'project', user['username'], title)
+            directory = path.join('.', 'project', user['username'], modo, title)
             
             if path.exists(directory) is False:
                 makedirs(directory)
@@ -172,7 +178,7 @@ def addProject():
                     file_names.append(filename)
                     file.save(path.join(directory, filename))
 
-            mongo.db.projects.insert({ "title": title, 'author': user['username'], "description": description, "users_id": user['_id'], "path": directory, **timestamp(), "image": encodebytes(image)})
+            mongo.db.projects.insert({ "title": title, 'author': user['username'], "description": description, 'modo': modo, "users_id": user['_id'], "path": directory, **timestamp(), "image": encodebytes(image)})
             return redirect('/profile')
         else:
             flash('You are not logged in')
@@ -297,6 +303,11 @@ def logout():
     session.clear()
     flash("Session closed")
     return redirect('/')
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('404.html'), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
