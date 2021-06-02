@@ -287,7 +287,7 @@ def show_ejemplo(ejemplo_name):
             })
         
     directory = listdir(ejemplo_path)
-    return render_template('show_project/index.html', directory=directory, name=ejemplo_name)
+    return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name)
 
 @app.route('/about-us')
 def about():
