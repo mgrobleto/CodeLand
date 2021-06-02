@@ -6,6 +6,7 @@ $form.addEventListener('submit', async event => {
     const formData = new FormData(event.currentTarget)
     const imageData = formData.get('image')
 
+    console.log(await sizeImage(imageData) && imageData.name !== '')
     if(await sizeImage(imageData) && imageData.name !== '') {
         console.log('entra')
         const response = await fetch('/register', {
@@ -38,6 +39,9 @@ function sizeImage(imageData) {
             } else {
                 resolve(false)
             }
+        }
+        image.onerr = function () {
+            reject('F en el chat')
         }
         image.src = url
     })
