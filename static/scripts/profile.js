@@ -1,7 +1,11 @@
 'use strict'
 
-const $formList = document.querySelectorAll('#delete-project')
+const $formDelete = document.querySelectorAll('#delete-project')
+const $formUpdate = document.querySelector('#edit-info')
 const $project = document.querySelector('#projects')
+const $overlayModal = document.querySelector('#overlay-modal')
+const $editmodal = document.querySelector('#custom-modal')
+const $showModal = document.querySelector('#btn-modal-editar')
 
 function renderTemplate(project) {
     return `
@@ -24,7 +28,20 @@ function renderTemplate(project) {
     `.trim()
 }
 
-Array.prototype.forEach.call($formList, function ($form) {
+$formUpdate.addEventListener('submit', async (event) => {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    const response = await fetch(`/update-account/${formData.get('id')}`, {
+        method: 'PUT',
+        body: formData
+    })
+    const data = await response.json()
+    console.log(data)
+    const { username, email, image } = data
+    console.log(username, email, image)
+})
+
+$formDelete.forEach(function ($form) {
     $form.addEventListener('submit', async (event) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
@@ -42,4 +59,14 @@ Array.prototype.forEach.call($formList, function ($form) {
         }
         $project.innerHTML = code
     })
+})
+
+$showModal.addEventListener('click', () => {
+    $editmodal.classList.toggle('active')
+    $overlayModal.classList.toggle('active')
+})
+
+$overlayModal.addEventListener('click', () => {
+    $editmodal.classList.remove('active')
+    $overlayModal.classList.remove('active')
 })

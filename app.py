@@ -1,6 +1,7 @@
 from io import BytesIO
 from os import path, makedirs, listdir, walk
 from shutil import rmtree
+from time import strftime
 from zipfile import ZipFile
 from flask import Flask, render_template, request, redirect, session, flash, jsonify, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -143,7 +144,42 @@ def profile():
     user_id = session.get('user_id')
     user = get_user_and_project(user_id)
 
+    print(user['created_at'].strftime('%d %b %Y'))
     return render_template('user/profile/index.html', user=user)
+
+@app.route('/update-account/<user_id>', methods=['PUT'])
+def update_profile(user_id):
+    if(session.get('user_id') == ObjectId(user_id)):
+        username = request.form.get('username')
+        email = request.form.get('email')
+
+        findUsers_cursor = mongo.db.users.find({
+            '$or': [
+                { "email": email },
+                { "username": username }
+            ]})
+        findUser = list(findUsers_cursor)
+        for field in findUser:
+            print(field['username'])
+        print(len(findUser))
+        if len(findUser) > 1:
+            print('El usuario ya existe')
+            return 'el usuario ya existe'
+        
+        user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
+            '$set': {
+            'username': username,
+            'email': email,
+            'password': generate_password_hash(request.form.get('password'), method="sha256", salt_length=10),
+            'updated_at': datetime.datetime.now()
+        }
+        })
+        data = dumps(user,default=json_util.default)
+        return data
+    else:
+        flash('No puedes cambiar la info de otro usuario >:v')
+
+    return {}
 
 @app.route('/add-project', methods=['GET', 'POST'])
 def addProject():
@@ -155,7 +191,7 @@ def addProject():
                 return redirect('/add-project')
 
             modo = request.form.get('modo')
-            if not (modo != 'modo_texto' or modo != 'modo_grafico'):
+            if not (modo != 'text_mode' or modo != 'graphic_mode'):
                 flash('Ahh sos retroll')
                 return redirect('/add-project')
             files = request.files.getlist('files')
