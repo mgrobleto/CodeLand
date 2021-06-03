@@ -12,97 +12,16 @@
 <body>
     <section class="all-projects">
         <div class="projects">
-            <!--Game Travel Offline--->
+          {% for project in db_project %}
+            <!--{{project['program_title']}}--->
             <div class="single-project">
-                <img src="/static/styles/modo_grafico/IMG/GTO.png" class="project-img">
+                <img src="{{project['image_route']}}" class="project-img">
                 <h5>Game Travel Offline</h5>
                 <div class="watch-code">
-                    <a href="/project/{{user.username}}/graphic_mode/Game Travel Offline" class="btn btn-primary"> Ver código </a>
+                    <a href="/static_projects/graphic_mode/{{project['program_title']}}" class="btn btn-primary">Ver código</a>
                 </div>   
-            </div> 
-             <!--Curva de Jordan--->
-             <div class="single-project">
-                <img src="/static/styles/modo_grafico/IMG/Jordan.png" class="project-img">
-                <h5>Curva de Jordan</h5>
-                <div class="watch-code">
-                   <a href="/project/{{user.username}}/graphic_mode/Jordan" class="btn btn-primary"> Ver código </a>
-                 </div>
             </div>
-           
-            <!--Aereopuerto--->
-            <div class="single-project">
-             <img src="/static/styles/modo_grafico/IMG/Aereopuerto.jpg" class="project-img">
-             <h5>Aereopuerto</h5>
-             <div class="watch-code">
-                <a href="/project/{{user.username}}/graphic_mode/Aereopuerto" class="btn btn-primary"> Ver código </a>
-              </div>
-            </div>
-           
-           <!--Ahorcado--->
-           <div class="single-project">
-             <img src="/static/styles/modo_grafico/IMG/Ahorcado.jpg" class="project-img">
-             <h5>Ahorcado</h5>
-             <div class="watch-code">
-               <a href="/project/{{user.username}}/graphic_mode/Ahorcado" class="btn btn-primary"> Ver código </a>
-             </div>
-           </div>
-             <!--CierreConvexo--->
-             <div class="single-project">
-                <img src="/static/styles/modo_grafico/IMG/CierreConvexo.jpg" class="project-img">
-                <h5>CierreConvexo</h5>
-                <div class="watch-code">
-                  <a href="/project/{{user.username}}/graphic_mode/CierreConvexo" class="btn btn-primary"> Ver código </a>
-                </div>
-              </div>
-            <!--TicTacToe--->
-           <div class="single-project">
-            <img src="/static/styles/modo_grafico/IMG/TicTacToe.png" class="project-img">
-            <h5>TicTacToe</h5>
-            <div class="watch-code">
-              <a href="/project/{{user.username}}/graphic_mode/TicTacToe" class="btn btn-primary"> Ver código </a>
-            </div>
-          </div>
-         <!--Gift Wrapping--->
-          <div class="single-project">
-            <img src="/static/styles/modo_grafico/IMG/GiftWrapping.jpg" class="project-img">
-             <h5>Gift Wrapping</h5>
-           <div class="watch-code">
-           <a href="/project/{{user.username}}/graphic_mode/Gift Wrapping" class="btn btn-primary"> Ver código </a>
-           </div>
-           </div>
-           <!--Piedra Papel o tijera--->
-         <div class="single-project">
-            <img src="/static/styles/modo_grafico/IMG/PiedraPapelTijera.jpg" class="project-img">
-          <h5>Piedra Papel o Tijera</h5>
-          <div class="watch-code">
-          <a href="/project/{{user.username}}/graphic_mode/Piedra Papel o Tijera" class="btn btn-primary"> Ver código </a>
-         </div>
-         </div>
-
-          <!--Graham--->
-         <div class="single-project">
-            <img src="/static/styles/modo_grafico/IMG/Graham.jpg" class="project-img">
-          <h5>Graham</h5>
-          <div class="watch-code">
-          <a href="/project/{{user.username}}/graphic_mode/Graham" class="btn btn-primary"> Ver código </a>
-         </div>
-         </div>
-        <!--Pedrito Responde--->
-        <div class="single-project">
-          <img src="/static/styles/modo_grafico/IMG/Pedrito.png" class="project-img">
-          <h5>Pedrito Responde</h5>
-           <div class="watch-code">
-          <a href="/project/{{user.username}}/graphic_mode/Pedrito Responde" class="btn btn-primary"> Ver código </a>
-         </div>
-         </div>
-         <!--Cuento Tortuga y liebre--->
-        <div class="single-project">
-            <img src="/static/styles/modo_grafico/IMG/cuento.png" class="project-img">
-            <h5>La Tortuga y la liebre</h5>
-             <div class="watch-code">
-            <a href="/project/{{user.username}}/graphic_mode/cuento" class="btn btn-primary"> Ver código </a>
-           </div>
-           </div>
+          {% endfor %}
         </div>
     </section>
 </body>

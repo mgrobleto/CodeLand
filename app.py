@@ -312,14 +312,22 @@ def show_project(username, project_name):
     directory = listdir(project_path)
     return render_template('show_project/index.html', directory=directory, name=project_name, username=username)
 # Ruta para ver los proyectos en modo grafico
-@app.route('/project/<username>/graphic_mode/<project_name>/', methods=['GET', 'POST'])
-def show_project_graphic(username, project_name):
-    project_path = path.join('.', 'project', username, 'graphic_mode', project_name, 'BIN')
+@app.route('/static_projects/graphic_mode/<project_name>/', methods=['GET', 'POST'])
+def show_project_graphic(project_name):
+    db_project = mongo.db.static_projects.find_one({ 'program_title': project_name })
+
+    project_path = db_project['path']
+    #project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
+    print(db_project)
+    if db_project is None:
+        return render_template('404.html'), 404
+
     if request.method == 'POST':
         file = (request.get_json())['filename']
+        path_file = (request.get_json())['path']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
         if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
-            code = open(path.join(project_path, file), 'r', encoding='utf-8').read()
+            code = open(path.join(path_file, file), 'r', encoding='utf-8').read()
             code_md = f'```{file_ext}\n{code}\n```'
 
             md_template_string = markdown.markdown(
@@ -337,8 +345,9 @@ def show_project_graphic(username, project_name):
                 'file_ext': file_ext,
                 'type': 'code'
             })
+
         else:
-            code = open(path.join(project_path, file), 'rb').read()
+            code = open(path.join(path_file, file), 'rb').read()
             image = encodebytes(code)
             json_image = dumps(image,default=json_util.default)
             
@@ -347,8 +356,15 @@ def show_project_graphic(username, project_name):
                 'type': 'binary'
             })
         
-    directory = listdir(project_path)
-    return render_template('show_project/index.html', directory=directory, name=project_name, username=username)
+    # Muestra los directorios del proyecto correspondiente para ver los codigos
+    directory = {}
+
+    for root, _, files in walk(project_path):
+        for file in files:
+            directory[root] = files
+    
+    print(directory)
+    return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
 
 
 # Ruta para ver los proyectos predeterminados en modo texto
@@ -359,7 +375,6 @@ def show_static_project(project_name):
     db_project = mongo.db.static_projects.find_one({ 'program_title': project_name })
 
     #project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
-    print(db_project)
     if db_project is None:
         return render_template('404.html'), 404
 
@@ -469,12 +484,10 @@ def text_mode():
 #Cuando se consulte en el modo grafico
 @app.route('/examples/node')
 def graphic_mode():
-    user = {}
-    if session.get('user_id'):
-        user_id = ObjectId(session.get('user_id'))
-        user = get_user_and_project(user_id)
+    db_project = mongo.db.static_projects.find({'mode': 'graphic_mode'})
 
-    return render_template("graphic_mode/graphic.html", user=user)
+    print(db_project)
+    return render_template("graphic_mode/graphic.html", db_project=db_project)
 
 @app.route('/logout')
 def logout():
