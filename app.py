@@ -56,6 +56,7 @@ def get_user_and_project(user_id):
         },
         { "$match": { "_id": ObjectId(user_id) } }
     ])
+    print(list(user_cursor)[0])
     return list(user_cursor)[0]
 
 @app.route('/')
@@ -117,7 +118,6 @@ def register():
                 image = request.files['image'].read()
                 image = encodebytes(image)
             else:
-                print('Ahhhhhhhhhhhhhhhhhhhhhhhhhhhh')
                 flash('error mimetype')
                 return redirect('/register')
 
@@ -141,7 +141,7 @@ def profile():
         flash("You are not logged in. Please log in to see the profile.")
         return redirect('/login')
 
-    user_id = ObjectId(session.get('user_id'))
+    user_id = session.get('user_id')
     user = get_user_and_project(user_id)
 
     return render_template('user/profile/index.html', user=user)
@@ -221,7 +221,7 @@ def delete_project():
 # Ruta para ver los proyectos en modo texto
 @app.route('/project/<username>/text_mode/<project_name>/', methods=['GET', 'POST'])
 def show_project(username, project_name):
-    project_path = path.join('.', 'project', username, 'text_mode', project_name, 'BIN')
+    project_path = path.join('.', 'project', username, 'text_mode', project_name)
     if request.method == 'POST':
         file = (request.get_json())['filename']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
@@ -257,6 +257,54 @@ def show_project(username, project_name):
     directory = listdir(project_path)
     return render_template('show_project/index.html', directory=directory, name=project_name, username=username)
 
+
+# Ruta para ver los proyectos predeterminados en modo texto
+@app.route('/static_projects/text_mode/<project_name>/', methods=['GET', 'POST'])
+def show_static_project(project_name):
+    project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
+    if request.method == 'POST':
+        file = (request.get_json())['filename']
+        path_file = (request.get_json())['path']
+        file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
+        if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
+            code = open(path.join(path_file, file), 'r', encoding='utf-8').read()
+            code_md = f'```{file_ext}\n{code}\n```'
+
+            md_template_string = markdown.markdown(
+            code_md, extensions=["fenced_code", "codehilite"]
+            )
+            formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
+
+            css_string = formatter.get_style_defs()
+            md_css_string = "<style>" + css_string + "</style>"
+            
+            md_template = md_css_string + md_template_string
+
+            return jsonify({
+                "info": f'{md_template}',
+                'file_ext': file_ext,
+                'type': 'code'
+            })
+        else:
+            code = open(path.join(path_file, file), 'rb').read()
+            image = encodebytes(code)
+            json_image = dumps(image,default=json_util.default)
+            
+            return jsonify({
+                'info': json_image,
+                'type': 'binary'
+            })
+        
+    directory = {}
+
+    for root, _, files in walk(project_path):
+        for file in files:
+            directory[root] = files
+            
+    return render_template('show_ejemplo/index.html', directory=directory, name=project_name)
+    
+
+# Ruta para ver ejemplos
 @app.route('/ejemplos/<ejemplo_name>/', methods=['GET', 'POST'])
 def show_ejemplo(ejemplo_name):
     ejemplo_path = path.join('.', 'ejemplos', ejemplo_name)
