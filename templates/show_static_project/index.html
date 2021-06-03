@@ -10,29 +10,39 @@
 
 {% block body %}
 {% if directory %}
-{% for dirs in directory %}    
+{% for dirs in directory %}   
+<div class="menu">
     <details>
-        <summary open> {{ dirs.split('\\')[-1] }} </summary>
-        <ol>
-            {% for file in directory[dirs] %}
-                <li id="file" data-location="{{dirs}}" data-filename="{{file}}">{{file}}</li>
-            {% endfor %}
-        </ol>
+        <summary> {{ dirs.split('\\')[-1] }} </summary>
+        <div class="content">
+            <ol>
+                {% for file in directory[dirs] %}
+                    <li id="file" data-location="{{dirs}}" data-filename="{{file}}">{{file}}</li>
+                {% endfor %}
+            </ol>
+        </div>
     </details>
-    <script>
-        const $detailsList = document.querySelectorAll('details')
+</div>
+{% endfor %}
+<script>
+    const $detailsList = document.querySelectorAll('details');
 
-        $detailsList.forEach(($details) => {
-            $summary.querySelector('summary').addEventListener('click', expand)
-        })
-    
-        function expand () {
-            $detailsList.forEach(($details) => {
-                $summary.removeAttribute('open')
+    $detailsList.forEach(($details) => {
+        $details.addEventListener('toggle', closeDropdown)
+    })
+    function closeDropdown() {
+        'use strict'
+        if(!this.open) {
+            this.removeAttribute('open')
+        } else {
+            $detailsList.forEach($details => {
+                if($details !== this) {
+                    $details.removeAttribute('open')
+                }
             })
         }
-    </script>
-{% endfor %}
+    }
+</script>
 {% endif %}
 
 <div class="download-code">
