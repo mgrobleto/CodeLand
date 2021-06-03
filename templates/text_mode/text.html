@@ -1,0 +1,29 @@
+{% extends 'layout/index.html' %}
+
+{% block title %}
+<title> Proyectos | Modo texto </title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/static/styles/modo_texto/texto.css" />
+{% endblock %}
+
+{% block body %}
+<body>
+    <section class="all-projects">
+        <div class="projects">
+            <div class="single-project">
+                <img src="/static/styles/modo_texto/IMG/reg.png" class="project-img">
+                <h5> Registro Academico </h5>
+                <div class="watch-code">
+                    {% if session.get("username") %}
+                    <a href="/project/{{user.username}}/text_mode/Registro_1" class="btn btn-primary"> Ver código </a>
+                    {% else %}
+                    <a href="/login">Inicia sesion para ver el codigo :)</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+{% endblock %}

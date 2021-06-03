@@ -1,0 +1,28 @@
+.all-projects {
+    min-height: 100vh;
+    width: 100%;
+    background-color: #000814;
+    background-position: center;
+    background-size: cover;
+}
+
+.projects .project-img {
+    margin-top: 20px;
+    margin-left: 70px;
+    height: 270px;
+    width: 400px;
+}
+
+.projects .watch-code .btn {
+    margin-top: 30px;
+    margin-left: 70px;
+}
+
+.projects h5 {
+    font-size: 18px;
+    font-weight: 100;
+    letter-spacing: 3px;
+    margin-left: 70px;
+    margin-top: 15px;
+    color: #ccc;
+}
