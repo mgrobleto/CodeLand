@@ -56,7 +56,6 @@ def get_user_and_project(user_id):
         },
         { "$match": { "_id": ObjectId(user_id) } }
     ])
-    print(list(user_cursor)[0])
     return list(user_cursor)[0]
 
 @app.route('/')
@@ -207,9 +206,7 @@ def download_project(project_id):
 def download_static_project(project_id):
 
     project = mongo.db.static_projects.find_one({ '_id': ObjectId(project_id)})
-
     project_title = project['program_title']
-
     memory_file = BytesIO()
     
     with ZipFile(memory_file, 'w') as zf:
@@ -241,7 +238,7 @@ def delete_project():
         return redirect('login')
 
 # Ruta para ver los proyectos en modo texto
-@app.route('/project/<username>/text_mode/<project_name>/', methods=['GET', 'POST'])
+@app.route('/project/<username>/<project_name>/', methods=['GET', 'POST'])
 def show_project(username, project_name):
     project_path = path.join('.', 'project', username, 'text_mode', project_name)
     if request.method == 'POST':
@@ -288,7 +285,7 @@ def show_static_project(project_name):
     db_project = mongo.db.static_projects.find_one({ 'program_title': project_name })
 
     #project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
-
+    print(db_project)
     if db_project is None:
         return render_template('404.html'), 404
 
@@ -335,7 +332,7 @@ def show_static_project(project_name):
         for file in files:
             directory[root] = files
             
-    return render_template('show_static_project/index.html', directory=directory, name=project_name)
+    return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
     
 
 # Ruta para ver ejemplos
