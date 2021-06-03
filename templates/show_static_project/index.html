@@ -1,11 +1,11 @@
 {% extends 'layout/index.html' %}
 
 {% block style %}
-<link rel="stylesheet" href="/static/styles/show_ejemplo.css" />
+<link rel="stylesheet" href="/static/styles/show_static_project.css" />
 {% endblock %}
 
 {% block title %}
-<title> Codigo/{{ ejemplo }} | CodeLand</title>
+<title> {{ project }} | CodeLand </title>
 {% endblock %}
 
 {% block body %}
@@ -16,11 +16,15 @@
     {%endfor%}
 </ul>
 
-{% if session.get('user_id') %}
-<button>submit file</button>
 {% endif %}
+<div class="download-code">
+    {% if not session.get("username") %}
+        <a class='btn btn-primary' href="/login"> Descargar código </a>
+    {% else %}
+        <a class='btn btn-primary' href="/download-project/{{project._id}}" download> Descargar código </a>
+    {% endif %}
+</div>
 
-{% endif %}
 <div class="container code_container">
     <div class="header_code">
         <div class="circle bg-danger p-2"></div>

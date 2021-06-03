@@ -295,7 +295,7 @@ def show_static_project(project_name):
             })
         
     directory = listdir(project_path)
-    return render_template('show_ejemplo/index.html', directory=directory, name=project_name)
+    return render_template('show_static_project/index.html', directory=directory, name=project_name)
     
 
 # Ruta para ver ejemplos
