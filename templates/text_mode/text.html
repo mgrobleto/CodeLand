@@ -9,16 +9,22 @@
 {% endblock %}
 
 {% block body %}
+
 <body>
     <section class="all-projects">
         <div class="projects">
+            {% for project in db_project %}
             <div class="single-project">
                 <img src="/static/styles/modo_texto/IMG/reg.png" class="project-img">
-                <h5> Registro Academico </h5>
+                <h5>{{project['program_title']}}</h5>
                 <div class="watch-code">
-                    <a href="/static_projetcs/text_mode/Registro_1/" class="btn btn-primary"> Ver código </a>
+                    <a href="/static_projects/text_mode/{{project['program_title']}}" class="btn btn-primary"> Ver código </a>
                 </div>
+                    {% if not session.get("username") %}
+                        <a class='btn btn-primary' href="/download-static_project/{{project['_id']}}" download> Descargar código </a>
+                    {% endif %}
             </div>
+            {% endfor %}
         </div>
     </section>
 </body>

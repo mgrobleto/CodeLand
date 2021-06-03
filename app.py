@@ -1,6 +1,7 @@
 from io import BytesIO
 from os import path, makedirs, listdir, walk
 from shutil import rmtree
+from time import strftime
 from zipfile import ZipFile
 from flask import Flask, render_template, request, redirect, session, flash, jsonify, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -56,7 +57,6 @@ def get_user_and_project(user_id):
         },
         { "$match": { "_id": ObjectId(user_id) } }
     ])
-    print(list(user_cursor)[0])
     return list(user_cursor)[0]
 
 @app.route('/')
@@ -144,7 +144,42 @@ def profile():
     user_id = session.get('user_id')
     user = get_user_and_project(user_id)
 
+    print(user['created_at'].strftime('%d %b %Y'))
     return render_template('user/profile/index.html', user=user)
+
+@app.route('/update-account/<user_id>', methods=['PUT'])
+def update_profile(user_id):
+    if(session.get('user_id') == ObjectId(user_id)):
+        username = request.form.get('username')
+        email = request.form.get('email')
+
+        findUsers_cursor = mongo.db.users.find({
+            '$or': [
+                { "email": email },
+                { "username": username }
+            ]})
+        findUser = list(findUsers_cursor)
+        for field in findUser:
+            print(field['username'])
+        print(len(findUser))
+        if len(findUser) > 1:
+            print('El usuario ya existe')
+            return 'el usuario ya existe'
+        
+        user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
+            '$set': {
+            'username': username,
+            'email': email,
+            'password': generate_password_hash(request.form.get('password'), method="sha256", salt_length=10),
+            'updated_at': datetime.datetime.now()
+        }
+        })
+        data = dumps(user,default=json_util.default)
+        return data
+    else:
+        flash('No puedes cambiar la info de otro usuario >:v')
+
+    return {}
 
 @app.route('/add-project', methods=['GET', 'POST'])
 def addProject():
@@ -156,7 +191,7 @@ def addProject():
                 return redirect('/add-project')
 
             modo = request.form.get('modo')
-            if not (modo != 'modo_texto' or modo != 'modo_grafico'):
+            if not (modo != 'text_mode' or modo != 'graphic_mode'):
                 flash('Ahh sos retroll')
                 return redirect('/add-project')
             files = request.files.getlist('files')
@@ -201,6 +236,24 @@ def download_project(project_id):
 
     return send_file(memory_file, attachment_filename=f'{project_title}.zip', as_attachment=True)
 
+
+# Ruta para descargar los codigos predeterminados en modo texto
+@app.route('/download-static_project/<project_id>', methods=['GET'])
+def download_static_project(project_id):
+    project = mongo.db.static_projects.find_one({ '_id': ObjectId(project_id)})
+    project_title = project['program_title']
+    memory_file = BytesIO()
+    with ZipFile(memory_file, 'w') as zf:
+        for root, dirs, files in walk(project['path']):
+            for file in files:
+                zf.write(path.join(root, file),
+                        path.relpath(path.join(root, file), 
+                                        path.join(project['path'], '..')))
+    # send_file
+    memory_file.seek(0)
+
+    return send_file(memory_file, attachment_filename=f'{project_title}.zip', as_attachment=True)
+
 @app.route('/delete-project', methods=['DELETE'])
 def delete_project():
     if session.get('user_id'):
@@ -219,7 +272,7 @@ def delete_project():
         return redirect('login')
 
 # Ruta para ver los proyectos en modo texto
-@app.route('/project/<username>/text_mode/<project_name>/', methods=['GET', 'POST'])
+@app.route('/project/<username>/<project_name>/', methods=['GET', 'POST'])
 def show_project(username, project_name):
     project_path = path.join('.', 'project', username, 'text_mode', project_name)
     if request.method == 'POST':
@@ -261,7 +314,17 @@ def show_project(username, project_name):
 # Ruta para ver los proyectos predeterminados en modo texto
 @app.route('/static_projects/text_mode/<project_name>/', methods=['GET', 'POST'])
 def show_static_project(project_name):
-    project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
+
+    # Trae el proyecto correspondiente al nombre de la db
+    db_project = mongo.db.static_projects.find_one({ 'program_title': project_name })
+
+    #project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
+    print(db_project)
+    if db_project is None:
+        return render_template('404.html'), 404
+
+    project_path = db_project['path']
+
     if request.method == 'POST':
         file = (request.get_json())['filename']
         path_file = (request.get_json())['path']
@@ -285,6 +348,7 @@ def show_static_project(project_name):
                 'file_ext': file_ext,
                 'type': 'code'
             })
+
         else:
             code = open(path.join(path_file, file), 'rb').read()
             image = encodebytes(code)
@@ -294,14 +358,15 @@ def show_static_project(project_name):
                 'info': json_image,
                 'type': 'binary'
             })
-        
+    
+    # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = {}
 
     for root, _, files in walk(project_path):
         for file in files:
             directory[root] = files
             
-    return render_template('show_ejemplo/index.html', directory=directory, name=project_name)
+    return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
     
 
 # Ruta para ver ejemplos
@@ -349,12 +414,17 @@ def about():
 
 @app.route('/examples/intro')
 def text_mode():
-    user = {}
+    """user = {}
     if session.get('user_id'):
         user_id = ObjectId(session.get('user_id'))
-        user = get_user_and_project(user_id)
+        user = get_user_and_project(user_id)"""
 
-    return render_template("text_mode/text.html", user=user)
+    db_project = mongo.db.static_projects.find({'mode': 'text_mode'})
+
+    if db_project is None:
+        return render_template('404.html'), 404
+
+    return render_template("text_mode/text.html", db_project=db_project)
 
 @app.route('/logout')
 def logout():
