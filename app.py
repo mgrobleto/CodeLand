@@ -256,6 +256,44 @@ def show_project(username, project_name):
         
     directory = listdir(project_path)
     return render_template('show_project/index.html', directory=directory, name=project_name, username=username)
+# Ruta para ver los proyectos en modo grafico
+@app.route('/project/<username>/graphic_mode/<project_name>/', methods=['GET', 'POST'])
+def show_project_graphic(username, project_name):
+    project_path = path.join('.', 'project', username, 'graphic_mode', project_name, 'BIN')
+    if request.method == 'POST':
+        file = (request.get_json())['filename']
+        file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
+        if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
+            code = open(path.join(project_path, file), 'r', encoding='utf-8').read()
+            code_md = f'```{file_ext}\n{code}\n```'
+
+            md_template_string = markdown.markdown(
+            code_md, extensions=["fenced_code", "codehilite"]
+            )
+            formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
+
+            css_string = formatter.get_style_defs()
+            md_css_string = "<style>" + css_string + "</style>"
+            
+            md_template = md_css_string + md_template_string
+
+            return jsonify({
+                "info": f'{md_template}',
+                'file_ext': file_ext,
+                'type': 'code'
+            })
+        else:
+            code = open(path.join(project_path, file), 'rb').read()
+            image = encodebytes(code)
+            json_image = dumps(image,default=json_util.default)
+            
+            return jsonify({
+                'info': json_image,
+                'type': 'binary'
+            })
+        
+    directory = listdir(project_path)
+    return render_template('show_project/index.html', directory=directory, name=project_name, username=username)
 
 @app.route('/ejemplos/<ejemplo_name>/', methods=['GET', 'POST'])
 def show_ejemplo(ejemplo_name):
@@ -307,6 +345,16 @@ def text_mode():
         user = get_user_and_project(user_id)
 
     return render_template("text_mode/text.html", user=user)
+
+#Cuando se consulte en el modo grafico
+@app.route('/examples/node')
+def graphic_mode():
+    user = {}
+    if session.get('user_id'):
+        user_id = ObjectId(session.get('user_id'))
+        user = get_user_and_project(user_id)
+
+    return render_template("graphic_mode/graphic.html", user=user)
 
 @app.route('/logout')
 def logout():

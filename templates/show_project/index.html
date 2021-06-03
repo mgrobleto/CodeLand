@@ -9,16 +9,14 @@
 {% endblock %}
 
 {% block body %}
-<p>XD</p>
+
 {% if directory %}
 <ul class="project-file container">
     {% for file_name in directory %}
     <li id="file" data-filename="{{ file_name }}" class="item-filename">{{ file_name }}</li>
     {%endfor%}
 </ul>
-{% if session.get('user_id') %}
-<button>submit file</button>
-{% endif %}
+
 
 {% endif %}
 <div class="container code_container">

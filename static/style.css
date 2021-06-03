@@ -132,6 +132,7 @@ body {
 }
 .entrada-explorer {
     display: flex;
+    height: 100vh;
     flex-direction: column;
     justify-content: center;
     left: 0px;
@@ -139,7 +140,7 @@ body {
     background: linear-gradient(90deg, #4776e6 0%, #8e54e9 100%);
 }
 .titulo1 {
-   
+    margin-top: 30px;
     width: 1345px;
     left: 50px;
     top: 91px;
@@ -147,11 +148,11 @@ body {
     font-family: Roboto;
     font-style: normal;
     font-weight: bold;
-    font-size: 48px;
+    font-size: 200px;
     line-height: 56px;
     text-align: center;
 
-    color: #000000;
+    color: #fafafa;
 }
 .secundario {
     color: rgba(0, 0, 0, 0.32);
@@ -191,7 +192,9 @@ body {
 }
 .contenedorLenguajeC {
     /*Lenguaje C*/
-  
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 50px;
     width: 1180px;
     left: 191px;
     top: 38px;
@@ -202,7 +205,8 @@ body {
     box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 .textoC {
-  
+    margin-top: 30px;
+    margin-left: 100px;
     width: 586px;
     left: 14px;
     top: 40px;
@@ -211,18 +215,23 @@ body {
     font-style: normal;
     font-weight: bold;
     font-size: 36px;
-    line-height: 42px;
+    line-height: 50px;
+    text-align: center;
 
     color: rgba(250, 250, 250, 0.85);
 }
 .imagenLenguajeC {
+    margin-left: 40px;
     width: 303px;
     left: 900px;
     top: 76px;
 }
 .contenedorCompiladorTC20 {
     /*info del compilador*/
-
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 350px 250px;
+    grid-gap: 8px;
     width: 1180px;
     left: 57px;
     top: 401px;
@@ -233,29 +242,32 @@ body {
     border-radius: 3px;
 }
 .compilador {
-    
+    margin-top: 60px;
     width: 684px;
     left: 360px;
-    top: 109px;
+    top: 200px;
 
     font-family: Roboto;
     font-style: normal;
-    font-weight: 500;
+    font-weight: bold;
     font-size: 36px;
-    line-height: 42px;
+    line-height: 50px;
     text-align: center;
 
     color: #fafafa;
 }
 .imagenCompilador {
-    
+    margin-top: -10px;
+    margin-left: 75px;
     width: 263px;
     left: 75px;
-    top: -31px;
+    top: -3px;
 }
 .contenedorHeader {
     /*cabecera .h <informacion>*/
-   
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 8px;
     width: 1176px;
     left: 206px;
     top: 773px;
@@ -264,22 +276,24 @@ body {
     box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 .cabeceraH {
-   
+    margin-top: 60px;
+    margin-left: 120;
     width: 682px;
-    left: 12px;
+    /*left: 12px;*/
     top: 22px;
 
     font-family: Roboto;
     font-style: normal;
     font-weight: bold;
     font-size: 36px;
-    line-height: 42px;
-
+    line-height: 50px;
+    text-align: center;
     color: #fafafa;
 }
 .imagenCabeceraH {
     /*CabeceraH*/
-    position: sticky;
+   /* position: sticky;*/
+   margin-left: 40;
     width: 380px;
     left: 971px;
     top: 720px;
