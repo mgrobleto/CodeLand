@@ -56,6 +56,7 @@ def get_user_and_project(user_id):
         },
         { "$match": { "_id": ObjectId(user_id) } }
     ])
+    print(list(user_cursor)[0])
     return list(user_cursor)[0]
 
 @app.route('/')
@@ -117,7 +118,6 @@ def register():
                 image = request.files['image'].read()
                 image = encodebytes(image)
             else:
-                print('Ahhhhhhhhhhhhhhhhhhhhhhhhhhhh')
                 flash('error mimetype')
                 return redirect('/register')
 
@@ -264,9 +264,10 @@ def show_static_project(project_name):
     project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
     if request.method == 'POST':
         file = (request.get_json())['filename']
+        path_file = (request.get_json())['path']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
         if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
-            code = open(path.join(project_path, file), 'r', encoding='utf-8').read()
+            code = open(path.join(path_file, file), 'r', encoding='utf-8').read()
             code_md = f'```{file_ext}\n{code}\n```'
 
             md_template_string = markdown.markdown(
@@ -285,7 +286,7 @@ def show_static_project(project_name):
                 'type': 'code'
             })
         else:
-            code = open(path.join(project_path, file), 'rb').read()
+            code = open(path.join(path_file, file), 'rb').read()
             image = encodebytes(code)
             json_image = dumps(image,default=json_util.default)
             
@@ -294,7 +295,12 @@ def show_static_project(project_name):
                 'type': 'binary'
             })
         
-    directory = listdir(project_path)
+    directory = {}
+
+    for root, _, files in walk(project_path):
+        for file in files:
+            directory[root] = files
+            
     return render_template('show_ejemplo/index.html', directory=directory, name=project_name)
     
 
