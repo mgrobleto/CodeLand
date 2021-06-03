@@ -20,9 +20,6 @@
                 <div class="watch-code">
                     <a href="/static_projects/text_mode/{{project['program_title']}}" class="btn btn-primary"> Ver código </a>
                 </div>
-                    {% if not session.get("username") %}
-                        <a class='btn btn-primary' href="/download-static_project/{{project['_id']}}" download> Descargar código </a>
-                    {% endif %}
             </div>
             {% endfor %}
         </div>

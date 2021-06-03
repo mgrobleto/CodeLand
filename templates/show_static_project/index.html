@@ -12,13 +12,26 @@
 {% if directory %}
 {% for dirs in directory %}    
     <details>
-        <summary>{{ dirs.split('\\')[-1] }}</summary>
-        <ul>
-        {% for file in directory[dirs] %}
-            <li id="file" data-location="{{dirs}}" data-filename="{{file}}">{{file}}</li>
-        {% endfor %}
-            </ul>
+        <summary open> {{ dirs.split('\\')[-1] }} </summary>
+        <ol>
+            {% for file in directory[dirs] %}
+                <li id="file" data-location="{{dirs}}" data-filename="{{file}}">{{file}}</li>
+            {% endfor %}
+        </ol>
     </details>
+    <script>
+        const $detailsList = document.querySelectorAll('details')
+
+        $detailsList.forEach(($details) => {
+            $summary.querySelector('summary').addEventListener('click', expand)
+        })
+    
+        function expand () {
+            $detailsList.forEach(($details) => {
+                $summary.removeAttribute('open')
+            })
+        }
+    </script>
 {% endfor %}
 {% endif %}
 
