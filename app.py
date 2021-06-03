@@ -284,6 +284,10 @@ def show_static_project(project_name):
                 'file_ext': file_ext,
                 'type': 'code'
             })
+
+            # Trae el proyecto correspondiente al nombre de la db
+            mongo.db.static_projects.find_one({ 'program_title': project_name })
+
         else:
             code = open(path.join(project_path, file), 'rb').read()
             image = encodebytes(code)
