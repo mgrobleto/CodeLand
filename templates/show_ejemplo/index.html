@@ -10,12 +10,16 @@
 
 {% block body %}
 {% if directory %}
-<ul class="project-file container">
-    {% for file_name in directory %}
-    <li id="file" data-filename="{{ file_name }}" class="item-filename">{{ file_name }}</li>
-    {%endfor%}
-</ul>
-
+{% for dirs in directory %}    
+    <details>
+        <summary>{{ dirs.split('\\')[-1] }}</summary>
+        <ul>
+        {% for file in directory[dirs] %}
+            <li id="file" data-location="{{dirs}}" data-filename="{{file}}">{{file}}</li>
+        {% endfor %}
+            </ul>
+    </details>
+{% endfor %}
 {% if session.get('user_id') %}
 <button>submit file</button>
 {% endif %}
