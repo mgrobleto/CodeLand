@@ -200,6 +200,24 @@ def download_project(project_id):
 
     return send_file(memory_file, attachment_filename=f'{project_title}.zip', as_attachment=True)
 
+
+# Ruta para descargar los codigos predeterminados en modo texto
+@app.route('/download-static_project/<project_id>', methods=['GET'])
+def download_static_project(project_id):
+    project = mongo.db.static_projects.find_one({ '_id': ObjectId(project_id)})
+    project_title = project['title']
+    memory_file = BytesIO()
+    with ZipFile(memory_file, 'w') as zf:
+        for root, dirs, files in walk(project['path']):
+            for file in files:
+                zf.write(path.join(root, file),
+                        path.relpath(path.join(root, file), 
+                                        path.join(project['path'], '..')))
+    # send_file
+    memory_file.seek(0)
+
+    return send_file(memory_file, attachment_filename=f'{project_title}.zip', as_attachment=True)
+
 @app.route('/delete-project', methods=['DELETE'])
 def delete_project():
     if session.get('user_id'):
@@ -260,7 +278,17 @@ def show_project(username, project_name):
 # Ruta para ver los proyectos predeterminados en modo texto
 @app.route('/static_projects/text_mode/<project_name>/', methods=['GET', 'POST'])
 def show_static_project(project_name):
-    project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
+
+    # Trae el proyecto correspondiente al nombre de la db
+    db_project = mongo.db.static_projects.find_one({ 'program_title': project_name })
+
+    #project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
+
+    if db_project is None:
+        return render_template('404.html'), 404
+
+    project_path = db_project['path']
+
     if request.method == 'POST':
         file = (request.get_json())['filename']
         path_file = (request.get_json())['path']
@@ -284,6 +312,7 @@ def show_static_project(project_name):
                 'file_ext': file_ext,
                 'type': 'code'
             })
+
         else:
             code = open(path.join(path_file, file), 'rb').read()
             image = encodebytes(code)
@@ -293,7 +322,8 @@ def show_static_project(project_name):
                 'info': json_image,
                 'type': 'binary'
             })
-        
+    
+    # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = {}
 
     for root, _, files in walk(project_path):
@@ -348,12 +378,17 @@ def about():
 
 @app.route('/examples/intro')
 def text_mode():
-    user = {}
+    """user = {}
     if session.get('user_id'):
         user_id = ObjectId(session.get('user_id'))
-        user = get_user_and_project(user_id)
+        user = get_user_and_project(user_id)"""
 
-    return render_template("text_mode/text.html", user=user)
+    db_project = mongo.db.static_projects.find({'mode': 'text_mode'})
+
+    if db_project is None:
+        return render_template('404.html'), 404
+
+    return render_template("text_mode/text.html", db_project=db_project)
 
 @app.route('/logout')
 def logout():

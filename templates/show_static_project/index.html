@@ -1,0 +1,42 @@
+{% extends 'layout/index.html' %}
+
+{% block style %}
+<link rel="stylesheet" href="/static/styles/show_static_project.css" />
+{% endblock %}
+
+{% block title %}
+<title> {{ project }} | CodeLand </title>
+{% endblock %}
+
+{% block body %}
+{% if directory %}
+<ul class="project-file container">
+    {% for file_name in directory %}
+    <li id="file" data-filename="{{ file_name }}" class="item-filename">{{ file_name }}</li>
+    {%endfor%}
+</ul>
+{% endif %}
+
+<div class="download-code">
+    {% if not session.get("username") %}
+        <a class='btn btn-primary' href="/login"> Descargar código </a>
+    {% else %}
+    {% for project in db_project %}
+        <a class='btn btn-primary' href="/download-static_project/{{project['_id]}}" download> Descargar código </a>
+    {% endfor %}
+    {% endif %}
+</div>
+
+<div class="container code_container">
+    <div class="header_code">
+        <div class="circle bg-danger p-2"></div>
+        <div class="circle bg-warning p-2"></div>
+        <div class="circle bg-success p-2"></div>
+    </div>
+    <div id="show_code"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/scripts/show_ejemplo.js"></script>
+{% endblock %}
