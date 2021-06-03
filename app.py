@@ -330,7 +330,7 @@ def show_static_project(project_name):
         for file in files:
             directory[root] = files
             
-    return render_template('show_ejemplo/index.html', directory=directory, name=project_name)
+    return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
     
 
 # Ruta para ver ejemplos
