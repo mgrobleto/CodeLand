@@ -205,9 +205,13 @@ def download_project(project_id):
 # Ruta para descargar los codigos predeterminados en modo texto
 @app.route('/download-static_project/<project_id>', methods=['GET'])
 def download_static_project(project_id):
+
     project = mongo.db.static_projects.find_one({ '_id': ObjectId(project_id)})
-    project_title = project['title']
+
+    project_title = project['program_title']
+
     memory_file = BytesIO()
+    
     with ZipFile(memory_file, 'w') as zf:
         for root, dirs, files in walk(project['path']):
             for file in files:
@@ -331,7 +335,7 @@ def show_static_project(project_name):
         for file in files:
             directory[root] = files
             
-    return render_template('show_ejemplo/index.html', directory=directory, name=project_name)
+    return render_template('show_static_project/index.html', directory=directory, name=project_name)
     
 
 # Ruta para ver ejemplos
