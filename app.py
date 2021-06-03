@@ -56,7 +56,6 @@ def get_user_and_project(user_id):
         },
         { "$match": { "_id": ObjectId(user_id) } }
     ])
-    print(list(user_cursor)[0])
     return list(user_cursor)[0]
 
 @app.route('/')
@@ -219,7 +218,7 @@ def delete_project():
         return redirect('login')
 
 # Ruta para ver los proyectos en modo texto
-@app.route('/project/<username>/text_mode/<project_name>/', methods=['GET', 'POST'])
+@app.route('/project/<username>/<project_name>/', methods=['GET', 'POST'])
 def show_project(username, project_name):
     project_path = path.join('.', 'project', username, 'text_mode', project_name)
     if request.method == 'POST':
