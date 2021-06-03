@@ -26,9 +26,7 @@
     {% if not session.get("username") %}
         <a class='btn btn-primary' href="/login"> Descargar código </a>
     {% else %}
-    {% for project in db_project %}
         <a class='btn btn-primary' href="/download-static_project/{{id}}" download> Descargar código </a>
-    {% endfor %}
     {% endif %}
 </div>
 
