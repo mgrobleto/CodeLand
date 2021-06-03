@@ -1,0 +1,68 @@
+{% extends 'layout/index.html' %}
+
+{% block style %}
+<link rel="stylesheet" href="/static/styles/show_static_project.css" />
+{% endblock %}
+
+{% block title %}
+<title> {{ name }} | CodeLand </title>
+{% endblock %}
+
+{% block body %}
+{% if directory %}
+{% for dirs in directory %}   
+<div class="menu">
+    <details>
+        <summary> {{ dirs.split('\\')[-1] }} </summary>
+        <div class="content">
+            <ol>
+                {% for file in directory[dirs] %}
+                    <li id="file" data-location="{{dirs}}" data-filename="{{file}}">{{file}}</li>
+                {% endfor %}
+            </ol>
+        </div>
+    </details>
+</div>
+{% endfor %}
+<script>
+    const $detailsList = document.querySelectorAll('details');
+
+    $detailsList.forEach(($details) => {
+        $details.addEventListener('toggle', closeDropdown)
+    })
+    function closeDropdown() {
+        'use strict'
+        if(!this.open) {
+            this.removeAttribute('open')
+        } else {
+            $detailsList.forEach($details => {
+                if($details !== this) {
+                    $details.removeAttribute('open')
+                }
+            })
+        }
+    }
+</script>
+{% endif %}
+
+<div class="download-code">
+    {% if not session.get("username") %}
+        <a class='btn btn-primary' href="/login"> Descargar código </a>
+    {% else %}
+        <a class='btn btn-primary' href="/download-static_project/{{id}}" download> Descargar código </a>
+    {% endif %}
+</div>
+
+<div class="container code_container">
+    <div class="header_code">
+        <div class="circle bg-danger p-2"></div>
+        <div class="circle bg-warning p-2"></div>
+        <div class="circle bg-success p-2"></div>
+    </div>
+    <div id="show_code"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/scripts/show_ejemplo.js"></script>
+{% endblock %}

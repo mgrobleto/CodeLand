@@ -3,24 +3,35 @@
 <title>{{ user.username }} | CodeLand</title>
 {% endblock %}
 
+{% block style %}
+<link rel="stylesheet" href="/static/styles/profile.css">
+{% endblock %}
+
 
 {% block body %}
-<main class="container">
-    <section class="my-5">
-        <h2>Bienvenido {{ user.username}}</h2>
-        <h3>Agrega un proyecto</h3>
-        <a href="/add-project"  class="btn btn-primary">Submit code</a>
+<div class="custom-container">
+    <section class="hero_profile">
+        <div class="my-5">
+            <h1>Hola {{ user.username}}!</h1>
+            <small>{{ user['email'] }}</small>
+            <p>Se unió en {{ user.created_at.strftime('%d %b %Y') }}</p>
+            <div class="edit">
+                <button id="btn-modal-editar" class="btn btn-primary">Editar</button>
+            </div>
+        </div>
+        <div class="user-image">
+            {# <a href="/edit/{{user._id}}" class="btn btn-primary">Edit</a> #}
+            <img src="data:image/{{user.contentType}};base64,{{user.perfil.decode('ascii')}}" alt="user profile" alt="">
+        </div>
     </section>
+    <h3>Agrega un proyecto</h3>
+    <a href="/add-project"  class="btn btn-primary">Submit code</a>
     <section>
-        <h1>{{ user.username }}</h1>
-        <h3>Perfil edit</h3>
-        <a href="/edit/{{user._id}}" class="btn btn-primary">Edit</a>
-        <img src="data:image/{{user.contentType}};base64,{{user.perfil.decode('ascii')}}" alt="user profile" alt="">
-    </section>
-    <section>
-        <h3>Project</h3>
         <div class='row' id="projects">
             {% if user['projects'] %}
+            <div class="col col-lg-12">
+                <h3>Proyectos: {{ '0' if user['projects'] == None else user['projects'] | length }}</h3>
+            </div>
             {% for project in user['projects'] %}
             <div class='col col-lg-4'>
                 <div class='card' style='width: 18rem;'>
@@ -46,7 +57,32 @@
         {% endif %}
     </div>    
 </section>
-</main>
+</div>
+
+<div class="custom-modal" id="custom-modal">
+    <h2>Actualiza tu información</h2>
+    <form id="edit-info">
+        <input type="hidden" name="id" value="{{user._id}}">
+        <div class="input-container">
+            <label for="username">Nombre</label>
+            <input class="form-control my-3" id="username" name="username" type="text" value="{{ user['username'] }}">
+        </div>
+        <div class="input-container">
+            <label for="email">Correo</label>
+            <input class="form-control my-3" id="email" name="email" type="email" value="{{ user.email }}">
+        </div>
+        <div class="input-container">
+            <label for="password">Contraseña</label>
+            <input class="form-control my-3" id="password" name="password" type="password">
+        </div>
+        <div class="input-container">
+            <label for="password">Confirmar Contraseña</label>
+            <input class="form-control my-3" id="password" name="confirm_password" type="password">
+        </div>
+        <button type="submit">Actualizar</button>
+    </form>
+</div>
+<div class="overlay-modal" id="overlay-modal"></div>
 {% endblock %}
 
 {% block scripts %}

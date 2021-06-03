@@ -9,20 +9,19 @@
 {% endblock %}
 
 {% block body %}
+
 <body>
     <section class="all-projects">
         <div class="projects">
+            {% for project in db_project %}
             <div class="single-project">
                 <img src="/static/styles/modo_texto/IMG/reg.png" class="project-img">
-                <h5> Registro Academico </h5>
+                <h5>{{project['program_title']}}</h5>
                 <div class="watch-code">
-                    {% if session.get("username") %}
-                    <a href="/project/{{user.username}}/text_mode/Registro_1" class="btn btn-primary"> Ver código </a>
-                    {% else %}
-                    <a href="/login">Inicia sesion para ver el codigo :)</a>
-                    {% endif %}
+                    <a href="/static_projects/text_mode/{{project['program_title']}}" class="btn btn-primary"> Ver código </a>
                 </div>
             </div>
+            {% endfor %}
         </div>
     </section>
 </body>
