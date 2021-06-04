@@ -26,13 +26,13 @@
 }
 
 .custom-modal {
-    position: absolute;
+    position: fixed;
     border-radius: 12px;
+    padding: 1.2em;
     top: 50%;
     left: 50%;
     width: 80%;
     max-width: 800px;
-    height: 400px;
     transition: all .6s ease-in-out;
     transform: translateY(-1000px) translateX(-50%);
     display: flex;
