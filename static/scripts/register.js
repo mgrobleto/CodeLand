@@ -9,10 +9,13 @@ $form.addEventListener('submit', async event => {
         method: 'POST',
         body: formData
     })
-
     if(response.redirected) {
         window.location.href = response.url
     }
+  
+    
+        modal({ message: 'Dimesiones incorrectas, seleccione una image simetrica' })
+    
 })
 
 function modal({ message }) {
