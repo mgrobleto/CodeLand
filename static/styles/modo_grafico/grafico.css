@@ -1,0 +1,36 @@
+.all-projects {
+    
+    min-height: 100vh;
+    width: 100%;
+    background-color: #fafafa;
+    background-position: center;
+    background-size: cover;
+}
+.projects{
+    display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   grid-gap: 8px;
+}
+
+.project-img {
+   /* float: center;*/
+    margin-top: 20px;
+    margin-left: 70px;
+    height: 270px;
+    width: 400px;
+}
+
+.projects .watch-code .btn {
+    margin-top: 0px;
+    margin-left: 70px;
+}
+
+.projects h5 {
+    font-size: 18px;
+    font-family: Roboto;
+    font-weight: bold;
+    letter-spacing: 3px;
+    margin-left: 70px;
+    margin-top: 15px;
+    color: #000;
+}

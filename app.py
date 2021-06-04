@@ -112,10 +112,11 @@ def register():
             flash("username or password is empty")
             return redirect('/register')
         
-        if request.files['image'].filename != '':
-            if any(request.files['image'].mimetype == mimetype for mimetype in IMAGE_MIMETYPE):
-                mimetype = request.files['image'].mimetype
-                image = request.files['image'].read()
+        file = request.files['image']
+        if file.filename != '':
+            if any(file.mimetype == mimetype for mimetype in IMAGE_MIMETYPE):
+                mimetype = file.mimetype
+                image = file.read()
                 image = encodebytes(image)
             else:
                 flash('error mimetype')
@@ -144,7 +145,6 @@ def profile():
     user_id = session.get('user_id')
     user = get_user_and_project(user_id)
 
-    print(user['created_at'].strftime('%d %b %Y'))
     return render_template('user/profile/index.html', user=user)
 
 @app.route('/update-account/<user_id>', methods=['PUT'])
@@ -157,21 +157,29 @@ def update_profile(user_id):
             '$or': [
                 { "email": email },
                 { "username": username }
-            ]})
+        ]})
         findUser = list(findUsers_cursor)
-        for field in findUser:
-            print(field['username'])
-        print(len(findUser))
+
         if len(findUser) > 1:
-            print('El usuario ya existe')
             return 'el usuario ya existe'
+        
+        file = request.files['perfil']
+        if file.filename != '':
+            if any(file.mimetype == mimetype for mimetype in IMAGE_MIMETYPE):
+                mimetype = file.mimetype
+                image = encodebytes(file.read())
+            else:
+                flash('error mimetype')
+                return redirect('/register')
         
         user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
             '$set': {
             'username': username,
             'email': email,
             'password': generate_password_hash(request.form.get('password'), method="sha256", salt_length=10),
-            'updated_at': datetime.datetime.now()
+            'updated_at': datetime.datetime.now(),
+            'perfil': image,
+            'contentType': mimetype
         }
         })
         data = dumps(user,default=json_util.default)
@@ -311,6 +319,58 @@ def show_project(username, project_name):
         
     directory = listdir(project_path)
     return render_template('show_project/index.html', directory=directory, name=project_name, username=username)
+# Ruta para ver los proyectos en modo grafico
+@app.route('/static_projects/graphic_mode/<project_name>/', methods=['GET', 'POST'])
+def show_project_graphic(project_name):
+    db_project = mongo.db.static_projects.find_one({ 'program_title': project_name })
+
+    project_path = db_project['path']
+    #project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
+    if db_project is None:
+        return render_template('404.html'), 404
+
+    if request.method == 'POST':
+        file = (request.get_json())['filename']
+        path_file = (request.get_json())['path']
+        file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
+        if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
+            code = open(path.join(path_file, file), 'r', encoding='utf-8').read()
+            code_md = f'```{file_ext}\n{code}\n```'
+
+            md_template_string = markdown.markdown(
+            code_md, extensions=["fenced_code", "codehilite"]
+            )
+            formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
+
+            css_string = formatter.get_style_defs()
+            md_css_string = "<style>" + css_string + "</style>"
+            
+            md_template = md_css_string + md_template_string
+
+            return jsonify({
+                "info": f'{md_template}',
+                'file_ext': file_ext,
+                'type': 'code'
+            })
+
+        else:
+            code = open(path.join(path_file, file), 'rb').read()
+            image = encodebytes(code)
+            json_image = dumps(image,default=json_util.default)
+            
+            return jsonify({
+                'info': json_image,
+                'type': 'binary'
+            })
+        
+    # Muestra los directorios del proyecto correspondiente para ver los codigos
+    directory = {}
+
+    for root, _, files in walk(project_path):
+        for file in files:
+            directory[root] = files
+    
+    return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
 
 
 # Ruta para ver los proyectos predeterminados en modo texto
@@ -321,7 +381,6 @@ def show_static_project(project_name):
     db_project = mongo.db.static_projects.find_one({ 'program_title': project_name })
 
     #project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
-    print(db_project)
     if db_project is None:
         return render_template('404.html'), 404
 
@@ -428,14 +487,63 @@ def text_mode():
 
     return render_template("text_mode/text.html", db_project=db_project)
 
+#Cuando se consulte en el modo grafico
+@app.route('/examples/node')
+def graphic_mode():
+    db_project = mongo.db.static_projects.find({'mode': 'graphic_mode'})
+
+    return render_template("graphic_mode/graphic.html", db_project=db_project)
+
 @app.route('/logout')
 def logout():
     session.clear()
     flash("Session closed")
     return redirect('/')
 
+@app.route('/admin', methods=['GET'])
+def admin_panel():
+    cookie = session.get('admin_id')
+    if cookie is None:
+        flash('Inicia sesión para entrar al panel')
+        return redirect('/admin/login')
+    else:
+        admin_user = mongo.db.admins.find_one({ '_id': cookie })
+        get_users = list(mongo.db.users.find({}))
+        if admin_user is None:
+            flash('No se encontro el administrador')
+            return redirect('/admin/login')
+        return render_template('admin/panel.html', users= get_users)
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def login_admin():
+    if request.method == 'POST':
+        get_admin = mongo.db.admins.find_one(
+            {"email": request.form.get("email")})
+        if not get_admin:
+            return redirect('/admin/login')
+        # contraseña_super_compleja
+        # admin@codeland.com
+        if check_password_hash(get_admin["password"], request.form.get('password')) == False:
+            return redirect('/admin/login')
+
+        session['admin_id'] = get_admin['_id']
+        session['adminname'] = get_admin['admin_name']
+        return redirect('/admin')
+    return render_template('admin/login.html')
+
+@app.route('/admin/delete_user/<user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    if session.get('admin_id'):
+        user = mongo.db.users.find_one_and_delete({ '_id': ObjectId(user_id) })
+        return {
+            "user": user
+        }
+    else:
+        flash('Acceso denegado >:v')
+        return redirect('/admin/login')
+
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found(_):
     # note that we set the 404 status explicitly
     return render_template('404.html'), 404
 

@@ -1,4 +1,26 @@
 {%extends 'layout/index.html'%}
+{% block title %}
+<title>Ruta no encontrada</title>
+{% endblock %}
+
 {% block body %}
-<img src="/static/images/404.jpg" alt="No puede ser">
+<img src="/static/images/404.jpg" id="error-image" alt="No puede ser">
+<h2 id="mensaje"><h2/>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const $image = document.querySelector('#error-image')
+    const $mensaje = document.querySelector('#mensaje')
+
+    setTimeout(() => {
+        $image.src = 'https://i.pinimg.com/736x/89/59/2b/89592b3392fee110134235e95d80dbf7.jpg' 
+        $mensaje.textContent = 'Llevando a la home'
+        $mensaje.style.display = 'inline-block'
+    }, 2000)
+
+    setTimeout(() => {
+        window.location.pathname = '/'
+    }, 3500)
+</script>
 {% endblock %}
