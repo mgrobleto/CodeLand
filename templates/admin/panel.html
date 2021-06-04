@@ -1,0 +1,103 @@
+{% extends "layout/index.html" %}
+
+{% block style %}
+<link rel="stylesheet" href="/static/styles/panel/style.css">
+{% endblock %}
+
+{% block title %}
+<title>Panel de usuarios | CodeLand</title>
+{% endblock %}
+
+{% block body %}
+<h1>panel</h1>
+<div class="card-container" id="card-container">
+    {% for user in users %}
+    <div class="card" data-user_id="{{user['_id']}}">
+        <div class="header-card">
+            <div class="card-image">
+                <img src="data:{{user.contentType}};base64,{{user.perfil.decode('ascii')}}" alt="{{user['username']}}">
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="card-title">
+                <p>{{user['username']}}</p>
+                <small>{{user['email']}}</small>
+            </div>
+            <div class="footer-card">
+                <button data-edit_user="{{user['_id']}}" class="btn btn-edit">Editar</button>
+                <button class="btn btn-delete" data-delete_user="{{user['_id']}}">Borrar</button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="user-modal">
+    <div class="loading">
+        <img src="https://i.pinimg.com/736x/89/59/2b/89592b3392fee110134235e95d80dbf7.jpg" width="50px" alt="Cargando">
+    </div>
+    <h2>Actualiza la info de: </h2>
+    <form id="edit-info">
+        <input type="hidden" name="id" value="">
+        <div class="input-container">
+            <label for="modal_username">Nombre</label>
+            <input class="form-control my-3" id="modal_username" name="username" type="text" value="">
+        </div>
+        <div class="input-container">
+            <label for="modal_email">Correo</label>
+            <input class="form-control my-3" id="modal_email" name="email" type="email" value="">
+        </div>
+        <div class="input-container">
+            <label for="modal_password">Contraseña</label>
+            <input class="form-control my-3" id="modal_password" name="password" type="password">
+        </div>
+        <div class="input-container">
+            <label for="perfil">Foto de perfil</label>
+            <input class="form-control my-3" id="perfil" name="perfil" type="file">
+        </div>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+    </form>
+
+</div>
+<div class="user-overlay" id="user-overlay"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const $listEditUser = document.querySelectorAll('[data-edit_user]')
+    const $listDeleteUser = document.querySelectorAll('[data-delete_user]')
+    const $userOverlay = document.querySelector('#user-overlay') 
+    const $cardContainer = document.getElementById('card-container')
+
+    function renderTemplate(name) {
+        return (
+        `
+        <p>${name}</p>
+        `
+        )
+    }
+
+    $listEditUser.forEach(user => {
+        user.addEventListener('click', function() {
+            userId = this.dataset.edit_user
+            $userOverlay.classList.add('active')
+            console.log('texto para mientras')
+            console.log(this.dataset)
+        })
+    })
+
+    $listDeleteUser.forEach(user => {
+        user.addEventListener('click', async function() {
+            userId = this.dataset.delete_user
+            const response = fetch(`admin/delete_user/${userId}`, {
+                method: 'DELETE',
+            })
+            const data = await response.json()
+            $cardContainer.removeChild(document.querySelector(`[data-]`))
+        })
+    })
+
+    $userOverlay.addEventListener('click', function() {
+        this.classList.remove('active')
+    })
+</script>
+{% endblock %}
