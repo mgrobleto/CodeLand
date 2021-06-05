@@ -34,3 +34,57 @@
 #show_code {
     padding: 10px;
 }
+
+.menu {
+    color: #333;
+    font-family: Nunito;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 2rem;
+    margin-top: 10px;
+    margin-left: 70px;
+    margin-right: 30px;
+    display: inline-flex;
+}
+
+.menu:hover {
+    color: #C26DBC;
+}
+
+details {
+    /*box-sizing: border-box;*/
+    padding: 0 1rem;
+}
+
+details > summary::after {
+    content: url(/static/styles/menu-img/caret-right-fill.svg);
+    width: 1.6rem;
+    height: 1.6rem;
+    display: inline-flex;
+    justify-content:space-between;
+    align-content: center;
+}
+
+.menu details[open] > summary::after {
+    /*transform: rotate(90deg);*/
+    content: url(/static/styles/menu-img/caret-down-fill.svg);
+}
+
+details > summary {
+    /*display: inline-flexbox;*/
+    /*justify-content: space-around;
+    /*padding: 1rem;*/
+    list-style: none;
+    cursor: pointer;
+    transition: .6s;
+}
+
+.content ol{
+    list-style: none;
+    cursor: pointer;
+    color: #333;
+}
+
+.content ol li:hover {
+    color: #4CD7D0;
+}
