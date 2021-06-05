@@ -5,27 +5,47 @@
 {% endblock %}
 
 {% block title %}
-<title> Codigo/{{ ejemplo }} | CodeLand</title>
+<title> {{ name }} | CodeLand</title>
 {% endblock %}
 
 {% block body %}
 
 {% if directory %}
 {% for dirs in directory %}    
+<div class="menu">
     <details>
-        <summary>{{ dirs.split('\\')[-1] }}</summary>
-        <ul>
-        {% for file in directory[dirs] %}
-            <li id="file" data-location="{{dirs}}" data-filename="{{file}}">{{file}}</li>
-        {% endfor %}
-            </ul>
+        <summary> {{ dirs.split('\\')[-1] }} </summary>
+        <div class="content">
+            <ol>
+                {% for file in directory[dirs] %}
+                    <li id="file" data-location="{{dirs}}" data-filename="{{file}}">{{file}}</li>
+                {% endfor %}
+            </ol>
+        </div>
     </details>
+</div>
 {% endfor %}
-{% if session.get('user_id') %}
-<button>submit file</button>
+<script>
+    const $detailsList = document.querySelectorAll('details');
+
+    $detailsList.forEach(($details) => {
+        $details.addEventListener('toggle', closeDropdown)
+    })
+    function closeDropdown() {
+        'use strict'
+        if(!this.open) {
+            this.removeAttribute('open')
+        } else {
+            $detailsList.forEach($details => {
+                if($details !== this) {
+                    $details.removeAttribute('open')
+                }
+            })
+        }
+    }
+</script>
 {% endif %}
 
-{% endif %}
 <div class="container code_container">
     <div class="header_code">
         <div class="circle bg-danger p-2"></div>
