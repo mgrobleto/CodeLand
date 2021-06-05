@@ -169,7 +169,7 @@ def update_profile(user_id):
         
         if not check_password_hash((findUser[-1])['password'], password_confirm):
             return redirect('/profile')
-            
+
         newInfo = {}
         if len(username) > 0:
             newInfo['username'] = username
@@ -516,7 +516,6 @@ def logout():
 @app.route('/admin', methods=['GET'])
 def admin_panel():
     cookie = session.get('admin_id')
-    print(cookie)
     if cookie is None:
         flash('Inicia sesión para entrar al panel')
         return redirect('/admin/login')
