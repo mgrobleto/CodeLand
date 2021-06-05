@@ -1,5 +1,5 @@
 from io import BytesIO
-from os import path, makedirs, listdir, walk, rename
+from os import path, makedirs, walk, rename
 from shutil import rmtree
 from time import strftime
 from zipfile import ZipFile
@@ -36,10 +36,11 @@ mongo = PyMongo(app)
 
 ALLOWED_EXTENSIONS = {'txt', 'c', 'js', 'py', 'html', 'h', 'png', 'jpg', 'jpeg', 'gif'}
 IMAGE_MIMETYPE = ['image/png', 'image/jpeg', 'image/jpg']
+INVALID_FILENAME = {':', '*', '/', '"', '?', '>', '|', '<'}
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[-1].lower() in ALLOWED_EXTENSIONS
 
 # Cada vez que se crea algo, se añade el tiempo en que se creo
 def timestamp():
@@ -58,6 +59,13 @@ def get_user_and_project(user_id):
         { "$match": { "_id": ObjectId(user_id) } }
     ])
     return list(user_cursor)[0]
+
+# Si el nombre tiene un carácter extraño
+def change_folder_name(string):
+    for invalid_name in INVALID_FILENAME:
+        if string.find(invalid_name) > -1:
+            string = string.replace(invalid_name, '_')
+    return string
 
 @app.route('/')
 def home():
@@ -169,7 +177,7 @@ def update_profile(user_id):
         
         if not check_password_hash((findUser[-1])['password'], password_confirm):
             return redirect('/profile')
-            
+
         newInfo = {}
         if len(username) > 0:
             newInfo['username'] = username
@@ -194,7 +202,7 @@ def update_profile(user_id):
         user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
             '$set': newInfo
         })
-        # rename(path.join('.', 'project', ''))
+        rename(path.join('.', 'project', change_folder_name(user['username'])))
         data = dumps(user,default=json_util.default)
         return data
     else:
@@ -220,7 +228,7 @@ def addProject():
             description = request.form.get('description')
             image = request.files['image'].read()
             file_names = []
-            directory = path.join('.', 'project', user['username'], modo, title)
+            directory = path.join('.', 'project', change_folder_name(user['username']), modo, title)
             
             if path.exists(directory) is False:
                 makedirs(directory)
@@ -298,7 +306,7 @@ def delete_project():
 # Ruta para ver los proyectos en modo texto
 @app.route('/project/<username>/<project_name>/', methods=['GET', 'POST'])
 def show_project(username, project_name):
-    project_path = path.join('.', 'project', username, 'text_mode', project_name)
+    project_path = path.join('.', 'project', change_folder_name(username), 'text_mode', project_name)
     if request.method == 'POST':
         file = (request.get_json())['filename']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
@@ -330,8 +338,12 @@ def show_project(username, project_name):
                 'info': json_image,
                 'type': 'binary'
             })
-        
-    directory = listdir(project_path)
+
+    directory = {}    
+    
+    for root, _, files in walk(project_path):
+        for file in files:
+            directory[root] = files
     return render_template('show_project/index.html', directory=directory, name=project_name, username=username)
 # Ruta para ver los proyectos en modo grafico
 @app.route('/static_projects/graphic_mode/<project_name>/', methods=['GET', 'POST'])
@@ -516,7 +528,6 @@ def logout():
 @app.route('/admin', methods=['GET'])
 def admin_panel():
     cookie = session.get('admin_id')
-    print(cookie)
     if cookie is None:
         flash('Inicia sesión para entrar al panel')
         return redirect('/admin/login')
@@ -549,12 +560,64 @@ def login_admin():
         return redirect('/admin')
     return render_template('admin/login.html')
 
+@app.route('/admin/update_user/<user_id>', methods=['PUT'])
+def update_user(user_id):
+    if session.get('admin_id') and session.get('user_id') is None:
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        print(username, email, password)
+        findUsers_cursor = mongo.db.users.find({
+            '$or': [
+                { "email": email },
+                { "username": username }
+        ]})
+        findUser = list(findUsers_cursor)
+
+        print(len(findUser))
+        if len(findUser) > 1:
+            return 'el usuario ya existe'
+        
+        newInfo = {}
+        if len(username) > 0:
+            newInfo['username'] = username
+        if len(email) > 3:
+            newInfo['email'] = email
+            
+        if len(password) > 4:
+            newInfo['password'] = generate_password_hash(password, method="sha256", salt_length=10)
+        newInfo['updated_at'] = datetime.datetime.now()
+        print(newInfo)
+        file = request.files['perfil']
+        if file.filename != '':
+            if any(file.mimetype == mimetype for mimetype in IMAGE_MIMETYPE):
+                mimetype = file.mimetype
+                image = encodebytes(file.read())
+                newInfo['perfil'] = image
+                newInfo['contentType'] = mimetype
+            else:
+                flash('error mimetype')
+                return redirect('/register')
+
+        user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
+            '$set': newInfo
+        })
+        if path.exists(path.join('.', 'project', change_folder_name(user['username']))):
+            rename(path.join('.', 'project', change_folder_name(user['username'])), change_folder_name(username))
+        data = dumps(user,default=json_util.default)
+        print(data)
+        return data
+    else:
+        flash('Acceso denegado :/')
+        return redirect('/admin/login')
+
 @app.route('/admin/delete_user/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
     if session.get('admin_id') and session.get('user_id') is None:
         user = mongo.db.users.find_one_and_delete({ '_id': ObjectId(user_id) })
-        if path.exists(path.join('.', 'project', user['username'])):
-            rmtree(path.join('.', 'project', user['username']))
+        if path.exists(path.join('.', 'project', change_folder_name(user['username']))):
+            rmtree(path.join('.', 'project', change_folder_name(user['username'])))
         return {
             "user": dumps(user,default=json_util.default)
         }

@@ -14,6 +14,16 @@ for root, dirs, files in walk('./static_projects/text_mode/registro_1'):
         directory[root.split('/')[-1]] = files
 
 
-for value in directory:
-    # value es el valor de la clave del objeto: registro_1, registro_1\DESIGNER
-    print(f'En el directorio {value} esta los archivos: {directory[value]}\n')
+# for value in directory:
+#     value es el valor de la clave del objeto: registro_1, registro_1\DESIGNER
+#     print(f'En el directorio {value} esta los archivos: {directory[value]}\n')
+
+INVALID_FILENAME = {':', '*', '/', '"', '?', '>', '|', '<'}
+
+def check_folder_name(string):
+    for invalid_name in INVALID_FILENAME:
+        if string.find(invalid_name) > -1:
+            string = string.replace(invalid_name, '_')
+    return string
+
+print(check_folder_name('Hola *:D'))
