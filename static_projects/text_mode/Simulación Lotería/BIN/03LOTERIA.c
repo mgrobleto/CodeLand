@@ -1,3 +1,11 @@
+/*************************** Simulacion Loteria ***************************/
+
+/*--------------- Creado por: [Michelle Calderon] -------------------------*
+							  [Gabriela Robleto] 
+							  [Zharoon Treminio]
+							  [William Caceres] 
+--------------------------------------------------------------------------*/
+
 #include <stdio.h>
 #include <conio.h>
 #include "UNILIB.h"

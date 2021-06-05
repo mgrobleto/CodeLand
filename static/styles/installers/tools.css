@@ -1,0 +1,95 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.back {
+    min-height: 100vh;
+    width: 100%;
+    background-color: #fff;
+    background-position: center;
+    background-size: cover;
+}
+
+.container {
+    padding-top: 30px;
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+}
+
+.single-box {
+    display: block;
+    flex-direction: column;
+    align-items: center;
+    justify-content:center;
+    width: 50%;
+    height: 50%;
+    border-radius: 4px;
+    background-color: #008ecc;
+    color: #fff;
+    text-align:center;
+    margin: 20px;
+    padding: 10px;
+    transition: .6s;
+    cursor: pointer;
+    /*box-shadow: 4px 4px 0 rgba(0, 0, 0, .4);*/
+}
+
+.single-box .img {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.single-box:hover {
+    transform: translate(0, -10px);
+}
+
+.img-area {
+    background-image: url(/static/styles/installers/img/WindowsC_img.png);
+}
+
+.img-area {
+    display:grid;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 200px;
+    margin-bottom: 10px;
+    padding: 20px;
+    background-size: cover;
+    background-position: center center;
+}
+
+.header {
+    font-family: Nunito;
+    font-style: normal;
+    font-size: 40px;
+    font-weight: 200;
+    line-height: 48px;
+    text-align: center;
+    color: #333;
+}
+
+.img-text {
+    font-family: Nunito;
+    padding-top: 20px;
+}
+
+.img-text p {
+    padding-top: 20px;
+    font-size: 20px;
+    font-weight: 100;
+    line-height: 30px;
+    font-weight:lighter;
+}
+
+.download-btn .btn {
+    margin-top: 20px;
+    flex-direction: column;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}

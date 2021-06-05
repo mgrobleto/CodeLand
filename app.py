@@ -447,9 +447,11 @@ def show_ejemplo(ejemplo_name):
     if request.method == 'POST':
 
         file = (request.get_json())['filename']
+        path_file = (request.get_json())['path']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
+
         if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
-            code = open(path.join(example_path, file), 'r', encoding='utf-8').read()
+            code = open(path.join(path_file, file), 'r', encoding='utf-8').read()
             code_md = f'```{file_ext}\n{code}\n```'
 
             md_template_string = markdown.markdown(
@@ -477,12 +479,25 @@ def show_ejemplo(ejemplo_name):
                 'type': 'binary'
             })
         
-    directory = listdir(example_path)
+    # Muestra los directorios del proyecto correspondiente para ver los codigos
+    directory = {}
+
+    for root, _, files in walk(example_path):
+        for file in files:
+            directory[root] = files
+
     return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name, id=db_example['_id'])
+
+
+@app.route('/tools')
+def installers():
+    return render_template("installers/tools.html")
+
 
 @app.route('/about-us')
 def about():
     return render_template("about us/about.html")
+
 
 @app.route('/examples/intro')
 def text_mode():
