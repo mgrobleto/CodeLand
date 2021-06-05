@@ -6,23 +6,36 @@
     background-size: cover;
 }
 
+.projects{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 8px;
+}
+
 .projects .project-img {
     margin-top: 20px;
     margin-left: 70px;
     height: 270px;
     width: 400px;
+    transition: .6s;
+    box-shadow: 0 5px 4px rgba(0, 0, 0, .5);
+}
+
+.projects .project-img:hover {
+    transform: translate(0, -10px);
 }
 
 .projects .watch-code .btn {
-    margin-top: 30px;
+    margin-top: 0px;
     margin-left: 70px;
 }
 
 .projects h5 {
+    font-family: Roboto;
     font-size: 18px;
     font-weight: 100;
     letter-spacing: 3px;
     margin-left: 70px;
     margin-top: 15px;
-    color:blueviolet;
+    color:black;
 }

@@ -15,7 +15,7 @@
         <div class="projects">
             {% for project in db_project %}
             <div class="single-project">
-                <img src="/static/styles/modo_texto/IMG/reg.png" class="project-img">
+                <img src="{{project['image_route']}}" class="project-img">
                 <h5>{{project['program_title']}}</h5>
                 <div class="watch-code">
                     <a href="/static_projects/text_mode/{{project['program_title']}}" class="btn btn-primary"> Ver código </a>
