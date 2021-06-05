@@ -1,5 +1,5 @@
 from io import BytesIO
-from os import path, makedirs, listdir, walk
+from os import path, makedirs, listdir, walk, rename
 from shutil import rmtree
 from time import strftime
 from zipfile import ZipFile
@@ -71,6 +71,8 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if session.get('admin_id'):
+        session.clear()
     if session.get('user_id') != None:
         return redirect('/profile')
     if request.method == 'POST':
@@ -152,6 +154,8 @@ def update_profile(user_id):
     if(session.get('user_id') == ObjectId(user_id)):
         username = request.form.get('username')
         email = request.form.get('email')
+        password = request.form.get('password')
+        password_confirm = request.form.get('password_confirm')
 
         findUsers_cursor = mongo.db.users.find({
             '$or': [
@@ -163,25 +167,34 @@ def update_profile(user_id):
         if len(findUser) > 1:
             return 'el usuario ya existe'
         
+        if not check_password_hash((findUser[-1])['password'], password_confirm):
+            return redirect('/profile')
+            
+        newInfo = {}
+        if len(username) > 0:
+            newInfo['username'] = username
+        if len(email) > 3:
+            newInfo['email'] = email
+            
+        if len(password) > 4:
+            newInfo['password'] = generate_password_hash(password, method="sha256", salt_length=10)
+        newInfo['updated_at'] = datetime.datetime.now()
+        
         file = request.files['perfil']
         if file.filename != '':
             if any(file.mimetype == mimetype for mimetype in IMAGE_MIMETYPE):
                 mimetype = file.mimetype
                 image = encodebytes(file.read())
+                newInfo['perfil'] = image
+                newInfo['contentType'] = mimetype
             else:
                 flash('error mimetype')
                 return redirect('/register')
-        
+
         user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
-            '$set': {
-            'username': username,
-            'email': email,
-            'password': generate_password_hash(request.form.get('password'), method="sha256", salt_length=10),
-            'updated_at': datetime.datetime.now(),
-            'perfil': image,
-            'contentType': mimetype
-        }
+            '$set': newInfo
         })
+        # rename(path.join('.', 'project', ''))
         data = dumps(user,default=json_util.default)
         return data
     else:
@@ -269,6 +282,7 @@ def delete_project():
     if session.get('user_id'):
         project_id = ObjectId(request.form.get('id'))
         project = mongo.db.projects.find_one_and_delete({ 'users_id': ObjectId(session.get('user_id')), '_id': project_id}, {'_id': False, 'image': False, 'users_id': False})
+
         if project is None:
             flash('El proyecto no existe')
             return redirect('/profile')
@@ -491,7 +505,6 @@ def text_mode():
 @app.route('/examples/node')
 def graphic_mode():
     db_project = mongo.db.static_projects.find({'mode': 'graphic_mode'})
-
     return render_template("graphic_mode/graphic.html", db_project=db_project)
 
 @app.route('/logout')
@@ -503,6 +516,7 @@ def logout():
 @app.route('/admin', methods=['GET'])
 def admin_panel():
     cookie = session.get('admin_id')
+    print(cookie)
     if cookie is None:
         flash('Inicia sesión para entrar al panel')
         return redirect('/admin/login')
@@ -516,6 +530,10 @@ def admin_panel():
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def login_admin():
+    if session.get('user_id'):
+        session.clear()
+    if session.get('admin_id'):
+        return redirect('/admin')
     if request.method == 'POST':
         get_admin = mongo.db.admins.find_one(
             {"email": request.form.get("email")})
@@ -533,10 +551,12 @@ def login_admin():
 
 @app.route('/admin/delete_user/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
-    if session.get('admin_id'):
+    if session.get('admin_id') and session.get('user_id') is None:
         user = mongo.db.users.find_one_and_delete({ '_id': ObjectId(user_id) })
+        if path.exists(path.join('.', 'project', user['username'])):
+            rmtree(path.join('.', 'project', user['username']))
         return {
-            "user": user
+            "user": dumps(user,default=json_util.default)
         }
     else:
         flash('Acceso denegado >:v')

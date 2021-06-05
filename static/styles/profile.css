@@ -33,7 +33,10 @@
     left: 50%;
     width: 80%;
     max-width: 800px;
-    transition: all .6s ease-in-out;
+    height: 90vh;
+    margin: 0 auto;
+    overflow: auto;
+    transition: transform .6s ease-in-out;
     transform: translateY(-1000px) translateX(-50%);
     display: flex;
     justify-content: center;
@@ -41,9 +44,12 @@
     align-items: center;
     z-index: 12;
     background-color: #fff;
+    opacity: 0;
 }
 
 .custom-modal.active {
+    transition: transform .6s ease-in-out, opacity .2s;
+    opacity: 1;
     transform: translateY(-50%) translateX(-50%);
 }
 

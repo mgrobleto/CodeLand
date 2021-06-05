@@ -88,11 +88,13 @@
     $listDeleteUser.forEach(user => {
         user.addEventListener('click', async function() {
             userId = this.dataset.delete_user
-            const response = fetch(`admin/delete_user/${userId}`, {
+            const response = await fetch(`admin/delete_user/${userId}`, {
                 method: 'DELETE',
             })
+            console.log(response)
             const data = await response.json()
-            $cardContainer.removeChild(document.querySelector(`[data-]`))
+            user = JSON.parse(data.user)
+            $cardContainer.removeChild(document.querySelector(`[data-user_id="${user._id.$oid}"]`))
         })
     })
 
