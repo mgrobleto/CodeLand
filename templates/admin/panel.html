@@ -31,7 +31,7 @@
     </div>
     {% endfor %}
 </div>
-<div class="user-modal">
+<div class="user-modal" id="user-modal">
     <div class="loading">
         <img src="https://i.pinimg.com/736x/89/59/2b/89592b3392fee110134235e95d80dbf7.jpg" width="50px" alt="Cargando">
     </div>
@@ -67,21 +67,29 @@
     const $listDeleteUser = document.querySelectorAll('[data-delete_user]')
     const $userOverlay = document.querySelector('#user-overlay') 
     const $cardContainer = document.getElementById('card-container')
+    const $userModal = document.querySelector('#user-modal')
+    const $formEdit = document.getElementById('edit-info')
 
-    function renderTemplate(name) {
-        return (
-        `
-        <p>${name}</p>
-        `
-        )
-    }
+    $formEdit.addEventListener('submit', async function (event) {
+        event.preventDefault()
+        debugger
+        userId = this.dataset.update_id
+        const formData = new FormData(event.currentTarget)
+        const response = await fetch(`/admin/update_user/${userId}`, {
+            method: 'PUT',
+            body: formData
+        })
+        console.log(response)
+        const data = await response.json()
+        console.log(data)
+    })
 
-    $listEditUser.forEach(user => {
-        user.addEventListener('click', function() {
-            userId = this.dataset.edit_user
+    $listEditUser.forEach(function(user) {
+        user.addEventListener('click', function () {
+            $userModal.classList.add('active')
             $userOverlay.classList.add('active')
-            console.log('texto para mientras')
             console.log(this.dataset)
+            $userModal.getElementsByTagName('form')[0].setAttribute('data-update_id', this.dataset.edit_user)
         })
     })
 
@@ -100,6 +108,7 @@
 
     $userOverlay.addEventListener('click', function() {
         this.classList.remove('active')
+        $userModal.classList.remove('active')
     })
 </script>
 {% endblock %}

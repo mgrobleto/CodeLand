@@ -11,15 +11,20 @@
 {% block body %}
 
 {% if directory %}
-<ul class="project-file container">
-    {% for file_name in directory %}
-    <li id="file" data-filename="{{ file_name }}" class="item-filename">{{ file_name }}</li>
-    {%endfor%}
-</ul>
-{% if session.get('user_id') %}
-<!----<button>submit file</button>-->
-{% endif %}
-
+{% for dirs in directory %}   
+<div class="menu">
+    <details>
+        <summary> {{ dirs.split('\\')[-1] }} </summary>
+        <div class="content">
+            <ol>
+                {% for file in directory[dirs] %}
+                    <li id="file" data-location="{{dirs}}" data-filename="{{file}}">{{file}}</li>
+                {% endfor %}
+            </ol>
+        </div>
+    </details>
+</div>
+{% endfor %}
 {% endif %}
 <div class="container code_container">
     <div class="header_code">
@@ -32,5 +37,24 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+    const $detailsList = document.querySelectorAll('details');
+
+    $detailsList.forEach(($details) => {
+        $details.addEventListener('toggle', closeDropdown)
+    })
+    function closeDropdown() {
+        'use strict'
+        if(!this.open) {
+            this.removeAttribute('open')
+        } else {
+            $detailsList.forEach($details => {
+                if($details !== this) {
+                    $details.removeAttribute('open')
+                }
+            })
+        }
+    }
+</script>
 <script src="/static/scripts/show_project.js"></script>
 {% endblock %}
