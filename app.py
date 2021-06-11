@@ -1,5 +1,5 @@
 from io import BytesIO
-from os import path, makedirs, walk, rename
+from os import path, makedirs, walk, rename, environ
 from shutil import rmtree
 from time import strftime
 from zipfile import ZipFile
@@ -20,15 +20,20 @@ import markdown.extensions.fenced_code
 import markdown.extensions.codehilite
 from pygments.formatters import HtmlFormatter
 
-ENV_AUTH = dotenv_values(".env")
-USER_DB = ENV_AUTH["USER_DB"]
-PASSWORD_DB = ENV_AUTH["PASSWORD_DB_KEY"]
+if(path.exists('./.env')):
+    ENV_AUTH = dotenv_values(".env")
+    USER_DB = ENV_AUTH["USER_DB"]
+    PASSWORD_DB = ENV_AUTH["PASSWORD_DB_KEY"]
+    
+USER_DB = environ["USER_DB"]
+PASSWORD_DB = environ["PASSWORD_DB_KEY"]
+
 
 app = Flask(__name__)
 
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config['SESSION_PERMANENT'] = False  # La cookie no se guarda para siempre
-app.secret_key = ENV_AUTH['SESSION_KEY']
+app.secret_key = environ['SESSION_KEY']
 app.config['MONGO_URI'] = f'mongodb+srv://CS50:{PASSWORD_DB}@cluster0.73uuw.mongodb.net/cs50xni?retryWrites=true&w=majority'
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
