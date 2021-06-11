@@ -662,4 +662,8 @@ def page_not_found(_):
     return render_template('404.html'), 404
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    if environ['FLASK_ENV'] == 'development':
+        app.run(debug=True)
+    else:
+        app.run(debug=False)
+
