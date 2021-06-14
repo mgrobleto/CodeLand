@@ -1,15 +1,20 @@
 from io import BytesIO
-from os import path, makedirs, walk, rename, environ
+import json
+from os import getcwd, path, makedirs, walk, rename, environ
 from shutil import rmtree
-from time import strftime
 from zipfile import ZipFile
 from flask import Flask, render_template, request, redirect, session, flash, jsonify, send_file
+from six import u
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_session import Session
 from werkzeug.utils import secure_filename
+from google.cloud import storage
+from google.api_core import page_iterator
+from google.cloud.storage.bucket import Bucket
+from firebase import Firebase
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
-from bson import json_util
+from bson import encode, json_util
 from json import dumps
 from dotenv import dotenv_values
 from tempfile import mkdtemp
@@ -24,9 +29,28 @@ if(path.exists('./.env')):
     ENV_AUTH = dotenv_values(".env")
     USER_DB = ENV_AUTH["USER_DB"]
     PASSWORD_DB = ENV_AUTH["PASSWORD_DB_KEY"]
-    
-USER_DB = environ["USER_DB"]
-PASSWORD_DB = environ["PASSWORD_DB_KEY"]
+    # Firebase credentials
+    config = {
+        'apiKey': ENV_AUTH['apiKey'],
+        'authDomain': ENV_AUTH['authDomain'],
+        'databaseURL': ENV_AUTH['databaseURL'],
+        'storageBucket': ENV_AUTH['storageBucket'],
+        'serviceAccount': 'codeland-firebase.json'
+    }
+
+
+else:
+    USER_DB = environ["USER_DB"]
+    PASSWORD_DB = environ["PASSWORD_DB_KEY"]
+    # Firebase credentials
+    config = {
+        'apiKey': environ['apiKey'],
+        'authDomain': environ['authDomain'],
+        'databaseURL': environ['databaseURL'],
+        'storageBucket': environ['storageBucket'],
+        'serviceAccount': 'codeland-firebase.json'
+    }
+STORAGE_BUCKET = config['storageBucket']
 
 
 app = Flask(__name__)
@@ -38,6 +62,11 @@ app.config['MONGO_URI'] = f'mongodb+srv://CS50:{PASSWORD_DB}@cluster0.73uuw.mong
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 mongo = PyMongo(app)
+# Initialize Firestore DB
+firebase = Firebase(config)
+storage_fb = firebase.storage()
+client = storage.Client()
+bucket = client.get_bucket(STORAGE_BUCKET)
 
 ALLOWED_EXTENSIONS = {'txt', 'c', 'js', 'py', 'html', 'h', 'png', 'jpg', 'jpeg', 'gif'}
 IMAGE_MIMETYPE = ['image/png', 'image/jpeg', 'image/jpg']
@@ -122,11 +151,11 @@ def register():
         if find_user != None:
             flash(f"{username} already exist")
             return redirect('/register')
-            
+
         if not username or not password or not email:
             flash("username or password is empty")
             return redirect('/register')
-        
+
         file = request.files['image']
         if file.filename != '':
             if any(file.mimetype == mimetype for mimetype in IMAGE_MIMETYPE):
@@ -179,7 +208,7 @@ def update_profile(user_id):
 
         if len(findUser) > 1:
             return 'el usuario ya existe'
-        
+
         if not check_password_hash((findUser[-1])['password'], password_confirm):
             return redirect('/profile')
 
@@ -188,11 +217,11 @@ def update_profile(user_id):
             newInfo['username'] = username
         if len(email) > 3:
             newInfo['email'] = email
-            
+
         if len(password) > 4:
             newInfo['password'] = generate_password_hash(password, method="sha256", salt_length=10)
         newInfo['updated_at'] = datetime.datetime.now()
-        
+
         file = request.files['perfil']
         if file.filename != '':
             if any(file.mimetype == mimetype for mimetype in IMAGE_MIMETYPE):
@@ -234,7 +263,7 @@ def addProject():
             image = request.files['image'].read()
             file_names = []
             directory = path.join('.', 'project', change_folder_name(user['username']), modo, title)
-            
+
             if path.exists(directory) is False:
                 makedirs(directory)
             else:
@@ -263,7 +292,7 @@ def download_project(project_id):
         for root, dirs, files in walk(project['path']):
             for file in files:
                 zf.write(path.join(root, file),
-                        path.relpath(path.join(root, file), 
+                        path.relpath(path.join(root, file),
                                         path.join(project['path'], '..')))
     # send_file
     memory_file.seek(0)
@@ -278,12 +307,12 @@ def download_static_project(project_id):
     project = mongo.db.static_projects.find_one({ '_id': ObjectId(project_id)})
     project_title = project['program_title']
     memory_file = BytesIO()
-    
+
     with ZipFile(memory_file, 'w') as zf:
         for root, dirs, files in walk(project['path']):
             for file in files:
                 zf.write(path.join(root, file),
-                        path.relpath(path.join(root, file), 
+                        path.relpath(path.join(root, file),
                                         path.join(project['path'], '..')))
     # send_file
     memory_file.seek(0)
@@ -326,7 +355,7 @@ def show_project(username, project_name):
 
             css_string = formatter.get_style_defs()
             md_css_string = "<style>" + css_string + "</style>"
-            
+
             md_template = md_css_string + md_template_string
 
             return jsonify({
@@ -338,14 +367,14 @@ def show_project(username, project_name):
             code = open(path.join(project_path, file), 'rb').read()
             image = encodebytes(code)
             json_image = dumps(image,default=json_util.default)
-            
+
             return jsonify({
                 'info': json_image,
                 'type': 'binary'
             })
 
-    directory = {}    
-    
+    directory = {}
+
     for root, _, files in walk(project_path):
         for file in files:
             directory[root] = files
@@ -375,7 +404,7 @@ def show_project_graphic(project_name):
 
             css_string = formatter.get_style_defs()
             md_css_string = "<style>" + css_string + "</style>"
-            
+
             md_template = md_css_string + md_template_string
 
             return jsonify({
@@ -388,19 +417,19 @@ def show_project_graphic(project_name):
             code = open(path.join(path_file, file), 'rb').read()
             image = encodebytes(code)
             json_image = dumps(image,default=json_util.default)
-            
+
             return jsonify({
                 'info': json_image,
                 'type': 'binary'
             })
-        
+
     # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = {}
 
     for root, _, files in walk(project_path):
         for file in files:
             directory[root] = files
-    
+
     return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
 
 
@@ -432,7 +461,7 @@ def show_static_project(project_name):
 
             css_string = formatter.get_style_defs()
             md_css_string = "<style>" + css_string + "</style>"
-            
+
             md_template = md_css_string + md_template_string
 
             return jsonify({
@@ -445,21 +474,21 @@ def show_static_project(project_name):
             code = open(path.join(path_file, file), 'rb').read()
             image = encodebytes(code)
             json_image = dumps(image,default=json_util.default)
-            
+
             return jsonify({
                 'info': json_image,
                 'type': 'binary'
             })
-    
+
     # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = {}
 
     for root, _, files in walk(project_path):
         for file in files:
             directory[root] = files
-            
+
     return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
-    
+
 
 # Ruta para ver ejemplos
 @app.route('/examples/<ejemplo_name>/', methods=['GET', 'POST'])
@@ -492,7 +521,7 @@ def show_ejemplo(ejemplo_name):
 
             css_string = formatter.get_style_defs()
             md_css_string = "<style>" + css_string + "</style>"
-            
+
             md_template = md_css_string + md_template_string
 
             return jsonify({
@@ -504,19 +533,19 @@ def show_ejemplo(ejemplo_name):
             code = open(path.join(example_path, file), 'rb').read()
             image = encodebytes(code)
             json_image = dumps(image,default=json_util.default)
-            
+
             return jsonify({
                 'info': json_image,
                 'type': 'binary'
             })
-        
+
     # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = {}
-
     for root, _, files in walk(example_path):
         for file in files:
             directory[root] = files
 
+    print(directory)
     return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name, id=db_example['_id'])
 
 
@@ -609,13 +638,13 @@ def update_user(user_id):
         print(len(findUser))
         if len(findUser) > 1:
             return 'el usuario ya existe'
-        
+
         newInfo = {}
         if len(username) > 0:
             newInfo['username'] = username
         if len(email) > 3:
             newInfo['email'] = email
-            
+
         if len(password) > 4:
             newInfo['password'] = generate_password_hash(password, method="sha256", salt_length=10)
         newInfo['updated_at'] = datetime.datetime.now()
@@ -656,6 +685,109 @@ def delete_user(user_id):
         flash('Acceso denegado >:v')
         return redirect('/admin/login')
 
+
+@app.route('/dirs', methods=['GET'])
+def getDirs():
+    def _item_to_value(iterator, item):
+        return item
+    def list_directories(bucket_name, prefix):
+        if prefix and not prefix.endswith('/'):
+            prefix += '/'
+
+        extra_params = {
+            "projection": "noAcl",
+            "prefix": prefix,
+            "delimiter": '/'
+        }
+
+        path = "/b/" + bucket_name + "/o"
+
+        iterator = page_iterator.HTTPIterator(
+            client=client,
+            api_request=client._connection.api_request,
+            path=path,
+            items_key='prefixes',
+            item_to_value=_item_to_value,
+            extra_params=extra_params,
+        )
+        return [x for x in iterator]
+
+    data = list_directories(STORAGE_BUCKET, 'static_project/text_mode')
+    json_data = dumps(data,default=json_util.default, ensure_ascii=False).encode('utf-8')
+    # print(data[-1])
+
+    return json_data
+
+
+@app.route('/zip', methods=['GET'])
+def zipDownload():
+    memory_file = BytesIO()
+    # folder = 'test'
+    blobs = bucket.list_blobs(prefix='static_project/')
+    # for blob in blobs:
+    #     print(blob.name)
+    with ZipFile(memory_file, 'w') as zf:
+        for blob in blobs:
+            binary = blob.download_as_string()
+            zf.writestr(blob.name, binary)
+    memory_file.seek(0)
+    print(dir(bucket))
+    return send_file(memory_file, download_name='zip.zip')
+
+@app.route('/download-gc', methods=['GET'])
+def download_google():
+    file = bucket.blob('josue.png')
+    file.make_public()
+    file.download_to_filename('filename.png')
+    return 'ta bien'
+
+@app.route('/prueba', methods=['GET'])
+def prueba():
+    # storage_user = default_app.storage.bucket(name='gs://codeland-dcd2d.appspot.com')
+    # storage_user = default_app.storage()
+    storage_random = storage_fb.child("documentacion/cuento.c").get_url(None)
+
+    # blob = storage_random.blob('axd.jpg')
+    # blob = []
+    gcs_file = bucket.get_blob('josue.png')
+    # blob = bucket.blob('static_projects/')
+    # blob.upload_from_string('', content_type='application/x-www-form-urlencoded;charset=UTF-8')
+    folders = bucket.list_blobs(None, prefix='static_project/')
+
+    folder = bucket.blob('/static_project/graphic_mode/')
+    # folder_2 = bucket.blob('static_projects/')
+    print(folders.path)
+    print(folders.max_results)
+    for folder_ref in folders:
+        print(folder_ref)
+    # Util
+    # https://stackoverflow.com/questions/59829188/how-rename-folder-in-firebase-storage-android-studio
+    # https://stackoverflow.com/questions/41075100/move-rename-folder-in-google-cloud-storage-using-nodejs-gcloud-api?noredirect=1&lq=1
+    # https://stackoverflow.com/questions/38601548/how-to-move-files-with-firebase-storage
+    # bucket.copy_blob(folder, bucket, '/copia/')
+
+    # print(folder)
+    # print(folder_2)
+    # for files in blob_ref.prefixes:
+    #     print(files)
+        # new_blob = bucket.copy_blob(files, bucket, 'static_projects/')
+
+    # print("Blob {} has been renamed to {}".format(blob_ref, new_blob.name))
+    # newFolder = bucket.rename_blob(renameFolder, 'static_projects')
+
+    # print(gcs_file.download_as_string())
+    # for i in storage.list_files():
+    #     blob = i.upload_from_string(
+    #     uploaded_file.read(),
+    #     content_type=uploaded_file.content_type
+    # )
+    # storage_ref = storage_user.ref()
+
+    # return send_file(storage_ref.child('axd.jpg'))
+    # send_file(blob, download_name='image.jpg')
+    # return send_file(BytesIO(content), mimetype='image/jpg')
+    return send_file(BytesIO(gcs_file.download_as_string()), mimetype='image/jpg')
+
 @app.errorhandler(404)
 def page_not_found(_):
     # note that we set the 404 status explicitly
@@ -667,3 +799,9 @@ if __name__ == '__main__':
     else:
         app.run(debug=False)
 
+# https://stackoverflow.com/questions/37074977/how-to-get-list-of-folders-in-a-given-bucket-using-google-cloud-api :0
+# https://stackoverflow.com/questions/583791/is-it-possible-to-generate-and-return-a-zip-file-with-app-engine creara el zip
+# https://stackoverflow.com/questions/41865214/how-to-serve-an-image-from-google-cloud-storage-using-python-flask
+# https://stackoverflow.com/questions/38658417/create-blob-from-url-in-gae-using-python
+# https://cloud.google.com/appengine/docs/flexible/python/using-cloud-storage
+# https://cloud.google.com/storage/docs/json_api/v1/objects/copy
