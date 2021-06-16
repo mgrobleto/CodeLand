@@ -3,7 +3,7 @@ import json
 from os import getcwd, path, makedirs, walk, rename, environ
 from shutil import rmtree
 from zipfile import ZipFile
-from flask import Flask, render_template, request, redirect, session, flash, jsonify, send_file
+from flask import Flask, render_template, request, Response, redirect, session, flash, jsonify, send_file
 from six import u
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_session import Session
@@ -93,6 +93,60 @@ def get_user_and_project(user_id):
         { "$match": { "_id": ObjectId(user_id) } }
     ])
     return list(user_cursor)[0]
+
+# es una herramienta sorpresa que nos ayudara más tarde
+# def _item_to_value(iterator, item):
+#     return item
+
+# def list_directories(bucket_name, prefix):
+#     if prefix and not prefix.endswith('/'):
+#         prefix += '/'
+
+#     extra_params = {
+#         "projection": "noAcl",
+#         "prefix": prefix,
+#         "delimiter": '/'
+#     }
+
+#     path = "/b/" + bucket_name + "/o"
+
+#     iterator = page_iterator.HTTPIterator(
+#         client=client,
+#         api_request=client._connection.api_request,
+#         path=path,
+#         items_key='prefixes',
+#         item_to_value=_item_to_value,
+#         extra_params=extra_params,
+#     )
+#     return [x for x in iterator]
+
+def getCode(route='static_project/text_mode/'):
+    # directories = list_directories(STORAGE_BUCKET, route)
+    info = {}
+    data = []
+    
+    for dirs in bucket.list_blobs(prefix=route):
+        routes = dirs.name.split('/')
+        filename = routes.pop(-1)
+
+        if(filename == ''):
+            continue
+
+        path = ('/'.join(map(str, routes))) + '/'
+
+        if(info.get(routes[-1]) == None):
+            info[routes[-1]] = {
+                'files': [],
+                'path': path
+            }
+
+            print(routes[-1])
+            print(type(info))
+            (info[routes[-1]])['files'].append(filename)
+        else:    
+            (info[routes[-1]])['files'].append(filename)
+
+    return info
 
 # Si el nombre tiene un carácter extraño
 def change_folder_name(string):
@@ -713,10 +767,14 @@ def getDirs():
         return [x for x in iterator]
 
     data = list_directories(STORAGE_BUCKET, 'static_project/text_mode')
-    json_data = dumps(data,default=json_util.default, ensure_ascii=False).encode('utf-8')
-    # print(data[-1])
-
-    return json_data
+    datas = []
+    code = getCode('static_project/graphic_mode')
+    print(code)
+    datas.append(code)
+    codigo = dumps(code, default=json_util.default, ensure_ascii=False).encode('utf-8')
+    codigo2 = dumps({'xd': data}, default=json_util.default, ensure_ascii=False).encode('utf-8')
+    
+    return Response(codigo, content_type='application/json; charset=utf-8')
 
 
 @app.route('/zip', methods=['GET'])
