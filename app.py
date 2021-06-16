@@ -1,10 +1,8 @@
 from io import BytesIO
-import json
 from os import getcwd, path, makedirs, walk, rename, environ
 from shutil import rmtree
 from zipfile import ZipFile
 from flask import Flask, render_template, request, Response, redirect, session, flash, jsonify, send_file
-from six import u
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_session import Session
 from werkzeug.utils import secure_filename
@@ -14,9 +12,9 @@ from google.cloud.storage.bucket import Bucket
 from firebase import Firebase
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
-from bson import encode, json_util
+from bson import json_util
 from json import dumps
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 from tempfile import mkdtemp
 import datetime
 from base64 import encodebytes
@@ -26,32 +24,33 @@ import markdown.extensions.codehilite
 from pygments.formatters import HtmlFormatter
 
 if(path.exists('./.env')):
-    ENV_AUTH = dotenv_values(".env")
-    USER_DB = ENV_AUTH["USER_DB"]
-    PASSWORD_DB = ENV_AUTH["PASSWORD_DB_KEY"]
-    # Firebase credentials
-    config = {
-        'apiKey': ENV_AUTH['apiKey'],
-        'authDomain': ENV_AUTH['authDomain'],
-        'databaseURL': ENV_AUTH['databaseURL'],
-        'storageBucket': ENV_AUTH['storageBucket'],
-        'serviceAccount': 'codeland-firebase.json'
-    }
+    load_dotenv()
 
 
-else:
-    USER_DB = environ["USER_DB"]
-    PASSWORD_DB = environ["PASSWORD_DB_KEY"]
-    # Firebase credentials
-    config = {
-        'apiKey': environ['apiKey'],
-        'authDomain': environ['authDomain'],
-        'databaseURL': environ['databaseURL'],
-        'storageBucket': environ['storageBucket'],
-        'serviceAccount': 'codeland-firebase.json'
-    }
+USER_DB = environ["USER_DB"]
+PASSWORD_DB = environ["PASSWORD_DB_KEY"]
+# Firebase credentials
+credentials = {
+    'type': environ['type'],
+    'project_id': environ['project_id'],
+    'private_key_id': environ['private_key_id'],
+    'private_key': environ['private_key'].replace(r'\n}\n', '}'),
+    'client_email': environ['client_email'],
+    'client_id': environ['client_id'],
+    'auth_uri': environ['auth_uri'],
+    'token_uri': environ['token_uri'],
+    'auth_provider_x509_cert_url': environ['auth_provider_x509_cert_url'],
+    'client_x509_cert_url': environ['client_x509_cert_url']
+}
+
+config = {
+    'apiKey': environ['apiKey'],
+    'authDomain': environ['authDomain'],
+    'databaseURL': environ['databaseURL'],
+    'storageBucket': environ['storageBucket'],
+    'serviceAccount': credentials
+}
 STORAGE_BUCKET = config['storageBucket']
-
 
 app = Flask(__name__)
 
@@ -122,31 +121,28 @@ def get_user_and_project(user_id):
 
 def getCode(route='static_project/text_mode/'):
     # directories = list_directories(STORAGE_BUCKET, route)
-    info = {}
     data = []
+    info = {
+        'files': [],
+        'path': None
+    }
     
     for dirs in bucket.list_blobs(prefix=route):
         routes = dirs.name.split('/')
-        filename = routes.pop(-1)
+        filename = routes.pop(-1) # Si no termina con / quiere decir que no es una carpeta
 
         if(filename == ''):
+            path_dir = '/'.join(map(str, routes)) + '/'
+            if info['path'] != path_dir and info['path'] != None and len(info['files']) > 0:
+                data.append(info.copy())
+                print(len(data))
+
+            info['files'] = []
+            info['path'] = path_dir
             continue
+        (info['files']).append(filename)
 
-        path = ('/'.join(map(str, routes))) + '/'
-
-        if(info.get(routes[-1]) == None):
-            info[routes[-1]] = {
-                'files': [],
-                'path': path
-            }
-
-            print(routes[-1])
-            print(type(info))
-            (info[routes[-1]])['files'].append(filename)
-        else:    
-            (info[routes[-1]])['files'].append(filename)
-
-    return info
+    return data
 
 # Si el nombre tiene un carácter extraño
 def change_folder_name(string):
@@ -768,8 +764,8 @@ def getDirs():
 
     data = list_directories(STORAGE_BUCKET, 'static_project/text_mode')
     datas = []
-    code = getCode('static_project/graphic_mode')
-    print(code)
+    code = getCode()
+    # print(code)
     datas.append(code)
     codigo = dumps(code, default=json_util.default, ensure_ascii=False).encode('utf-8')
     codigo2 = dumps({'xd': data}, default=json_util.default, ensure_ascii=False).encode('utf-8')
