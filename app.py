@@ -30,11 +30,12 @@ if(path.exists('./.env')):
 USER_DB = environ["USER_DB"]
 PASSWORD_DB = environ["PASSWORD_DB_KEY"]
 # Firebase credentials
+private_key = environ['private_key'].replace('\\n', '\n').replace('\\\\n', '\\n')
 credentials = {
     'type': environ['type'],
     'project_id': environ['project_id'],
     'private_key_id': environ['private_key_id'],
-    'private_key': environ['private_key'].replace(r'\n}\n', '}'),
+    'private_key': private_key,
     'client_email': environ['client_email'],
     'client_id': environ['client_id'],
     'auth_uri': environ['auth_uri'],
