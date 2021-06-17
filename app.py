@@ -127,21 +127,29 @@ def getCode(route='static_project/text_mode/'):
         'files': [],
         'path': None
     }
-    
-    for dirs in bucket.list_blobs(prefix=route):
+    list_ = bucket.list_blobs(prefix=route)
+    # https://stackoverflow.com/questions/63743826/google-datastore-iterator-already-started-how-to-work-with-these-iterators
+    class Padding: # Reelleno para que itere todos los elementos +1
+        name = '/'
+
+    data_arr = [Padding]
+
+    for blob in list_:
+        data_arr.insert(-1, blob)
+    for dirs in data_arr:
         routes = dirs.name.split('/')
         filename = routes.pop(-1) # Si no termina con / quiere decir que no es una carpeta
+        path_dir = '/'.join(map(str, routes)) + '/'
 
-        if(filename == ''):
-            path_dir = '/'.join(map(str, routes)) + '/'
+        if(filename == '' or info['path'] != path_dir):
             if info['path'] != path_dir and info['path'] != None and len(info['files']) > 0:
                 data.append(info.copy())
-                print(len(data))
+                info['files'] = []
 
-            info['files'] = []
             info['path'] = path_dir
-            continue
-        (info['files']).append(filename)
+        if(filename):
+            # print(filename)
+            (info['files']).append(filename)
 
     return data
 
@@ -763,7 +771,7 @@ def getDirs():
         )
         return [x for x in iterator]
 
-    data = list_directories(STORAGE_BUCKET, 'static_project/text_mode')
+    data = list_directories(STORAGE_BUCKET, 'static_projects/text_mode')
     datas = []
     code = getCode()
     # print(code)
@@ -778,7 +786,7 @@ def getDirs():
 def zipDownload():
     memory_file = BytesIO()
     # folder = 'test'
-    blobs = bucket.list_blobs(prefix='static_project/')
+    blobs = bucket.list_blobs(prefix='static_projects/')
     # for blob in blobs:
     #     print(blob.name)
     with ZipFile(memory_file, 'w') as zf:
