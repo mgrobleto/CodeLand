@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_session import Session
 from werkzeug.utils import secure_filename
 from google.cloud import storage
+from google.oauth2 import service_account
 from google.api_core import page_iterator
 from google.cloud.storage.bucket import Bucket
 from firebase import Firebase
@@ -65,7 +66,8 @@ mongo = PyMongo(app)
 # Initialize Firestore DB
 firebase = Firebase(config)
 storage_fb = firebase.storage()
-client = storage.Client()
+credentials_gc = service_account.Credentials.from_service_account_info(credentials)
+client = storage.Client(credentials=credentials_gc)
 bucket = client.get_bucket(STORAGE_BUCKET)
 
 ALLOWED_EXTENSIONS = {'txt', 'c', 'js', 'py', 'html', 'h', 'png', 'jpg', 'jpeg', 'gif'}
