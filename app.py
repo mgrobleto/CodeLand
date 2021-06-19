@@ -196,6 +196,18 @@ def change_folder_name(string):
 def path_join(*argv):
     return ('/'.join(map(str, argv))) + '/'
 
+def create_zip(path, depth):
+    memory_file = BytesIO()
+    blobs = bucket.list_blobs(prefix=path)
+
+    with ZipFile(memory_file, 'w') as zf:
+        for blob in blobs:
+            binary = blob.download_as_string()
+            name = blob.name.split('/', depth)[depth]
+            zf.writestr(name, binary)
+    memory_file.seek(0)
+    return memory_file
+
 @app.route('/')
 def home():
     user = {}
@@ -390,17 +402,10 @@ def addProject():
 @app.route('/download-project/<project_id>', methods=['GET'])
 def download_project(project_id):
     project = mongo.db.projects.find_one({ '_id': ObjectId(project_id)})
-    
-    memory_file = BytesIO()
-    blobs = bucket.list_blobs(prefix=project['path'])
+    project_name = project['project_name']
 
-    with ZipFile(memory_file, 'w') as zf:
-        for blob in blobs:
-            binary = blob.download_as_string()
-            name = blob.name.split('/', 3)[3]
-            zf.writestr(name, binary)
-    memory_file.seek(0)
-    return send_file(memory_file, download_name='zip.zip')
+    memory_file = create_zip(project['path'], 3)
+    return send_file(memory_file, download_name=f'{project_name}.zip')
 
 
 # Ruta para descargar los codigos predeterminados en modo texto
@@ -409,16 +414,7 @@ def download_static_project(project_id):
 
     project = mongo.db.static_projects.find_one({ '_id': ObjectId(project_id)})
     project_title = project['program_title']
-    memory_file = BytesIO()
-
-    with ZipFile(memory_file, 'w') as zf:
-        for root, dirs, files in walk(project['path']):
-            for file in files:
-                zf.write(path.join(root, file),
-                        path.relpath(path.join(root, file),
-                                        path.join(project['path'], '..')))
-    # send_file
-    memory_file.seek(0)
+    memory_file = create_zip(project['path'], 3)
 
     return send_file(memory_file, attachment_filename=f'{project_title}.zip', as_attachment=True)
 
@@ -499,7 +495,7 @@ def show_static_project(project_name):
 
     # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = list_dir(route=project_path)
-
+    print(project_path)
     return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
 
 
@@ -521,7 +517,7 @@ def show_ejemplo(ejemplo_name):
         path_file = (request.get_json())['path']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
 
-        get_file_data(path_file, file, file_ext)
+        return jsonify(get_file_data(path_file, file, file_ext))
 
     # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = list_dir(route=example_path)
