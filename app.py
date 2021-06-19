@@ -94,7 +94,7 @@ def get_user_and_project(user_id):
     ])
     return list(user_cursor)[0]
 
-# es una herramienta sorpresa que nos ayudara más tarde
+# Es una herramienta sorpresa que nos ayudara más tarde
 # def _item_to_value(iterator, item):
 #     return item
 
@@ -119,9 +119,10 @@ def get_user_and_project(user_id):
 #         extra_params=extra_params,
 #     )
 #     return [x for x in iterator]
+# directories = list_directories(STORAGE_BUCKET, route)
 
-def getCode(route='static_project/text_mode/'):
-    # directories = list_directories(STORAGE_BUCKET, route)
+# Lista los directorios de las rutas especificadas
+def list_dir(route='static_project/text_mode/'):
     data = []
     info = {
         'files': [],
@@ -153,12 +154,45 @@ def getCode(route='static_project/text_mode/'):
 
     return data
 
+def get_file_data(path_file, file, file_ext):
+    if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
+        code = bucket.blob(f'{path_file}{file}').download_as_string().decode('utf-8')
+        code_md = f'```{file_ext}\n{code}\n```'
+
+        md_template_string = markdown.markdown(
+        code_md, extensions=["fenced_code", "codehilite"]
+        )
+        formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
+
+        css_string = formatter.get_style_defs()
+        md_css_string = "<style>" + css_string + "</style>"
+
+        md_template = md_css_string + md_template_string
+
+        return {
+            "info": f'{md_template}',
+            'file_ext': file_ext,
+            'type': 'code'
+        }
+    else:
+        code = bucket.blob(f'{path_file}{file}').download_as_string().decode('utf-8')
+        image = encodebytes(code)
+        json_image = dumps(image,default=json_util.default)
+
+        return {
+            'info': json_image,
+            'type': 'binary'
+        }
+
 # Si el nombre tiene un carácter extraño
 def change_folder_name(string):
     for invalid_name in INVALID_FILENAME:
         if string.find(invalid_name) > -1:
             string = string.replace(invalid_name, '_')
     return string
+
+def path_join(*argv):
+    return ('/'.join(map(str, argv))) + '/'
 
 @app.route('/')
 def home():
@@ -266,6 +300,7 @@ def update_profile(user_id):
         findUser = list(findUsers_cursor)
 
         if len(findUser) > 1:
+            print('F')
             return 'el usuario ya existe'
 
         if not check_password_hash((findUser[-1])['password'], password_confirm):
@@ -292,10 +327,11 @@ def update_profile(user_id):
                 flash('error mimetype')
                 return redirect('/register')
 
+        mongo.db.projects.update_many({'users_id': session.get('user_id')}, { '$set': { 'author': newInfo['username'] }})
         user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
             '$set': newInfo
         })
-        rename(path.join('.', 'project', change_folder_name(user['username'])))
+        session['username'] = newInfo['username']
         data = dumps(user,default=json_util.default)
         return data
     else:
@@ -307,7 +343,6 @@ def update_profile(user_id):
 def addProject():
     if request.method == 'POST':
         if session.get('user_id') != None:
-            user = mongo.db.users.find_one({ '_id':  ObjectId(session.get('user_id'))})
             if 'files' not in request.files:
                 flash('No file')
                 return redirect('/add-project')
@@ -316,15 +351,20 @@ def addProject():
             if not (modo != 'text_mode' or modo != 'graphic_mode'):
                 flash('Ahh sos retroll')
                 return redirect('/add-project')
+                
             files = request.files.getlist('files')
             title = request.form.get('title')
             description = request.form.get('description')
             image = request.files['image'].read()
             file_names = []
-            directory = path.join('.', 'project', change_folder_name(user['username']), modo, title)
+            print(session.get('user_id'))
+            directory = path_join('project', session.get('user_id'), modo, title)
 
-            if path.exists(directory) is False:
-                makedirs(directory)
+            # Valida si el proyecto ya existe
+            if not bucket.blob(directory).exists():
+                blob = bucket.blob(directory)
+                blob.upload_from_string('', content_type='application/x-www-form-urlencoded;charset=UTF-8')
+
             else:
                 flash('project already exist')
                 return redirect('/add-project')
@@ -332,31 +372,33 @@ def addProject():
             for file in files:
                 if file and allowed_file(file.filename):
                     filename = secure_filename(file.filename)
+                    data = (file.stream.read()).decode('utf-8')
+                    blob = bucket.blob(directory + filename)
+                    blob.upload_from_string(data, content_type = file.content_type)
                     file_names.append(filename)
-                    file.save(path.join(directory, filename))
 
-            mongo.db.projects.insert({ "title": title, 'author': user['username'], "description": description, 'modo': modo, "users_id": user['_id'], "path": directory, **timestamp(), "image": encodebytes(image)})
+            mongo.db.projects.insert({ "project_name": title, 'author': session.get('username'), "description": description, 'modo': modo, "users_id": session.get('user_id'), "path": directory, **timestamp(), "image": encodebytes(image)})
             return redirect('/profile')
         else:
             flash('You are not logged in')
             return redirect('/login')
+
     return render_template('user/addCode.html')
 
 @app.route('/download-project/<project_id>', methods=['GET'])
 def download_project(project_id):
     project = mongo.db.projects.find_one({ '_id': ObjectId(project_id)})
-    project_title = project['title']
+    
     memory_file = BytesIO()
-    with ZipFile(memory_file, 'w') as zf:
-        for root, dirs, files in walk(project['path']):
-            for file in files:
-                zf.write(path.join(root, file),
-                        path.relpath(path.join(root, file),
-                                        path.join(project['path'], '..')))
-    # send_file
-    memory_file.seek(0)
+    blobs = bucket.list_blobs(prefix=project['path'])
 
-    return send_file(memory_file, attachment_filename=f'{project_title}.zip', as_attachment=True)
+    with ZipFile(memory_file, 'w') as zf:
+        for blob in blobs:
+            binary = blob.download_as_string()
+            name = blob.name.split('/', 3)[3]
+            zf.writestr(name, binary)
+    memory_file.seek(0)
+    return send_file(memory_file, download_name='zip.zip')
 
 
 # Ruta para descargar los codigos predeterminados en modo texto
@@ -391,60 +433,35 @@ def delete_project():
         data_cursor = mongo.db.projects.find({ 'users_id': ObjectId(session.get('user_id'))})
         data_list = [doc for doc in data_cursor]
         data = dumps(data_list,default=json_util.default)
+
         return { 'data': data, 'delete_info': project }
     else:
         flash('You are not logged in')
         return redirect('login')
 
 # Ruta para ver los proyectos en modo texto
-@app.route('/project/<username>/<project_name>/', methods=['GET', 'POST'])
-def show_project(username, project_name):
-    project_path = path.join('.', 'project', change_folder_name(username), 'text_mode', project_name)
+@app.route('/project/<user_id>/<project_name>/', methods=['GET', 'POST'])
+def show_project(user_id, project_name):
+    print(user_id)
+    print(project_name)
+    db_project = mongo.db.projects.find_one({ 'users_id': ObjectId(user_id), 'project_name': project_name })
+    print(db_project['path'])
+    project_path = db_project['path']
     if request.method == 'POST':
         file = (request.get_json())['filename']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
-        if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
-            code = open(path.join(project_path, file), 'r', encoding='utf-8').read()
-            code_md = f'```{file_ext}\n{code}\n```'
+        return jsonify(get_file_data(project_path, file, file_ext))
 
-            md_template_string = markdown.markdown(
-            code_md, extensions=["fenced_code", "codehilite"]
-            )
-            formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
 
-            css_string = formatter.get_style_defs()
-            md_css_string = "<style>" + css_string + "</style>"
+    directory = list_dir(route=project_path)
 
-            md_template = md_css_string + md_template_string
-
-            return jsonify({
-                "info": f'{md_template}',
-                'file_ext': file_ext,
-                'type': 'code'
-            })
-        else:
-            code = open(path.join(project_path, file), 'rb').read()
-            image = encodebytes(code)
-            json_image = dumps(image,default=json_util.default)
-
-            return jsonify({
-                'info': json_image,
-                'type': 'binary'
-            })
-
-    directory = {}
-
-    for root, _, files in walk(project_path):
-        for file in files:
-            directory[root] = files
-    return render_template('show_project/index.html', directory=directory, name=project_name, username=username)
+    return render_template('show_project/index.html', directory=directory, name=project_name, username=db_project['author'])
 # Ruta para ver los proyectos en modo grafico
 @app.route('/static_projects/graphic_mode/<project_name>/', methods=['GET', 'POST'])
 def show_project_graphic(project_name):
     db_project = mongo.db.static_projects.find_one({ 'program_title': project_name })
-
     project_path = db_project['path']
-    #project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
+
     if db_project is None:
         return render_template('404.html'), 404
 
@@ -452,43 +469,11 @@ def show_project_graphic(project_name):
         file = (request.get_json())['filename']
         path_file = (request.get_json())['path']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
-        if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
-            code = open(path.join(path_file, file), 'r', encoding='utf-8').read()
-            code_md = f'```{file_ext}\n{code}\n```'
-
-            md_template_string = markdown.markdown(
-            code_md, extensions=["fenced_code", "codehilite"]
-            )
-            formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
-
-            css_string = formatter.get_style_defs()
-            md_css_string = "<style>" + css_string + "</style>"
-
-            md_template = md_css_string + md_template_string
-
-            return jsonify({
-                "info": f'{md_template}',
-                'file_ext': file_ext,
-                'type': 'code'
-            })
-
-        else:
-            code = open(path.join(path_file, file), 'rb').read()
-            image = encodebytes(code)
-            json_image = dumps(image,default=json_util.default)
-
-            return jsonify({
-                'info': json_image,
-                'type': 'binary'
-            })
+        return jsonify(get_file_data(path_file, file, file_ext))
 
     # Muestra los directorios del proyecto correspondiente para ver los codigos
-    directory = {}
-
-    for root, _, files in walk(project_path):
-        for file in files:
-            directory[root] = files
-
+    directory = list_dir(route=project_path)
+    
     return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
 
 
@@ -499,7 +484,6 @@ def show_static_project(project_name):
     # Trae el proyecto correspondiente al nombre de la db
     db_project = mongo.db.static_projects.find_one({ 'program_title': project_name })
 
-    #project_path = path.join('.', 'static_projects', 'text_mode' , project_name)
     if db_project is None:
         return render_template('404.html'), 404
 
@@ -509,42 +493,10 @@ def show_static_project(project_name):
         file = (request.get_json())['filename']
         path_file = (request.get_json())['path']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
-        if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
-            code = open(path.join(path_file, file), 'r', encoding='utf-8').read()
-            code_md = f'```{file_ext}\n{code}\n```'
-
-            md_template_string = markdown.markdown(
-            code_md, extensions=["fenced_code", "codehilite"]
-            )
-            formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
-
-            css_string = formatter.get_style_defs()
-            md_css_string = "<style>" + css_string + "</style>"
-
-            md_template = md_css_string + md_template_string
-
-            return jsonify({
-                "info": f'{md_template}',
-                'file_ext': file_ext,
-                'type': 'code'
-            })
-
-        else:
-            code = open(path.join(path_file, file), 'rb').read()
-            image = encodebytes(code)
-            json_image = dumps(image,default=json_util.default)
-
-            return jsonify({
-                'info': json_image,
-                'type': 'binary'
-            })
+        return jsonify(get_file_data(path_file, file, file_ext))
 
     # Muestra los directorios del proyecto correspondiente para ver los codigos
-    directory = {}
-
-    for root, _, files in walk(project_path):
-        for file in files:
-            directory[root] = files
+    directory = list_dir(route=project_path)
 
     return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
 
@@ -561,48 +513,16 @@ def show_ejemplo(ejemplo_name):
 
     example_path = db_example['path']
 
-    #example_path = path.join('.', 'examples', ejemplo_name)
-
     if request.method == 'POST':
 
         file = (request.get_json())['filename']
         path_file = (request.get_json())['path']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
 
-        if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
-            code = open(path.join(path_file, file), 'r', encoding='utf-8').read()
-            code_md = f'```{file_ext}\n{code}\n```'
-
-            md_template_string = markdown.markdown(
-            code_md, extensions=["fenced_code", "codehilite"]
-            )
-            formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
-
-            css_string = formatter.get_style_defs()
-            md_css_string = "<style>" + css_string + "</style>"
-
-            md_template = md_css_string + md_template_string
-
-            return jsonify({
-                "info": f'{md_template}',
-                'file_ext': file_ext,
-                'type': 'code'
-            })
-        else:
-            code = open(path.join(example_path, file), 'rb').read()
-            image = encodebytes(code)
-            json_image = dumps(image,default=json_util.default)
-
-            return jsonify({
-                'info': json_image,
-                'type': 'binary'
-            })
+        get_file_data(path_file, file, file_ext)
 
     # Muestra los directorios del proyecto correspondiente para ver los codigos
-    directory = {}
-    for root, _, files in walk(example_path):
-        for file in files:
-            directory[root] = files
+    directory = list_dir(route=example_path)
 
     print(directory)
     return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name, id=db_example['_id'])
@@ -722,8 +642,7 @@ def update_user(user_id):
         user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
             '$set': newInfo
         })
-        if path.exists(path.join('.', 'project', change_folder_name(user['username']))):
-            rename(path.join('.', 'project', change_folder_name(user['username'])), change_folder_name(username))
+
         data = dumps(user,default=json_util.default)
         print(data)
         return data
@@ -735,8 +654,6 @@ def update_user(user_id):
 def delete_user(user_id):
     if session.get('admin_id') and session.get('user_id') is None:
         user = mongo.db.users.find_one_and_delete({ '_id': ObjectId(user_id) })
-        if path.exists(path.join('.', 'project', change_folder_name(user['username']))):
-            rmtree(path.join('.', 'project', change_folder_name(user['username'])))
         return {
             "user": dumps(user,default=json_util.default)
         }
@@ -747,37 +664,10 @@ def delete_user(user_id):
 
 @app.route('/dirs', methods=['GET'])
 def getDirs():
-    def _item_to_value(iterator, item):
-        return item
-    def list_directories(bucket_name, prefix):
-        if prefix and not prefix.endswith('/'):
-            prefix += '/'
-
-        extra_params = {
-            "projection": "noAcl",
-            "prefix": prefix,
-            "delimiter": '/'
-        }
-
-        path = "/b/" + bucket_name + "/o"
-
-        iterator = page_iterator.HTTPIterator(
-            client=client,
-            api_request=client._connection.api_request,
-            path=path,
-            items_key='prefixes',
-            item_to_value=_item_to_value,
-            extra_params=extra_params,
-        )
-        return [x for x in iterator]
-
-    data = list_directories(STORAGE_BUCKET, 'static_projects/text_mode')
     datas = []
-    code = getCode()
-    # print(code)
+    code = list_dir()
     datas.append(code)
     codigo = dumps(code, default=json_util.default, ensure_ascii=False).encode('utf-8')
-    codigo2 = dumps({'xd': data}, default=json_util.default, ensure_ascii=False).encode('utf-8')
     
     return Response(codigo, content_type='application/json; charset=utf-8')
 
@@ -794,14 +684,21 @@ def zipDownload():
             binary = blob.download_as_string()
             zf.writestr(blob.name, binary)
     memory_file.seek(0)
-    print(dir(bucket))
     return send_file(memory_file, download_name='zip.zip')
 
-@app.route('/download-gc', methods=['GET'])
+@app.route('/download-gc', methods=['GET', 'POST'])
 def download_google():
-    file = bucket.blob('josue.png')
-    file.make_public()
-    file.download_to_filename('filename.png')
+    if request.method == 'POST':
+        files = request.files.getlist('files')
+        path = 'documentacion/'
+        for file in files:
+            filename = file.filename
+            data = (file.stream.read()).decode('utf-8')
+            blob = bucket.blob('documentacion/' + filename)
+            blob.upload_from_string(data, content_type = file.content_type)
+        # file = bucket.blob('josue.png')
+        # file.make_public()
+        # file.download_to_filename('filename.png')
     return 'ta bien'
 
 @app.route('/prueba', methods=['GET'])
@@ -810,8 +707,6 @@ def prueba():
     # storage_user = default_app.storage()
     storage_random = storage_fb.child("documentacion/cuento.c").get_url(None)
 
-    # blob = storage_random.blob('axd.jpg')
-    # blob = []
     gcs_file = bucket.get_blob('josue.png')
     # blob = bucket.blob('static_projects/')
     # blob.upload_from_string('', content_type='application/x-www-form-urlencoded;charset=UTF-8')
@@ -829,26 +724,6 @@ def prueba():
     # https://stackoverflow.com/questions/38601548/how-to-move-files-with-firebase-storage
     # bucket.copy_blob(folder, bucket, '/copia/')
 
-    # print(folder)
-    # print(folder_2)
-    # for files in blob_ref.prefixes:
-    #     print(files)
-        # new_blob = bucket.copy_blob(files, bucket, 'static_projects/')
-
-    # print("Blob {} has been renamed to {}".format(blob_ref, new_blob.name))
-    # newFolder = bucket.rename_blob(renameFolder, 'static_projects')
-
-    # print(gcs_file.download_as_string())
-    # for i in storage.list_files():
-    #     blob = i.upload_from_string(
-    #     uploaded_file.read(),
-    #     content_type=uploaded_file.content_type
-    # )
-    # storage_ref = storage_user.ref()
-
-    # return send_file(storage_ref.child('axd.jpg'))
-    # send_file(blob, download_name='image.jpg')
-    # return send_file(BytesIO(content), mimetype='image/jpg')
     return send_file(BytesIO(gcs_file.download_as_string()), mimetype='image/jpg')
 
 @app.errorhandler(404)

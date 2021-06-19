@@ -14,7 +14,7 @@
         <div class="my-5">
             <h1>Hola, {{ user.username}}!</h1>
             <small>{{ user['email'] }}</small>
-            <p>Se unió en {{ user.created_at.strftime('%d %b %Y') }}</p>
+            <p>Se unió el {{ user.created_at.strftime('%d %b %Y') }}</p>
             <div class="edit">
                 <button id="btn-modal-editar" class="btn btn-primary">Editar</button>
             </div>
@@ -37,11 +37,11 @@
                 <div class='card' style='width: 18rem;'>
                     <img src="data:image/{{project.contentType}};base64,{{project.image.decode('ascii')}}" alt="{{project.title}}">
                     <div class='card-body'>
-                        <h5 class='card-title'>{{project.title}}</h5>
+                        <h5 class='card-title'>{{project.project_name}}</h5>
                         <p class='card-text'>
                             {{project.description}}
                         </p>
-                        <a href='/project/{{user.username}}/{{project.title}}' class='btn btn-primary'>Ver y editar</a>
+                        <a href='/project/{{user._id}}/{{project.project_name}}' class='btn btn-primary'>Ver y editar</a>
                         <form id="delete-project">
                             <input type="hidden" name="id" value="{{project._id}}">
                             <button class='btn btn-danger'>Borrar proyecto</button>
