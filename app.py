@@ -1,35 +1,53 @@
+# data transfer
 from io import BytesIO
-from os import getcwd, path, makedirs, walk, rename, environ
-from shutil import rmtree
 from zipfile import ZipFile
+
+# Manejo de archivos
+from tempfile import mkdtemp
+from os import path, environ
+
+# manipular información 
+from base64 import encodebytes
+from bson.objectid import ObjectId
+from bson import json_util
+from json import dumps
+
+# Configuración del servidor
 from flask import Flask, render_template, request, Response, redirect, session, flash, jsonify, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_session import Session
 from werkzeug.utils import secure_filename
+
+# Librerias de google cloud
 from google.cloud import storage
 from google.oauth2 import service_account
-from google.api_core import page_iterator
-from google.cloud.storage.bucket import Bucket
+# from google.api_core import page_iterator
+# from google.cloud.storage.bucket import Bucket
+
+# Librerias de Firebase
 from firebase import Firebase
+
+# Librerias de Mongodb
 from flask_pymongo import PyMongo
-from bson.objectid import ObjectId
-from bson import json_util
-from json import dumps
-from dotenv import load_dotenv
-from tempfile import mkdtemp
+
+# Actualización del tiempo
 import datetime
-from base64 import encodebytes
+
+# Manejo de markdown para colorear el code
 from markdown import markdown
 import markdown.extensions.fenced_code
 import markdown.extensions.codehilite
 from pygments.formatters import HtmlFormatter
 
 if(path.exists('./.env')):
+    # Variables de entorno en modo desarrollo 
+    from dotenv import load_dotenv
     load_dotenv()
 
 
 USER_DB = environ["USER_DB"]
 PASSWORD_DB = environ["PASSWORD_DB_KEY"]
+
 # Firebase credentials
 private_key = environ['private_key'].replace('\\n', '\n').replace('\\\\n', '\\n')
 credentials = {
@@ -56,11 +74,11 @@ STORAGE_BUCKET = config['storageBucket']
 
 app = Flask(__name__)
 
+app.secret_key = environ['SESSION_KEY']
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config['SESSION_PERMANENT'] = False  # La cookie no se guarda para siempre
-app.secret_key = environ['SESSION_KEY']
-app.config['MONGO_URI'] = f'mongodb+srv://CS50:{PASSWORD_DB}@cluster0.73uuw.mongodb.net/cs50xni?retryWrites=true&w=majority'
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['MONGO_URI'] = f'mongodb+srv://{USER_DB}:{PASSWORD_DB}@cluster0.73uuw.mongodb.net/cs50xni?retryWrites=true&w=majority'
 Session(app)
 mongo = PyMongo(app)
 # Initialize Firestore DB
@@ -71,7 +89,7 @@ client = storage.Client(credentials=credentials_gc)
 bucket = client.get_bucket(STORAGE_BUCKET)
 
 ALLOWED_EXTENSIONS = {'txt', 'c', 'js', 'py', 'html', 'h', 'png', 'jpg', 'jpeg', 'gif'}
-IMAGE_MIMETYPE = ['image/png', 'image/jpeg', 'image/jpg']
+IMAGE_MIMETYPE = {'image/png', 'image/jpeg', 'image/jpg'}
 INVALID_FILENAME = {':', '*', '/', '"', '?', '>', '|', '<'}
 
 def allowed_file(filename):
@@ -124,7 +142,7 @@ def get_user_and_project(user_id):
 # directories = list_directories(STORAGE_BUCKET, route)
 
 # Lista los directorios de las rutas especificadas
-def list_dir(route='static_project/text_mode/'):
+def list_dir(route):
     data = []
     info = {
         'files': [],
@@ -151,7 +169,6 @@ def list_dir(route='static_project/text_mode/'):
 
             info['path'] = path_dir
         if(filename):
-            # print(filename)
             (info['files']).append(filename)
 
     return data
@@ -177,7 +194,7 @@ def get_file_data(path_file, file, file_ext):
             'type': 'code'
         }
     else:
-        code = bucket.blob(f'{path_file}{file}').download_as_string().decode('utf-8')
+        code = bucket.blob(f'{path_file}{file}').download_as_string()
         image = encodebytes(code)
         json_image = dumps(image,default=json_util.default)
 
@@ -207,6 +224,12 @@ def create_zip(path, depth):
             zf.writestr(name, binary)
     memory_file.seek(0)
     return memory_file
+
+def delete_project_storage(path):
+    blobs = bucket.list_blobs(prefix=path)
+    for blob in blobs:
+        blob.delete()
+
 
 @app.route('/')
 def home():
@@ -265,7 +288,7 @@ def register():
 
         file = request.files['image']
         if file.filename != '':
-            if any(file.mimetype == mimetype for mimetype in IMAGE_MIMETYPE):
+            if file.mimetype in IMAGE_MIMETYPE:
                 mimetype = file.mimetype
                 image = file.read()
                 image = encodebytes(image)
@@ -332,7 +355,7 @@ def update_profile(user_id):
 
         file = request.files['perfil']
         if file.filename != '':
-            if any(file.mimetype == mimetype for mimetype in IMAGE_MIMETYPE):
+            if file.mimetype in IMAGE_MIMETYPE:
                 mimetype = file.mimetype
                 image = encodebytes(file.read())
                 newInfo['perfil'] = image
@@ -386,7 +409,10 @@ def addProject():
             for file in files:
                 if file and allowed_file(file.filename):
                     filename = secure_filename(file.filename)
-                    data = (file.stream.read()).decode('utf-8')
+                    if file.mimetype in IMAGE_MIMETYPE:
+                        data = file.stream.read()
+                    else:
+                        data = (file.stream.read()).decode('utf-8')
                     blob = bucket.blob(directory + filename)
                     blob.upload_from_string(data, content_type = file.content_type)
                     file_names.append(filename)
@@ -427,7 +453,7 @@ def delete_project():
         if project is None:
             flash('El proyecto no existe')
             return redirect('/profile')
-        rmtree(project['path'])
+        delete_project_storage(project['path'])
         data_cursor = mongo.db.projects.find({ 'users_id': ObjectId(session.get('user_id'))})
         data_list = [doc for doc in data_cursor]
         data = dumps(data_list,default=json_util.default)
@@ -438,11 +464,13 @@ def delete_project():
         return redirect('login')
 
 # Ruta para ver los proyectos en modo texto
-@app.route('/project/<user_id>/<project_name>/', methods=['GET', 'POST'])
-def show_project(user_id, project_name):
-    print(user_id)
+@app.route('/project/<username>/<project_name>/', methods=['GET', 'POST'])
+def show_project(username, project_name):
     print(project_name)
-    db_project = mongo.db.projects.find_one({ 'users_id': ObjectId(user_id), 'project_name': project_name })
+    db_project = mongo.db.projects.find_one({ 'author': username, 'project_name': project_name })
+    if db_project is None:
+        flash('El proyecto no existe')
+        return render_template('404.html'), 404
     print(db_project['path'])
     project_path = db_project['path']
     if request.method == 'POST':
@@ -628,7 +656,7 @@ def update_user(user_id):
         print(newInfo)
         file = request.files['perfil']
         if file.filename != '':
-            if any(file.mimetype == mimetype for mimetype in IMAGE_MIMETYPE):
+            if file.mimetype in IMAGE_MIMETYPE:
                 mimetype = file.mimetype
                 image = encodebytes(file.read())
                 newInfo['perfil'] = image
@@ -673,10 +701,8 @@ def getDirs():
 @app.route('/zip', methods=['GET'])
 def zipDownload():
     memory_file = BytesIO()
-    # folder = 'test'
     blobs = bucket.list_blobs(prefix='static_projects/')
-    # for blob in blobs:
-    #     print(blob.name)
+
     with ZipFile(memory_file, 'w') as zf:
         for blob in blobs:
             binary = blob.download_as_string()
@@ -688,7 +714,6 @@ def zipDownload():
 def download_google():
     if request.method == 'POST':
         files = request.files.getlist('files')
-        path = 'documentacion/'
         for file in files:
             filename = file.filename
             data = (file.stream.read()).decode('utf-8')
