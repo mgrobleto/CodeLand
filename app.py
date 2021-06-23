@@ -525,8 +525,12 @@ def show_static_project(project_name):
     directory = list_dir(route=project_path)
     print(project_path)
     return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
-
-
+  
+#para la parte de documentacion
+@app.route('/examples/basicos')
+def documentacion():  
+    db_documentation = mongo.db.documentation.find({'type':'document'})
+    return render_template("pdf/documentacion.html",db_documentation=db_documentation)
 # Ruta para ver ejemplos
 @app.route('/examples/<ejemplo_name>/', methods=['GET', 'POST'])
 def show_ejemplo(ejemplo_name):
