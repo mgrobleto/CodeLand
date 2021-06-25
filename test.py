@@ -26,4 +26,6 @@ def check_folder_name(string):
             string = string.replace(invalid_name, '_')
     return string
 
-print(check_folder_name('Hola *:D'))
+# print(check_folder_name('Hola *:D'))
+hexade = u"static_project/text_mode/Simulaci\u00f3n Loter\u00eda/"
+print(hexade.encode('utf-8').decode('utf-8'))
