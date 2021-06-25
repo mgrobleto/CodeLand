@@ -112,6 +112,8 @@ body {
     justify-content: center;
     align-items: center;
     padding: 2px 59px;
+    text-decoration:none;
+
 
     position: static;
     width: 332px;
