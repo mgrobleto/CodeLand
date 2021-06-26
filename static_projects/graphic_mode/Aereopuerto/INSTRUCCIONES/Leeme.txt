@@ -1,0 +1,26 @@
+		Requisitos para el funcionamiento del programa
+
+
+-El programa principal es "Aeropuerto.c" pero para lograr su funcinamiento
+correcto de este se tiene que agregar a la carpeta include las dos librerias
+que esta presente en el disco las cuales son "VENTANAS.h", "fAuxi.h", "16IMAGEN.H",
+"Button.H", "Input.h","GTools.h" y "POLYGON.H".
+
+-Incomporamos el uso de imagenes .bmp por ende adjuntamos los .bmp que se tiene 
+que guardar en una carpeta llamada "BPM" con la siguiente direccion "C:\\BMP"
+la primera imagenes en la carpeta "C:\\BMP\\mini.bmp" y "C:\\BMP\\map.bmp".
+
+-Es programa fue diseñado para trabajar en 300000 ciclos.
+
+-Se trabajaron con ficheros en modo "a" creado en una carpeta llamada "Airport".
+
+			Funcionamiento del programa
+
+-En la peticion de datos se establecio dos aerolineas que son "Aereopostal" y "Avianca"
+esto con el fin de que al ingresar el numero de vuelo se generen automaticamente 
+los dos primeros digitos del codigo  que son "AV" que pertenece a la aerolinea Avianca
+y "VH" que pertenece a la aerolinea Aeropostal segun los datos proporcionados por la 
+pagina oficial de la IATA. 
+
+-En la parte del radar el usuario debe esperar que el avion llegue a su destino 
+para poder salir de esa pantalla 
