@@ -76,7 +76,7 @@ app = Flask(__name__)
 
 app.secret_key = environ['SESSION_KEY']
 app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config['SESSION_PERMANENT'] = False  # La cookie no se guarda para siempre
+app.config['SESSION_PERMANENT'] = True  # La cookie no se guarda para siempre
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['MONGO_URI'] = f'mongodb+srv://{USER_DB}:{PASSWORD_DB}@cluster0.73uuw.mongodb.net/cs50xni?retryWrites=true&w=majority'
 Session(app)
@@ -230,6 +230,10 @@ def delete_project_storage(path):
     for blob in blobs:
         blob.delete()
 
+
+@app.before_request
+def before_request():
+    app.permanent_session_lifetime = datetime.timedelta(hours=12);
 
 @app.route('/')
 def home():
