@@ -346,7 +346,7 @@ En cada iteración primero obtenemos la ruta y el nombre del archivo:
 <img src="/readme_files/ejemplo_archivos.png" />
 
 Luego validamos que el nombre no este vacio ya que puede que haigan "directorios" vacios llamados: "Example/const/" y si es así entonces filename seria un string vacio 
-por que al dividir con split quedaria: `["Example", "const", ""]` y al obtener el último estaria vacio. También si el path anterior es distinto al anterior quiere decir 
+por que al dividir con split quedaria: `["Example", "const", ""]` y al obtener el último estaria vacio. También si el path anterior es distinto al actual quiere decir 
 que el proximo archivo es de otra directorio y entonces valida que aparte de que si es distinto no sea None, None es el valor por defecto en el diccionario, y luego que exista 
 más de un archivo para tomarlo en cuenta.
 

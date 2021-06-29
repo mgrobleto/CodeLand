@@ -1,0 +1,28 @@
+{% extends 'layout/index.html' %}
+
+{% block title %}
+<title> Documentacion | Lenguaje C </title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/static/styles/documentacion/documentacion.css" />
+{% endblock %}
+
+{% block body %}
+<body>
+    <section class="all-documentation">
+        <div class="documentation"> 
+          {% for documentation in db_documentation %}
+            <!--{{documentation['document_title']}}--->
+            <div class="single-document">
+                <img src="{{documentation['image_route']}}" class="document-img">
+                <h5>{{documentation['document_title']}}</h5>
+                <div class="watch-document">
+                    <a href="{{documentation['path']}}" download class="btn btn-primary">Descargar</a>
+                </div>   
+            </div>
+          {% endfor %}
+        </div>
+    </section>
+</body>
+{% endblock %} 

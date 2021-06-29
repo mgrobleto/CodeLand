@@ -12,25 +12,30 @@
 }
 
 .container {
-    padding-top: 30px;
+    
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 8px;     
+    margin: 0% auto;
+
+   /* padding-top: 30px;
     display: flex;
     flex-direction:column;
     justify-content: center;
-    align-items: center;
+    align-items: center;*/
 }
 
 .single-box {
     display: block;
     flex-direction: column;
-    align-items: center;
-    justify-content:center;
-    width: 50%;
-    height: 50%;
+    justify-content:left;
+    width: 700px;
+    height: 500px;
     border-radius: 4px;
     background-color: #008ecc;
     color: #fff;
     text-align:center;
-    margin: 20px;
+    margin:20px;
     padding: 10px;
     transition: .6s;
     cursor: pointer;
@@ -38,9 +43,11 @@
 }
 
 .single-box .img {
-    display:flex;
+    /*display:flex;
     justify-content: center;
-    align-items: center;
+    align-items: center;*/
+    width: 400px;
+    height: 400px;
 }
 
 .single-box:hover {
@@ -48,6 +55,7 @@
 }
 
 .img-area {
+    margin-left: 20px;
     background-image: url(/static/styles/installers/img/WindowsC_img.png);
 }
 
@@ -55,8 +63,8 @@
     display:grid;
     justify-content: center;
     align-items: center;
-    width: 200px;
-    height: 200px;
+    width: 450px;
+    height: 450px;
     margin-bottom: 10px;
     padding: 20px;
     background-size: cover;
@@ -64,26 +72,40 @@
 }
 
 .header {
+    padding-top: 40px;
     font-family: Nunito;
     font-style: normal;
     font-size: 40px;
     font-weight: 200;
     line-height: 48px;
     text-align: center;
+    margin-left: 500px;
     color: #333;
 }
-
-.img-text {
-    font-family: Nunito;
+.h2{
     padding-top: 20px;
+}
+.img-text {
+    width: 599px;
+    height: 614px;
+    left: 57px;
+    top: 100px;
+    
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 35px;
+    line-height: 41px;
+    
 }
 
 .img-text p {
-    padding-top: 20px;
+    justify-self: unset;
+ /*   padding-top: 20px;
     font-size: 20px;
-    font-weight: 100;
+    font-weight: 400;
     line-height: 30px;
-    font-weight:lighter;
+    font-weight:lighter;*/
 }
 
 .download-btn .btn {
