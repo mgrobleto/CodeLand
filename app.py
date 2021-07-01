@@ -62,7 +62,7 @@ credentials = {
     'auth_provider_x509_cert_url': environ['auth_provider_x509_cert_url'],
     'client_x509_cert_url': environ['client_x509_cert_url']
 }
-
+ 
 config = {
     'apiKey': environ['apiKey'],
     'authDomain': environ['authDomain'],
