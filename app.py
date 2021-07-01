@@ -62,7 +62,7 @@ credentials = {
     'auth_provider_x509_cert_url': environ['auth_provider_x509_cert_url'],
     'client_x509_cert_url': environ['client_x509_cert_url']
 }
-
+ 
 config = {
     'apiKey': environ['apiKey'],
     'authDomain': environ['authDomain'],
@@ -342,7 +342,7 @@ def update_profile(user_id):
 
         if not check_password_hash((findUser[-1])['password'], password_confirm):
             return redirect('/profile')
-
+        #se validan las entradas
         newInfo = {}
         if len(username) > 0:
             newInfo['username'] = username
@@ -432,7 +432,6 @@ def download_project(project_id):
 
     memory_file = create_zip(project['path'], 3)
     return send_file(memory_file, download_name=f'{project_name}.zip')
-
 
 # Ruta para descargar los codigos predeterminados en modo texto
 @app.route('/download-static_project/<project_id>', methods=['GET'])

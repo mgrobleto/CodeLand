@@ -1,36 +1,69 @@
 {% extends 'layout/index.html' %}
 
 {% block title %}
-<title> Instaladores </title>
+<title> Herramientas </title>
 {% endblock %}
  
 {% block style %}
 <link rel="stylesheet" href="/static/styles/installers/tools.css" />
 {% endblock %} 
-
+ 
 {% block body %}
 <body>
-    <section class="back">
-        <span class="header"><strong> Windows C Assistant </strong></span>
-        <div class="container">
-            <div>
-            <div class="img-area"></div>
-            </div>
-               
-         
-            <div class="single-box">
-                <div class="img-text">
-                    <h2>
-                        Windows C Assistant es un asistente para la creación de formularios y un entorno virtual gráfico en MS-DOS mediante el cual se pretende simular una versión reciente del sistema operativo de WINDOWS 10, también funciona como instalador de la máquina virtual que simula MS-DOS "DOSBOX" y del lenguaje de programación utilizado 'Turbo C 2.0', además anexa la funcionalidad de instalar un editor de texto de Microsoft llamado Visual Studio Code.
-                    </h2>
-                    
-                </div>
-                <div class="download-btn">
-                    <a class="btn btn-outline-success" href="https://drive.google.com/file/d/1HFouxM_4tV8I3lwL4LsJvdQUatNgmB60/view?usp=sharing"> Descargar </a>
-                </div>
-            </div>
-        </div>
+    <section class="landing">
+      <h1>Turbo C Studio 2021 </h1>
+      <h2> Rápido, Organizado e Intuitivo</h2>
+      <a href="https://drive.google.com/file/d/1HFouxM_4tV8I3lwL4LsJvdQUatNgmB60/view?usp=sharing" class="btnDownload">Descargar</a>
+      <div class="imgTurboCLogo">
+        <img src="static\styles\installers\img\logo.png" alt="">
+      </div>
+      <h3>es un asistente para el uso del compilador turbo C que incorpora <br>-Instalación del emulador DOSBOX<br> -Creación de formularios en C por medio de una interfaz gráfica<br> -Reduce el proceso de compilación a un click </h3>
+      <div class="imgMoon">
+        <img src="static\styles\installers\img\moon.svg" alt="">
+      </div>
+    </section>
+      <div class="imgAstronaut">
+        <img src="static\styles\installers\img\astronaut.svg" alt="">
+      </div>
+    </section>
 
+    <section class="functionalities">
+      <h1>Funcionalidades</h1>
+      <h2 class="func1">✓ Instaladores de Turbo C 2.0,<br> Visual Studio Code y DOSBox.</h2>
+      <h2 class="func2">✓ Creación de Forms con extensiones <br>C y H, con código personalizado</h2>
+      <h2 class="func3">✓ Abrir archivos C con Turbo C </h2>
+      <h2 class="func4">✓ Compilar y ejecutar desde <br>directorios personalizados</h2>
+      <h2 class="func5">✓ Ejecución de código con el<br> compilador "Tiny C Compiler"</h2>
+      <h2 class="func6">✓ Abrir archivos C con <br>Visual Studio Code</h2>
+    </section>
+
+    <section class="interface">
+        <h1>Interfaz amigable</h1>
+        <div class="slider">
+            <ul>
+                <li><img src="static\styles\installers\img\home.svg" alt=""></li>
+                <li><img src="static\styles\installers\img\forms.svg" alt=""></li>
+                <li><img src="static\styles\installers\img\createdform.svg" alt=""></li>
+                <li><img src="static\styles\installers\img\installers.svg" alt=""></li>
+                <li><img src="static\styles\installers\img\settings.svg" alt=""></li>
+                <li><img src="static\styles\installers\img\appSettings.svg" alt=""></li>
+                <li><img src="static\styles\installers\img\dosboxSettings2.svg" alt=""></li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="community">
+        <h1>Comunidad</h1>
+        <h2>Cuenta con un canal de <br>discord donde se anuncian las<br> actualizaciones,<br> desarrolladores brindan<br> consejos de programación y <br>donde puedes interactuar con<br> los demás.</h2>
+        <div class="invitation">
+            <img src="static\styles\installers\img\invitation.svg" alt="">
+        </div>
+        <div class="secondAstronaut">
+            <img src="static\styles\installers\img\secondAstronaut.svg" alt="">
+        </div>
+        <div class="party">
+            <img src="static\styles\installers\img\party.svg" alt="">
+        </div>
     </section>
 </body>
 {% endblock %}
