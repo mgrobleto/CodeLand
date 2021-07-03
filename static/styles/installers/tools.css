@@ -110,7 +110,7 @@
     position: absolute;
     width: 514px;
     height: 64px;
-    left: 450px;
+    left: 500px;
     top: 117px;
     font-size: 64px;
     line-height: 75px;
@@ -168,7 +168,7 @@
     position: absolute;
     width: 611px;
     height: 131px;
-    left: 466px;
+    left: 506px;
     top: 0px;
 
     font-family: Roboto;
@@ -182,7 +182,7 @@
     position: absolute;
     width: 1116px;
     height: 730px;
-    left: 160px;
+    left: 190px;
     top: 80px;
     overflow: hidden;
 }
@@ -254,7 +254,7 @@
 .community {
     position: absolute;
     width: 1442px;
-    height: 785px;
+    height: 885px;
     background-position: center;
     top: 2650px;
     background: linear-gradient(90deg, #9400d3 0%, #4b0082 100%);
@@ -264,7 +264,7 @@
     width: 397px;
     height: 75px;
     left: 536px;
-    top: 41px;
+    top: 61px;
 
     font-family: Roboto;
     font-style: normal;
@@ -278,7 +278,7 @@
     width: 661px;
     height: 400px;
     left: 86px;
-    top: 168px;
+    top: 188px;
 
     font-family: Roboto;
     font-style: normal;
@@ -293,14 +293,14 @@
     width: 588px;
     height: 412px;
     left: 831px;
-    top: 202px;
+    top: 222px;
 }
 .secondAstronaut{
     position: absolute;
     width: 289.28px;
     height: 232.95px;
     left: 42px;
-    top: 516.57px;
+    top: 546.57px;
     transform: rotate(-24.63deg);
 }
 .party{
@@ -308,5 +308,5 @@
     width: 406px;
     height: 306px;
     left: 334px;
-    top: 466px;
+    top: 486px;
 }
