@@ -1,155 +1,198 @@
-* {
+/** {
     padding: 0;
     margin: 0;
+}*/
+
+#about {
+    padding-left: 15%;
+    padding-top: 5%;
+    padding-right: 15%;
 }
 
-/*section:hover {
-    transition: 400ms;
-}*/
+#goals-section {
+    padding-left: 8%;
+    padding-top: 5%;
+    padding-right: 5%;
+}
 
 .who-we-are {
     min-height: 100vh;
     width: 100%;
-    background-color: #000814;
+    background-color: #0a192f;
     background-position: center;
     background-size: cover;
-    /*position: relative;*/
 }
 
-.who {
-    background-color: #262626;
-    background-position:left; 
-    background-position-y: center;
-    background-size: 20px;
+.goals {
+    min-height: 100vh;
+    width: 100%;
+    background-color: #0a192f;
+    background-position: center;
+    background-size: cover;
 }
 
-.box {
-    margin: 0 20%;
+.about-title {
+    font-family: "Nunito";
+    font-size: 40px;
+    color: #D62AD0;
+    margin-top: 10px;
+}
+
+.about-content {
+    font-family: "Nunito";
+    font-display: fallback;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
-.single-box {
-    /*position: relative;*/
-    display: block;
+/*.about-content span {
+    font-family: "Nunito";
+    font-size: 40px;
+    color: #e6f1ff;
+    margin-top: 10px;
+}*/
+
+.about-description {
+    max-width: 700px;
+    font-size: 25px;
+    margin: 0;
+    color: #ccd6f6;
+    cursor: default;
+    display: flex;
     flex-direction: column;
-    align-items: center;
+    height: 50%;
+    /*position: relative;*/
+    padding: 2rem 1.80rem;
+    padding-top: 4rem;
+    background-color: #112240;
+    border-radius: 16px;
+    margin-top: 40px;
+    box-shadow: 6px 13px 23px -5px rgba(0, 0, 0, 0.46);
+    border: 2px solid #1CC5DC;
+}
+
+.about-description:hover {
+    transform: translate(-7px);
+    transition: 300ms;
+}
+
+.about-image {
+   padding-left: 150px;
+}
+
+.about-image img {
+    max-width: 500px;
+    height: auto;
+}
+
+.goals-description {
+    max-width: 700px;
+    font-size: 25px;
+    color: #E1E8EB;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    /*height: 50%;*/
+    position: relative;
+    padding: 1rem 1.80rem;
+    padding-top: 3rem;
+    background-color: #112240;
+    border-radius: 16px;
+    margin-top: 40px;
+    margin-left: 70px;
+}
+
+.goals-content {
+    font-family: "Nunito";
+    font-display: fallback;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.goals-title {
+    font-size: 40px;
+    color:#1CC5DC;
+    margin-top: 10px;
+}
+
+.goals-image {
+    padding-left: 10px;
+}
+
+.goals-image img{
+    max-width: 400px;
+    height: auto;
+    margin-bottom: 0;
+    margin-top: 40px;
+    display: inline-block;
     justify-content: center;
-    width: 80%px;
-    height: 340px;
-    border-radius: 4px;
-    background-color: #fff;
-    color: #24285B;
-    text-align: center;
-    margin: 40px;
-    padding: 20px;
-    transition: .6s;
-    cursor: pointer;
-}
-
-.single-box:hover {
-    /*background: #d6d6d666;
-    color: #fff;*/
-    transform: translate(0, -10px);
-}
-
-.single-box:nth-child(1) .img-area{
-    background-image: url(/static/styles/about/images/1.png);
-}
-
-.single-box:nth-child(2) .img-area{
-    background-image: url(/static/styles/about/images/2.png);
-}
-
-.img-area {
-    display:inline-block;
-    justify-content: center;
     align-items: center;
-    width: 100px;
-    height: 100px;
-    border: 6px solid #ddd;
+    border: 2px solid #ddd;
     border-radius: 50%;
-    margin-bottom: 10px;
+    /*width: 300px;*/
+    height: 400px;
     padding: 20px;
     background-size: cover;
     background-position: center center;
 }
 
-.header {
-    font-size: 25px;
-    font-weight: 500;
-    line-height: 48px;
-}
-
-.img-text {
-    font-family: Poppins;
-    padding-top: 20px;
-    /*color: #24285B;*/
-}
-
-.img-text p {
-    font-size: 20px;
-    font-weight: 100;
-    line-height: 30px;
-    font-weight: bold;
-    /*color: #24285B;*/
-}
-
-.img-text .list-ob ul li{
+.goals-description ul li{
     list-style: none;
     font-size: 25px;
     font-weight: 400;
     line-height: 10px;
     text-align: justify;
     margin-bottom: 10px;
-    
-    /*color: #24285B;*/
+    margin-top: 20px;
 }
 
-.img-text .list-ob ul li:not(:last-child) {
+.goals-description ul li:hover {
+    transform: translate(-7px);
+    transition: 300ms;
+}
+
+.goals-description ul li:not(:last-child) {
     margin-bottom: 10px;
 }
 
-/*.img-text .list-ob ul li:before {
-    content: icon;
-} */
-
-.img-text .list-ob ul li .bi {
-    /*font-size: 30px;*/
+.goals-description ul li .bi {
     line-height: 60px;
     transition: .6s;
     margin-right: 20px;
+    /*color: #A239EA;*/
+    color: #D62AD0;
 }
 
 .developers {
-
     min-height: 100vh;
     width: 100%;
-    background-color: #003566;
+    background-color: #0a192f;
     background-position: center;
     background-size: cover;
-    position: relative;
-    font-family: Poppins;
+    /*position: relative;*/
+    font-family: "Poppins";
 }
 
 .heading3 {
-    color: #fff;
+    color: #e6f1ff;
+    padding-top: 5%;
+    /*font-family: "NTR";*/
     /*font-style: italic;*/
-    font-weight: normal;
+    /*font-weight: bold;*/
     height: 140px;
-    font-size: 50px;
-    margin-top: 15px;
+    font-size: 40px;
+    /*margin-top: 15px;*/
     text-align:center;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
 }
 
 .profiles {
     display: flex;
     justify-content: space-around;
-    margin-top: 10px;
-    margin: 20px 80px;
+    /*margin-top: 10px;*/
+    margin: 20px 0px;
 }
 
 /*.profile:not(:last-child) {
@@ -159,7 +202,14 @@
 .profile {
     color: #fff;
     flex-basis: 290px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    padding: 2rem 1.80rem;
+    padding-top: 1rem;
+    background-color: #112240;
+    border-radius: 16px;
+    margin-top: 0;
+    box-shadow: 5px 10px 15px -5px rgba(0, 0, 0, 0.46);
+    border: 2px solid #1CC5DC;
 }
 
 .profile .profile-img {
@@ -167,18 +217,20 @@
     width: 280px;
     border-radius: 50%;
     filter: grayscale(100%);
-    cursor: pointer;
+    cursor: default;
     transition: 400ms;
 }
 
 .profile:hover .profile-img {
     filter: grayscale(0);
-    transform: translate(0, -10px);
+    /*transform: translate(0, -10px);*/
 }
 
 .user-name {
     margin-top: 30px;
-    font-size: 30px;
+    margin-left: 10px;
+    font-size: 25px;
+    color: #a8b2d1;
 }
 
 .profile h5 {
