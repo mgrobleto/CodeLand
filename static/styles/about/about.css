@@ -135,6 +135,7 @@
     font-size: 40px;
     color:#1CC5DC;
     margin-top: 10px;
+    font-weight: bold;
 }
 
 .goals-image {
@@ -182,7 +183,7 @@
     transition: .6s;
     margin-right: 20px;
     /*color: #A239EA;*/
-    color: #D62AD0;
+    color: #EA37A3;
 }
 
 .developers {
@@ -196,16 +197,16 @@
 }
 
 .heading3 {
-    color: #e6f1ff;
-    /*padding-top: 5%;*/
-    /*font-family: "NTR";*/
-    /*font-style: italic;*/
-    /*font-weight: bold;*/
-    height: 140px;
+    color: #EA37A3;
+    font-family: "Nunito";
+    font-weight: bold;
+    height: 130px;
     font-size: 40px;
-    /*margin-top: 15px;*/
     text-align:center;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
+    /*padding-top: 5%;*/
+    /*font-style: italic;*/
+    /*margin-top: 15px;*/
 }
 
 .profiles {
