@@ -37,15 +37,6 @@
     /*padding-left: 30px;*/
 }
 
-/*.head-img {
-    padding-left: 10px;
-}/*
-
-/*.head-img img {
-    max-width: 500px;
-    color: #7DEAC8;
-}*/
-
 .about-title {
     font-family: "Nunito";
     font-weight: bold;
@@ -63,13 +54,6 @@
     justify-content: space-around;
     padding-top: 40px;
 }
-
-/*.about-content span {
-    font-family: "Nunito";
-    font-size: 40px;
-    color: #e6f1ff;
-    margin-top: 10px;
-}*/
 
 .about-description {
     max-width: 700px;
@@ -159,7 +143,7 @@
     background-position: center center;
 }
 
-.goals-description ul li{
+.goals-description ul li {
     list-style: none;
     font-size: 25px;
     font-weight: 400;
@@ -216,10 +200,6 @@
     margin: 20px 0px;
 }
 
-/*.profile:not(:last-child) {
-    margin-bottom: 10px;
-}*/
-
 .profile {
     color: #fff;
     flex-basis: 290px;
@@ -261,22 +241,16 @@
     color: #ccc;
 }
 
-/*.profile p {
-    font-size: 16px;
-    margin-top: 20px;
-    text-align: justify;
-}*/
-
-.social ul{
+.social ul {
     margin-top: 60px;
     margin-left: 70px;
+    transform: translate(-50%, -50%);
+    display: flex;
     /*position: absolute;
     top: 50%;
     left: 50%;
     padding: 0;
     margin: 0;*/
-    transform: translate(-50%, -50%);
-    display: flex;
 }
 
 .social ul li {
