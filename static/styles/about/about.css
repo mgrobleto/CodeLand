@@ -4,14 +4,14 @@
 }*/
 
 #about {
-    padding-left: 15%;
+    padding-left: 10%;
     padding-top: 5%;
-    padding-right: 15%;
+    padding-right: 10%;
 }
 
 #goals-section {
-    padding-left: 8%;
-    padding-top: 5%;
+    padding-left: 5%;
+    /*padding-top: 5%;*/
     padding-right: 5%;
 }
 
@@ -31,11 +31,28 @@
     background-size: cover;
 }
 
+.header-section {
+    display: flex;
+    flex-direction: row;
+    /*padding-left: 30px;*/
+}
+
+/*.head-img {
+    padding-left: 10px;
+}/*
+
+/*.head-img img {
+    max-width: 500px;
+    color: #7DEAC8;
+}*/
+
 .about-title {
     font-family: "Nunito";
+    font-weight: bold;
     font-size: 40px;
-    color: #D62AD0;
+    color: #EA37A3;
     margin-top: 10px;
+    padding-left: 40px;
 }
 
 .about-content {
@@ -44,6 +61,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    padding-top: 40px;
 }
 
 /*.about-content span {
@@ -82,8 +100,9 @@
 }
 
 .about-image img {
-    max-width: 500px;
+    max-width: 400px;
     height: auto;
+    padding-top: 20%;
 }
 
 .goals-description {
@@ -100,7 +119,8 @@
     background-color: #112240;
     border-radius: 16px;
     margin-top: 40px;
-    margin-left: 70px;
+    margin-left: 50px;
+    /*border: 2px solid #FFA645;*/
 }
 
 .goals-content {
@@ -121,7 +141,7 @@
     padding-left: 10px;
 }
 
-.goals-image img{
+.goals-image img {
     max-width: 400px;
     height: auto;
     margin-bottom: 0;
@@ -177,7 +197,7 @@
 
 .heading3 {
     color: #e6f1ff;
-    padding-top: 5%;
+    /*padding-top: 5%;*/
     /*font-family: "NTR";*/
     /*font-style: italic;*/
     /*font-weight: bold;*/
