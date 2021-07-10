@@ -24,9 +24,6 @@ from google.oauth2 import service_account
 # from google.api_core import page_iterator
 # from google.cloud.storage.bucket import Bucket
 
-# Librerias de Firebase
-from firebase import Firebase
-
 # Librerias de Mongodb
 from flask_pymongo import PyMongo
 
@@ -82,8 +79,6 @@ app.config['MONGO_URI'] = f'mongodb+srv://{USER_DB}:{PASSWORD_DB}@cluster0.73uuw
 Session(app)
 mongo = PyMongo(app)
 # Initialize Firestore DB
-firebase = Firebase(config)
-storage_fb = firebase.storage()
 credentials_gc = service_account.Credentials.from_service_account_info(credentials)
 client = storage.Client(credentials=credentials_gc)
 bucket = client.get_bucket(STORAGE_BUCKET)
@@ -732,30 +727,30 @@ def download_google():
         # file.download_to_filename('filename.png')
     return 'ta bien'
 
-@app.route('/prueba', methods=['GET'])
-def prueba():
+# @app.route('/prueba', methods=['GET'])
+# def prueba():
     # storage_user = default_app.storage.bucket(name='gs://codeland-dcd2d.appspot.com')
     # storage_user = default_app.storage()
-    storage_random = storage_fb.child("documentacion/cuento.c").get_url(None)
+    # storage_random = storage_fb.child("documentacion/cuento.c").get_url(None)
 
-    gcs_file = bucket.get_blob('josue.png')
+    # gcs_file = bucket.get_blob('josue.png')
     # blob = bucket.blob('static_projects/')
     # blob.upload_from_string('', content_type='application/x-www-form-urlencoded;charset=UTF-8')
-    folders = bucket.list_blobs(None, prefix='static_project/')
+    # folders = bucket.list_blobs(None, prefix='static_project/')
 
-    folder = bucket.blob('/static_project/graphic_mode/')
+    # folder = bucket.blob('/static_project/graphic_mode/')
     # folder_2 = bucket.blob('static_projects/')
-    print(folders.path)
-    print(folders.max_results)
-    for folder_ref in folders:
-        print(folder_ref)
+    # print(folders.path)
+    # print(folders.max_results)
+    # for folder_ref in folders:
+    #     print(folder_ref)
     # Util
     # https://stackoverflow.com/questions/59829188/how-rename-folder-in-firebase-storage-android-studio
     # https://stackoverflow.com/questions/41075100/move-rename-folder-in-google-cloud-storage-using-nodejs-gcloud-api?noredirect=1&lq=1
     # https://stackoverflow.com/questions/38601548/how-to-move-files-with-firebase-storage
     # bucket.copy_blob(folder, bucket, '/copia/')
 
-    return send_file(BytesIO(gcs_file.download_as_string()), mimetype='image/jpg')
+    # return send_file(BytesIO(gcs_file.download_as_string()), mimetype='image/jpg')
 
 @app.errorhandler(404)
 def page_not_found(_):
