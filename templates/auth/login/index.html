@@ -1,28 +1,35 @@
 {% extends "layout/index.html" %}
 
 {% block title %}
-    <title>CodeLand | Login</title>
+    <title>CodeLand | Ingresar</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="static\styles\login\login.css" />
 {% endblock %}
 
 {% block body %}
-<section>
-    <h3>Título</h3>
-    <div class="container">
-        <form  action="/login" method="POST">
-            <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Email address</label>
-              <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-              <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-            </div>
-            <div class="mb-3">
-              <label for="exampleInputPassword1" class="form-label">Password</label>
-              <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
-          <div class="register my-5">
-            	<small class="mx-2">Don't have an account?</small><a href="/register">Sign Up</a>
-          </div>
+<section id="login-section">
+  <div id="login-container">
+    <div class="header-section">
+      <h3> ¡Bienvenido de nuevo! </h3>
     </div>
+    <div class="container">
+      <form  action="/login" method="POST">
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Correo electrónico</label>
+          <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+          <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+        </div>
+        <button type="submit" class="btn btn-primary"> Ingresar </button>
+        <div class="register-my-5">
+          <small class="mx-2">¿Aún no tienes una cuenta?</small><a href="/register">Regístrate</a>
+        </div>
+      </form>
+    </div>
+  </div>
 </section>
 {% endblock %}
