@@ -11,30 +11,42 @@
 {% block body %}
 <body>
     <section class="who-we-are">
-        <div class="box">
-            <div class="single-box">
-                <div class="img-area"></div>
-                <div class="img-text">
-                    <span class="header"><strong>¿CodeLand?</strong></span>
+        <div id="about">
+            <div class="header-section">
+                <div class="head-img">
+                    <svg width="109" height="87" viewBox="0 0 109 87" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M98.564 22.4091H86.9682V11.8636H76.5321V0H66.0959V11.8636H44.0639V0H33.6277V11.8636H23.1915V22.4091H11.5958V35.5909H0V59.3182V72.5H11.5958V59.3182V48.7727H23.1915V60.6364H33.6277V72.5H23.1915V87H33.1673H44.0637V72.8808V60.6361H66.0957V72.8808V87H76.9923H86.9682V72.5H76.5321V60.6364H86.9682V48.7727H98.564V72.5H109V35.5909H98.564V22.4091ZM45.2235 42.1818H33.6277V29H45.2235V42.1818ZM77.6916 42.1818H66.0959V29H77.6916V42.1818Z" fill="#7DEAC8"/>
+                    </svg>                                                                    
+                </div>
+                <span class="about-title"> ¿Qué es CodeLand? </span>
+            </div>
+            <div class="about-content">
+                <div class="about-description">
                     <p>
-                        Una página que gira alrededor del lenguaje C.
-                        Brinda desde ejemplos básicos hasta proyectos complejos
-                        al igual te provee documentación en español, recomienda herramientas 
-                        para trabajar con el lenguaje y te permite compartir tu código con otros.
-
+                        Una pagina dedicada a la programación en 
+                        <b> Turbo C 2.0, </b>donde puedes tener acceso a múltiples 
+                        códigos y documentación para facilitarte su uso y estudio.
                     </p>
                 </div>
+                <div class="about-image">
+                    <img src="\static\styles\about\images\Logo-1.svg" />
+                </div>
             </div>
-            <div class="single-box">
-                <div class="img-area"></div>
-                <div class="img-text">
-                    <span class="header"><strong>Objetivos</strong></span>
-                    <div class="list-ob">
-                        <ul>
-                            <li class="text"> <i class="bi bi-check-lg" role="img"></i>Ayudar a un mejor aprendizaje del lenguaje</li>
-                            <li class="text"> <i class="bi bi-check-lg" role="img"></i>Comparir el conocimiento que se tiene del mismo</li>
-                        </ul>
-                    </div>
+        </div>
+    </section>
+    <section class="goals">
+        <div id="goals-section">
+            <div class="goals-content">
+                <div class="goals-image">
+                    <img src="/static/styles/about/images/2.png" />
+                </div>
+                <div class="goals-description">
+                    <span class="goals-title"> Objetivos </span>
+                    <ul>
+                        <li class="text"> <i class="bi bi-check-lg" role="img"></i>Proporcionar códigos en <b>Turbo C 2.0</b>. </li>
+                        <li class="text"> <i class="bi bi-check-lg" role="img"></i>Ofrecer documentación del <b>Lenguaje C</b>. </li>
+                        <li class="text"> <i class="bi bi-check-lg" role="img"></i>Brindar herramientas para el uso de <b>Turbo C 2.0</b>. </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -43,7 +55,6 @@
         <div class="container">
             <h1 class="heading3"> Desarrolladores </h1>
             <div class="profiles">
-  
                 <div class="profile">
                     <img src="/static/styles/about/images/Gabriela.jpeg" class="profile-img">
                     <h3 class="user-name"> Gabriela Robleto </h3>

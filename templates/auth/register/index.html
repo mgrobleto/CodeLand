@@ -1,42 +1,44 @@
 {% extends 'layout/index.html' %}
 
 {% block title %}
-<title>CodeLand | Register</title>
+<title>CodeLand | Registro</title>
 {% endblock %}
 
 {% block style %}
-<link rel="stylesheet" href="/static/styles/register.css">
+<link rel="stylesheet" href="static\styles\register\register.css">
 {% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <form id="form">
+<div id="register-container">
+  <div class="register-section">
+    <div class="register-img">
+      <img src="static\styles\register\img\coding.svg">
+    </div>
+    <div class="register-forms">
+      <form id="form">
         <div class="mb-3">
-          <label for="username" class="form-label">Username</label>
-          <input type="text" name="username" class="form-control" id="username" placeholder="name: John Doe" aria-describedby="emailHelp">
+          <label for="username" class="form-label">Nombre de usuario</label>
+          <input type="text" name="username" class="form-control" id="username" placeholder="John Doe" aria-describedby="emailHelp">
         </div>
         <div class="mb-3">
-          <label for="email" class="form-label">Email address</label>
-          <input type="email" name="email" class="form-control" id="email" placeholder="Email: me@gmail.com" aria-describedby="emailHelp">
-          <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+          <label for="email" class="form-label">Correo electrónico</label>
+          <input type="email" name="email" class="form-control" id="email" placeholder="me@gmail.com" aria-describedby="emailHelp">
         </div>
         <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input type="password" name="password" placeholder="password" class="form-control" id="password">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" name="password" placeholder="Contraseña" class="form-control" id="password">
         </div>
         <div class="mb-3">
-          <label for="password" class="form-label">Perfil</label>
-          <input type="file" name="image" placeholder="password" accept="image/png, image/jpeg" class="form-control" id="images">
+          <label for="password" class="form-label">Foto de perfil</label>
+          <input type="file" name="image" accept="image/png, image/jpeg" class="form-control" id="images">
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Registrarse</button>
       </form>
-</div>
-<div class="modal-a" id="modal-a">
-  <div class="modal-dialog">
-      <p id="message"></p>
+    </div>
   </div>
 </div>
 {% endblock %}
+
 {% block scripts %}
 <script src="/static/scripts/register.js" type="module"></script>
 {% endblock %}
