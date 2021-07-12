@@ -9,8 +9,20 @@
 {% endblock %}
 
 {% block body %}
-
 <body>
+        <div class="row">
+            {% for project in db_project %}
+            <div class="column">
+                <img src="{{project['image_route']}}" class="p-img">
+                <h5>{{project['program_title']}}</h5>
+                <div class="watch-code">
+                    <a href="/static_projects/text_mode/{{project['program_title']}}" class="btn btn-primary"> Ver código </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+</body>
+<!--<body>
     <section class="all-projects">
         <div class="projects">
             {% for project in db_project %}
@@ -24,5 +36,5 @@
             {% endfor %}
         </div>
     </section>
-</body>
+</body>-->
 {% endblock %}
