@@ -1,60 +1,120 @@
-{% extends 'layout/index.html' %}
-
-{% block style %}
+{% extends 'layout/index.html' %} {% block style %}
 <link rel="stylesheet" href="/static/styles/show_project.css" />
-{% endblock %}
-
-{% block title %}
+{% endblock %} {% block title %}
 <title>{{ username }}/{{ name }} | CodeLand</title>
-{% endblock %}
+{% endblock %} {% block body %}
 
-{% block body %}
+<section class="ide-container">
+    {% if directory %}
+    <div class="menu">
+        <div class="otro" id="otro">
 
-{% if directory %}
-{% for dir in directory %}
-<div class="menu">
-    <details>
-        <summary> {{ (dir['path']).split('/')[-2] }} </summary>
-        <div class="content">
-            <ol>
-                {% for file in dir['files'] %}
-                    <li id="file" data-location="{{dir['path']}}" data-filename="{{file}}">{{file}}</li>
-                {% endfor %}
-            </ol>
         </div>
-    </details>
-</div>
-{% endfor %}
-{% endif %}
-<div class="container code_container">
+    </div>
+    {% endif %}
     <div class="header_code">
         <div class="circle bg-danger p-2"></div>
         <div class="circle bg-warning p-2"></div>
         <div class="circle bg-success p-2"></div>
     </div>
-    <div id="show_code"></div>
-</div>
-{% endblock %}
-
-{% block scripts %}
+    <div class="code_container">
+        <div id="show_code"></div>
+    </div>
+</section>
+{% endblock %} {% block scripts %}
 <script>
-    const $detailsList = document.querySelectorAll('details');
+    const $detailsList = document.querySelectorAll("details");
+    const otro = document.getElementById('otro')
+    const datas = JSON.parse("{{directory}}".replaceAll("&#39;", '"'));
+    let toStringCode = "";
 
     $detailsList.forEach(($details) => {
-        $details.addEventListener('toggle', closeDropdown)
-    })
+        $details.addEventListener("toggle", closeDropdown);
+    });
     function closeDropdown() {
-        'use strict'
-        if(!this.open) {
-            this.removeAttribute('open')
+        "use strict";
+        if (!this.open) {
+            this.removeAttribute("open");
         } else {
-            $detailsList.forEach($details => {
-                if($details !== this) {
-                    $details.removeAttribute('open')
+            $detailsList.forEach(($details) => {
+                if ($details !== this) {
+                    $details.removeAttribute("open");
                 }
-            })
+            });
         }
     }
+
+    /**
+     * Nombre del directorio
+     * @param {String} dirName 
+     * @param { String } listOfFileOrListOfDir
+    */
+    function renderTemplate(dirName, listOfFileOrListOfDir) {
+
+        return `
+            <details>
+                <summary>${dirName}</summary>
+                ${listOfFileOrListOfDir}
+            </details>
+            `;
+    }
+
+    /**
+     * Nombres de los archivos del directorio
+     * @param {Array} elements
+     * @returns { String }
+    */
+    function renderListOfFile(elements) {
+
+        return `
+            <div class="content">
+                <ol>
+                    ${elements
+                        .map((content) => {
+                            return `<li data-location="">${content}</li>`
+                        })
+                        .join("")}
+                </ol>
+            </div>
+            `;
+    }
+
+    function listDir() {
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        let dirsLength = datas.length
+        let code = ''
+        
+        console.log(datas)
+        // datas.reduce((acc, currentValue, index) => {
+            // console.log(currentValue)
+        // })
+        for(let i = 0; i < (dirsLength); i++) {
+            
+            // Primer se listan los directorios
+            // Luego los archivos
+            var dirs = ''
+            let _relPath = datas[i].path.split('/').slice(3).filter(Boolean)
+            let _dirName = _relPath[_relPath.length - 1];
+            for(let j = i+1; j < (dirsLength); j++) {
+                if(datas[j].path.includes(datas[i].path)) {
+                    const relPath = datas[j].path.split('/').slice(3).filter(Boolean);
+                    const dirName = relPath[relPath.length - 1];
+                    dirs += renderTemplate(dirName, renderListOfFile(datas[j].files))
+                    datas.splice(j, 1);
+                    dirsLength--;
+                }
+            }
+
+            let files = renderListOfFile(datas[i].files);
+            code += renderTemplate(_dirName, dirs + files)
+            // let currentDir = renderTemplate(datas[i].path, dirs)
+        }
+
+        otro.innerHTML = code
+    }
+
+    listDir();
 </script>
 <script src="/static/scripts/show_project.js"></script>
 {% endblock %}

@@ -147,6 +147,8 @@ def list_dir(route):
     # https://stackoverflow.com/questions/63743826/google-datastore-iterator-already-started-how-to-work-with-these-iterators
     class Padding: # Reelleno para que itere todos los elementos +1
         name = '/'
+        files: None
+        path=""
 
     data_arr = [Padding]
 
@@ -156,6 +158,14 @@ def list_dir(route):
         routes = dirs.name.split('/')
         filename = routes.pop(-1) # Si no termina con / quiere decir que no es una carpeta
         path_dir = '/'.join(map(str, routes)) + '/'
+        existFolder = False
+
+        for search in data:
+            if path_dir == search['path']:
+                search['files'].append(filename)
+                existFolder = True
+        if(existFolder):
+            continue
 
         if(filename == '' or info['path'] != path_dir):
             if info['path'] != path_dir and info['path'] != None and len(info['files']) > 0:
@@ -464,18 +474,18 @@ def delete_project():
 # Ruta para ver los proyectos en modo texto
 @app.route('/project/<username>/<project_name>/', methods=['GET', 'POST'])
 def show_project(username, project_name):
-    print(project_name)
+
     db_project = mongo.db.projects.find_one({ 'author': username, 'project_name': project_name })
     if db_project is None:
         flash('El proyecto no existe')
         return render_template('404.html'), 404
-    print(db_project['path'])
+
     project_path = db_project['path']
     if request.method == 'POST':
         file = (request.get_json())['filename']
+        path_file = (request.get_json())['path']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
-        return jsonify(get_file_data(project_path, file, file_ext))
-
+        return jsonify(get_file_data(path_file, file, file_ext))
 
     directory = list_dir(route=project_path)
 

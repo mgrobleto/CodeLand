@@ -8,13 +8,16 @@ const CURRENT_PATH = location.pathname
 Array.prototype.forEach.call(elements, (element) => {
     element.addEventListener('click', async (event) => {
         const filename = event.currentTarget.dataset.filename
+        const path = event.currentTarget.dataset.location
+
         const response = await fetch(`${CURRENT_PATH}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                filename
+                filename,
+                path
             })
         })
         const data = await response.json()
