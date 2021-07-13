@@ -1,0 +1,60 @@
+#login-section {
+    min-height: 100vh;
+    width: 100%;
+    background-color: #551138;
+    background-position: center;
+    background-size: cover;
+    font-family: Nunito;
+}
+
+#login-container {
+    padding-top: 5%;
+    padding-left: 35%;
+    padding-right: 5%;
+}
+
+.header-section h3 {
+    color: #fff;
+    font-size: 40px;
+}
+
+.container {
+    display: flex;
+    font-size: 20px;
+}
+
+.container form {
+    color: #141414;
+    font-weight: bold;
+    flex-basis: auto;
+    cursor: default;
+    position: relative;
+    padding: 2rem 1.80rem;
+    background-color: #fff;
+    border-radius: 16px;
+    margin-top: 40px;
+    box-shadow: 6px 13px 23px -5px rgba(0, 0, 0, 0.46);
+}
+
+.container .mb-3 {
+    width: 300px;
+}
+
+.container small {
+    color: #141414;
+    font-weight: normal;
+}
+
+.container button {
+    width: 300px;
+    margin-top: 10px;
+}
+
+.register-my-5 {
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+.register-my-5 a {
+    text-decoration: none;
+}

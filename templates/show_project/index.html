@@ -11,14 +11,14 @@
 {% block body %}
 
 {% if directory %}
-{% for dirs in directory %}   
+{% for dir in directory %}
 <div class="menu">
     <details>
-        <summary> {{ dirs.split('\\')[-1] }} </summary>
+        <summary> {{ (dir['path']).split('/')[-2] }} </summary>
         <div class="content">
             <ol>
-                {% for file in directory[dirs] %}
-                    <li id="file" data-location="{{dirs}}" data-filename="{{file}}">{{file}}</li>
+                {% for file in dir['files'] %}
+                    <li id="file" data-location="{{dir['path']}}" data-filename="{{file}}">{{file}}</li>
                 {% endfor %}
             </ol>
         </div>
