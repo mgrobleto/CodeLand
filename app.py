@@ -141,7 +141,8 @@ def list_dir(route):
     data = []
     info = {
         'files': [],
-        'path': None
+        'path': None,
+        'isListed': 0
     }
     list_ = bucket.list_blobs(prefix=route)
     # https://stackoverflow.com/questions/63743826/google-datastore-iterator-already-started-how-to-work-with-these-iterators

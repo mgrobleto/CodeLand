@@ -6,10 +6,8 @@
 
 <section class="ide-container">
     {% if directory %}
-    <div class="menu">
-        <div class="otro" id="otro">
-
-        </div>
+    <div class="menu" id="menu">
+        <div class="otro" id="otro"></div>
     </div>
     {% endif %}
     <div class="header_code">
@@ -24,7 +22,7 @@
 {% endblock %} {% block scripts %}
 <script>
     const $detailsList = document.querySelectorAll("details");
-    const otro = document.getElementById('otro')
+    const menu = document.getElementById("menu");
     const datas = JSON.parse("{{directory}}".replaceAll("&#39;", '"'));
     let toStringCode = "";
 
@@ -46,13 +44,13 @@
 
     /**
      * Nombre del directorio
-     * @param {String} dirName 
+     * @param {String} dirName
      * @param { String } listOfFileOrListOfDir
-    */
-    function renderTemplate(dirName, listOfFileOrListOfDir) {
-
+     * @param { Boolean } isOpen
+     */
+    function renderTemplate(dirName, listOfFileOrListOfDir, isOpen) {
         return `
-            <details>
+            <details ${isOpen && 'open'}>
                 <summary>${dirName}</summary>
                 ${listOfFileOrListOfDir}
             </details>
@@ -63,15 +61,15 @@
      * Nombres de los archivos del directorio
      * @param {Array} elements
      * @returns { String }
-    */
-    function renderListOfFile(elements) {
-
+     */
+    function renderListOfFile(elements, path) {
         return `
             <div class="content">
                 <ol>
                     ${elements
                         .map((content) => {
-                            return `<li data-location="">${content}</li>`
+                            const ext = content.toLowerCase().split('.')
+                            return `<li id="file" class="file ${ext[ext.length - 1]}" data-filename="${content}" data-location="${path}">${content}</li>`;
                         })
                         .join("")}
                 </ol>
@@ -79,42 +77,81 @@
             `;
     }
 
+    function subDirs(data, index = 1) {
+        var _subDirs = ''
+        let dirsLength = datas.length;
+        // debugger
+        let relPath = data.path.split("/").slice(3).filter(Boolean);
+        for (let j = index; j < dirsLength; j++) {
+            let _relPath = datas[j].path.split("/").slice(3).filter(Boolean);
+            if (
+                datas[j].path.includes(data.path) &&
+                _relPath.length === relPath.length + 1
+                && !data.isListed
+            ) {
+                _subDirs += subDirs(datas[j], j);
+            }
+        }
+
+        data.isListed = true;
+        return renderTemplate(relPath[relPath.length - 1], _subDirs + renderListOfFile(data.files, data.path), false);
+    }
+
+    function _listDir() {
+        var dirs = "";
+        let dirsLength = datas.length;
+        for (let i = 0; i < dirsLength; i++) {
+            if (!datas[i].isListed && !datas[i].path.endsWith("{{name}}/")) {
+                let relPath = datas[i].path.split("/").slice(3).filter(Boolean);
+                let dirName = relPath[relPath.length - 1];
+
+                let subDir = subDirs(datas[i], i);
+                dirs += subDir
+            }
+        }
+
+        const project_name = datas.find((value) => value.path.endsWith("{{name}}/"))
+        menu.innerHTML =  renderTemplate(
+            "{{name}}",
+            dirs +
+                renderListOfFile(project_name.files, project_name.path), true
+        );
+    }
+
     function listDir() {
         const details = document.createElement("details");
         const summary = document.createElement("summary");
-        let dirsLength = datas.length
-        let code = ''
-        
-        console.log(datas)
-        // datas.reduce((acc, currentValue, index) => {
-            // console.log(currentValue)
-        // })
-        for(let i = 0; i < (dirsLength); i++) {
-            
-            // Primer se listan los directorios
-            // Luego los archivos
-            var dirs = ''
-            let _relPath = datas[i].path.split('/').slice(3).filter(Boolean)
+        let dirsLength = datas.length;
+        let code = "";
+        for (let i = 0; i < dirsLength; i++) {
+            var dirs = "";
+            let _relPath = datas[i].path.split("/").slice(3).filter(Boolean);
             let _dirName = _relPath[_relPath.length - 1];
-            for(let j = i+1; j < (dirsLength); j++) {
-                if(datas[j].path.includes(datas[i].path)) {
-                    const relPath = datas[j].path.split('/').slice(3).filter(Boolean);
+            for (let j = i + 1; j < dirsLength; j++) {
+                if (datas[j].path.includes(datas[i].path)) {
+                    const relPath = datas[j].path
+                        .split("/")
+                        .slice(3)
+                        .filter(Boolean);
                     const dirName = relPath[relPath.length - 1];
-                    dirs += renderTemplate(dirName, renderListOfFile(datas[j].files))
+                    dirs += renderTemplate(
+                        dirName,
+                        renderListOfFile(datas[j].files)
+                    );
                     datas.splice(j, 1);
                     dirsLength--;
                 }
             }
 
             let files = renderListOfFile(datas[i].files);
-            code += renderTemplate(_dirName, dirs + files)
+            code += renderTemplate(_dirName, dirs + files);
             // let currentDir = renderTemplate(datas[i].path, dirs)
         }
 
-        otro.innerHTML = code
+        otro.innerHTML = code;
     }
 
-    listDir();
+    _listDir();
 </script>
 <script src="/static/scripts/show_project.js"></script>
 {% endblock %}

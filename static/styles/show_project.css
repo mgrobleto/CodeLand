@@ -48,11 +48,16 @@
 }
 
 .code_container {
+    overflow-y: auto;
     grid-row: 2 /3;
     grid-column: 2 / 3;
     width: 100%;
     padding: 0;
     background-color: var(--background-code);
+}
+
+.code_container::-webkit-scrollbar {
+    width: 0;
 }
 
 #show_code {
@@ -71,6 +76,12 @@
     display: inline-flex;
     flex-direction: column;
     background-color: rgba(8, 11, 15);
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.menu::-webkit-scrollbar {
+    width: 0;
 }
 
 .menu:hover {
@@ -78,20 +89,17 @@
 }
 
 details {
-    padding: 0 1rem;
+    padding-left: 1rem;
 }
 
-details > summary::after {
-    content: url(/static/styles/menu-img/caret-right-fill.svg);
+details > summary::before {
+    content: url(/static/icons/folder-icon.svg);
     width: 1.6rem;
-    height: 1.6rem;
-    display: inline-flex;
-    justify-content:space-between;
-    align-content: center;
+    line-height: 100%;
 }
 
-.menu details[open] > summary::after {
-    content: url(/static/styles/menu-img/caret-down-fill.svg);
+.menu details[open] > summary::before {
+    content: url(/static/icons/folder-open-icon.svg);
 }
 
 .menu details[open] > summary {
@@ -102,25 +110,62 @@ details > summary {
     /*display: inline-flexbox;*/
     /*justify-content: space-around;
     /*padding: 1rem;*/
+    display: flex;
+    align-items: center;
     list-style: none;
     cursor: pointer;
-    transition: .6s;
+    transition: .2s ease-in-out;
     color: #eee;
+    padding-left: 2px;
+    border-radius: 4px;
 }
 
-.content ol{
-    padding-left: 0;
+details > summary:hover {
+    background-color: rgba(255, 255, 255, .2);
+}
+
+.content ol {
+    padding-left: 16px;
     list-style: none;
     cursor: pointer;
     color: #eee;
+    margin-bottom: 5px;
 }
 
-.content ol li {
+.file {
+    transition: .2s ease-in-out;
     overflow: hidden;
+    font-size: 13px;
+    border-radius: 4px;
+    padding: 4px;
     text-overflow: ellipsis;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 
-.content ol li:hover {
+.file:active {
+    background-color: rgba(255, 255, 255, .2);
     color: #4CD7D0;
+}
+
+.file:hover {
+    background-color: rgba(255, 255, 255, .2);
+    color: #4CD7D0;
+}
+
+.file.c::before {
+    content: url('/static/icons/c-icon.png');
+    width: 1.6rem;
+    line-height: 100%;
+}
+
+.file.js::before {
+    width: 1.6rem;
+    content: url('/static/icons/javascript-icon.png');
+}
+
+.file.jsx::before {
+    width: 1.6rem;
+    content: url('/static/icons/javascript-icon.png');
 }
