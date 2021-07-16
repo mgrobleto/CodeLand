@@ -1,4 +1,4 @@
-#register-container {
+#register-section {
     height: 100vh;
     /*width: 100vw;*/
     width: 100%;
@@ -8,7 +8,7 @@
     font-family: Poppins;
 }
 
-.register-section {
+.register-container {
     padding-left: 5%;
     padding-right: 10%;
     display: flex;

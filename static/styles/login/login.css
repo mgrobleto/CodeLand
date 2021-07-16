@@ -17,10 +17,16 @@
 
 .container {
     font-size: 20px;
-    padding-top: 5%;
+    padding-top: 7%;
     width: 90%;
     padding-left: 0;
     padding-right: 0;
+}
+
+.form-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /*.form-box {
@@ -45,6 +51,7 @@
 .form-container {
     width: 100%;
     margin-bottom: 10px;
+    width: 100%;
 }
 
 .container button {
@@ -54,6 +61,7 @@
 
 .btn {
     font-size: 20px;
+    width: 100%;
 }
 
 .register-access {
@@ -78,11 +86,7 @@
     text-align: center;
 }
 
-@media screen and (min-width: 576px) {
-    /*.container {
-        width: 80%;
-        font-size: 25px;
-    }*/
+@media screen and (min-width: 400px) {
 
     .form-section {
         max-width: none;
@@ -99,18 +103,18 @@
     }
 
     .form-container {
-        width: 60%;
+        width: 90%;
     }
 
     .container .btn{
-        width: 60%;
+        width: 90%;
     }
 
-    .form-box {
+    /*.form-box {
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
+    }*/
 }
 
 @media (min-width: 768px) {
@@ -124,39 +128,31 @@
         margin-right: 50px;
     }
 
-    /*.form-container {
-        width: 60%;
+    .form-container {
+        width: 80%;
     }
 
     .container .btn{
-        width: 60%;
+        width: 80%;
     }
-
-    .form-box {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }*/
 }
 
-@media (min-width:992px) {
+@media (min-width:950px) {
+
+    .container {
+        width: 60%;
+    }
 
     .form-section {
         margin-left: 70px;
         margin-right: 70px;
     }
 
-    /*.form-container {
-        width: 60%;
+    .form-container {
+        width: 70%;
     }
 
     .container .btn{
-        width: 60%;
+        width: 70%;
     }
-
-    .form-box {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }*/
 }
