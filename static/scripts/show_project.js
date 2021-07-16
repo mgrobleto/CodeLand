@@ -2,13 +2,15 @@
 
 const menu = document.querySelector("#sidenav-explorer");
 const editorGroup = document.querySelector("#editor-group");
+let $tagStyle = document.createElement("style");
+let $nodeStyle;
 listDir();
 const elements = document.querySelectorAll("#file");
 const root_code = document.querySelector("#show_code");
 const $detailsList = document.querySelectorAll("details");
 const CURRENT_PATH = location.pathname;
 
-let editorTab = JSON.parse(window.localStorage.getItem('activeFiles')) || [];
+let editorTab = JSON.parse(window.localStorage.getItem(`activeFiles-${projectName}`)) || [];
 
 elements.forEach((element) => {
     element.addEventListener("click", async (event) => {
@@ -27,24 +29,47 @@ elements.forEach((element) => {
         });
         const data = await response.json();
         if (data.type === "code") {
-            root_code.innerHTML = data.info;
+            $nodeStyle = document.createTextNode(data.css);
+            $tagStyle.appendChild($nodeStyle);
+            document.head.appendChild($tagStyle);
+
+            root_code.innerHTML = data.html;
         } else {
             let parse_binary = JSON.parse(data.info);
             root_code.innerHTML = `
                 <img src="data:image/${parse_binary.file_ext};base64,${atob(
                 parse_binary.$binary
-            )}" alt="XD">
+            )}" alt="Imagen del archivo ${filename}">
             `.trim();
         }
-        if (!editorTab.find(({ _filename }) => _filename === filename)) {
+
+        if (
+            !editorTab.find(
+                ({ filename: _filename }) => _filename === filename
+            ) &&
+            data.type === "code"
+        ) {
+            editorTab.forEach((tab) => {
+                if (tab.isActive) {
+                    tab.isActive = false;
+                }
+            });
             editorTab.push({
                 filename,
-                code: data.info,
-                isActive: false,
+                code: { html: data.html, css: data.css },
+                isActive: true,
                 path,
-                key: path + filename
-
+                key: path + filename,
             });
+            updateEditorGroup({ isSave: true });
+        } else if(data.type === 'code') {
+            editorTab.forEach(tab => {
+                if(tab.key === path + filename) {
+                    tab.isActive = true
+                } else if(tab.isActive) {
+                    tab.isActive = false
+                }
+            })
             updateEditorGroup({ isSave: true });
         }
     });
@@ -68,8 +93,10 @@ function renderTemplate(dirName, listOfFileOrListOfDir, isOpen) {
 }
 
 /**
- * Nombres de los archivos del directorio
  * @param {Array} elements
+ * Nombres de los archivos del directorio
+ * @param {Array} paths
+ * La dirección del archivo en firebase
  * @returns { String }
  */
 function renderListOfFile(elements, path) {
@@ -91,8 +118,8 @@ function renderListOfFile(elements, path) {
 
 function renderTab({ filename, path, key, isActive }) {
     return `
-<div class="tab ${isActive ? 'active' : ''}" data-tab-key="${key}">
-    <div class="close-tab" onclick="closeTab('${filename}')">
+<div class="tab ${isActive ? "active" : ""}" data-tab-key="${key}">
+    <div class="close-tab" onclick="closeTab('${key}')">
         <i>
             <img width="14px" src="/static/icons/close-icon.svg" alt="Cerrar archivo">
         </i>
@@ -104,31 +131,82 @@ function renderTab({ filename, path, key, isActive }) {
     `;
 }
 
-function tabActive(path) {
-    console.log(path);
-    const tab = document.querySelector(`[data-tab-key="${path}"]`);
-    const refTab = editorTab.find(tab => tab.isActive)
-    if(refTab) refTab.isActive = false;
-    
-    editorTab.forEach(tab => {
-        if(tab.key === path) {
-            tab.isActive = true
+function tabActive(key) {
+    // const tab = document.querySelector(`[data-tab-key="${path}"]`);
+
+    editorTab.forEach((tab) => {
+        if (tab.key !== key && tab.isActive) {
+            tab.isActive = false;
         }
-    })
 
-    tab.classList.toggle("active");
+        if (tab.key === key) {
+            const nodeStylesTemp = document.createTextNode(tab.code.css);
+            root_code.innerHTML = tab.code.html;
+            if ($tagStyle.childElementCount > 0) {
+                $tagStyle.replaceChild(nodeStylesTemp, $nodeStyle);
+            } else {
+                $tagStyle.appendChild(nodeStylesTemp);
+                document.head.appendChild($tagStyle);
+            }
+            tab.isActive = true;
+        }
+    });
+
+    // tab.classList.toggle("active");
+    updateEditorGroup({ isSave: true });
 }
 
-function closeTab(filename) {
-    console.log(filename);
-    editorTab = editorTab.filter((tab) => tab.filename != filename);
-    updateEditorGroup();
+function closeTab(key) {
+    if(editorTab.length === 1) {
+        editorTab = []
+        root_code.innerHTML = ''
+        updateEditorGroup({ isSave: true })
+        
+        return;
+    }
+    const currentTab = editorTab.find(tab => tab.key === key)
+
+    if(currentTab.isActive) {
+        editorTab.forEach((tab, index) => {
+            if (tab.key === key) {
+                const beforeTab =
+                    editorTab[index > 0 ? index - 1 : editorTab.length - 1];
+                const nodeStylesTemp = document.createTextNode(beforeTab.code.css);
+
+                if ($tagStyle.childElementCount > 0) {
+                    $tagStyle.replaceChild(nodeStylesTemp, $nodeStyle);
+                } else {
+                    $tagStyle.appendChild(nodeStylesTemp);
+                    document.head.appendChild($tagStyle);
+                }
+                root_code.innerHTML = beforeTab.code.html
+                beforeTab.isActive = true
+            }
+        });
+    }
+
+    editorTab = editorTab.filter((tab) => tab.key != key);
+
+    updateEditorGroup({isSave: true});
 }
 
-function updateEditorGroup({ isSave } = { isSave: Boolean() }) {
-    editorGroup.innerHTML = editorTab.map((data) => renderTab({...data})).join("");
-    if(isSave) {
-        window.localStorage.setItem('activeFiles', JSON.stringify(editorTab))
+function updateEditorGroup({ isSave, renderCode } = { isSave: Boolean(), renderCode: false }) {
+    editorGroup.innerHTML = editorTab
+        .map((data) => renderTab({ ...data }))
+        .join("");
+
+    if(renderCode) {
+        editorTab.forEach(tab => {
+            if(tab.isActive) {
+                const nodeStylesTemp = document.createTextNode(tab.code.css);
+                root_code.innerHTML = tab.code.html;
+                $tagStyle.appendChild(nodeStylesTemp)
+                document.head.appendChild($tagStyle)
+            }
+        })
+    }
+    if (isSave) {
+        window.localStorage.setItem(`activeFiles-${projectName}`, JSON.stringify(editorTab));
     }
 }
 
@@ -179,6 +257,6 @@ function listDir() {
     );
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    updateEditorGroup()
-})
+document.addEventListener("DOMContentLoaded", () => {
+    updateEditorGroup({ renderCode: true });
+});

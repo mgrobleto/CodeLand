@@ -86,6 +86,10 @@
     margin-right: 8px;
 }
 
+.close-tab i img {
+    width: 12px;
+}
+
 .close-tab, .filename {
     display: inline-flex;
     align-items: center;
@@ -93,6 +97,7 @@
 }
 
 .filename p {
+    font-size: 13px;
     margin-bottom: 0;
 }
 
@@ -223,6 +228,12 @@ details > summary:hover {
     line-height: 100%;
 }
 
+.file.h::before {
+    content: url('/static/icons/header-file-icon.svg');
+    width: 1.6rem;
+    line-height: 100%;
+}
+
 .file.js::before {
     width: 1.6rem;
     content: url('/static/icons/javascript-icon.png');
@@ -231,4 +242,19 @@ details > summary:hover {
 .file.jsx::before {
     width: 1.6rem;
     content: url('/static/icons/javascript-icon.png');
+}
+
+.file.png::before {
+    width: 1.6rem;
+    content: url('/static/icons/image-icon.svg');
+}
+
+.file.jpg::before {
+    width: 1.6rem;
+    content: url('/static/icons/image-icon.svg');
+}
+
+.file.jpeg::before {
+    width: 1.6rem;
+    content: url('/static/icons/image-icon.svg');
 }

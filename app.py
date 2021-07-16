@@ -195,7 +195,8 @@ def get_file_data(path_file, file, file_ext):
         md_template = md_css_string + md_template_string
 
         return {
-            "info": f'{md_template}',
+            "html": f'{md_template_string}',
+            "css": f'{css_string}',
             'file_ext': file_ext,
             'type': 'code'
         }
