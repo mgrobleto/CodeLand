@@ -490,7 +490,7 @@ def show_project(username, project_name):
 
     directory = list_dir(route=project_path)
 
-    return render_template('show_project/index.html', directory=directory, name=project_name, username=db_project['author'])
+    return render_template('show_project/index.html', directory=directory, name=project_name, username=db_project['author'], description=db_project['description'])
 # Ruta para ver los proyectos en modo grafico
 @app.route('/static_projects/graphic_mode/<project_name>/', methods=['GET', 'POST'])
 def show_project_graphic(project_name):

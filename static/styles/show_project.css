@@ -35,16 +35,65 @@
 .header_code {
     grid-column: 2 / 3;
     display: flex;
-    padding: 10px;
-    gap: 6px;
+    align-items: stretch;
+    white-space: nowrap;
     border: 1px solid gray;
     background-color: var(--background-header-ide);
+}
+
+.group-tab {
+    padding: 10px;
+    gap: 6px;
+    display: flex;
 }
 
 .circle {
     border-radius: 50%;
     width: 1px;
     height: 1px;
+    cursor: pointer;
+}
+
+.editor-group {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+    overflow-x: auto;
+    width: -webkit-fill-available;
+    gap: 0 12px;
+}
+
+.editor-group::-webkit-scrollbar {
+    width: 0px;
+    height: 0;
+}
+
+.tab {
+    height: 100%;
+    color: #fff;
+    cursor: pointer;
+    flex-wrap: wrap;
+    padding: 2px 8px;
+    display: inline-block;
+}
+
+.tab.active {
+    border-bottom: 1px solid rgb(255, 141, 3);
+    color: #09f;
+}
+
+.close-tab {
+    margin-right: 8px;
+}
+
+.close-tab, .filename {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+}
+
+.filename p {
+    margin-bottom: 0;
 }
 
 .code_container {
@@ -75,6 +124,7 @@
     padding: 1rem;
     display: inline-flex;
     flex-direction: column;
+    justify-content: space-between;
     background-color: rgba(8, 11, 15);
     overflow: hidden;
     overflow-y: auto;
@@ -84,8 +134,21 @@
     width: 0;
 }
 
-.menu:hover {
-    color: #C26DBC;
+.description-project {
+    border-top: 1px solid rgba(255, 255, 255, .1);
+    padding-top: 22px;
+    color: #09f;
+}
+
+.description-project h5 {
+    color: #eee;
+    font-size: 14px;
+    text-align: center;
+}
+
+.description-project p {
+    text-align: center;
+    font-size: 12px;
 }
 
 details {
@@ -98,11 +161,11 @@ details > summary::before {
     line-height: 100%;
 }
 
-.menu details[open] > summary::before {
+.sidenav-explorer details[open] > summary::before {
     content: url(/static/icons/folder-open-icon.svg);
 }
 
-.menu details[open] > summary {
+.sidenav-explorer details[open] > summary {
     color: rgb(255, 141, 3);
 }
 
