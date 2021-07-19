@@ -1,10 +1,22 @@
+/** {
+    box-sizing: border-box;
+}*/
+
 #login-section {
     height: 100vh;
     width: 100%;
+    margin: 0;
     background-color: #551138;
     background-position: center;
     background-size: cover;
     font-family: Nunito;
+}
+
+.container {
+    font-size: 20px;
+    padding-top: 8%;
+    width: 100%;
+    margin: 0;
 }
 
 .container h3 {
@@ -15,48 +27,37 @@
     margin-right: 10px;
 }
 
-.container {
-    font-size: 20px;
-    padding-top: 7%;
-    width: 90%;
-    padding-left: 0;
-    padding-right: 0;
+.form-section {
+    /*width: 90%;*/
+    /*max-width: 400px;*/
+    margin: 40px 20px 20px;
 }
 
 .form-box {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-/*.form-box {
-    max-width: 100%;
-}*/
-
-.form-section {
-    max-width: 100%;
-    color: #141414;
-    font-weight: bold;
+    justify-content: center;
+    position: relative;
     cursor: default;
-    padding: 3rem;
+    padding: 2rem;
     background-color: #fff;
     border-radius: 16px;
-    margin-top: 40px;
-    margin-left: 15px;
-    margin-right: 15px;
-    margin-bottom: 40px;
     box-shadow: 6px 13px 23px -5px rgba(0, 0, 0, 0.46);
 }
 
 .form-container {
     width: 100%;
     margin-bottom: 10px;
-    width: 100%;
+    color: #141414;
+    font-weight: bold;
+    max-width: 300px;
 }
 
 .container button {
     width: 100%;
     margin-top: 10px;
+    max-width: 300px;
 }
 
 .btn {
@@ -69,13 +70,11 @@
     flex-direction: column;
     justify-content: space-between;
     margin: 0;
-    /*width: 100%;*/
     margin-top: 20px;
 }
 
 .mx-2 {
     font-size: 18px;
-    /*width: 90%;*/
     color: #141414;
     font-weight: normal;
     text-align: center;
@@ -86,12 +85,11 @@
     text-align: center;
 }
 
-@media screen and (min-width: 400px) {
+@media screen and (min-width: 576px) {
 
-    .form-section {
-        max-width: none;
-        margin-left: 20px;
-        margin-right: 20px;
+    .container {
+        max-width: 500px;
+        margin: auto;
     }
 
     .btn {
@@ -101,25 +99,11 @@
     .mx-2 {
         font-size: 20px;
     }
-
-    .form-container {
-        width: 90%;
-    }
-
-    .container .btn{
-        width: 90%;
-    }
-
-    /*.form-box {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }*/
 }
 
-@media (min-width: 768px) {
+/*@media (min-width: 768px) {
     .container {
-        width: 70%;
+        width: 80%;
         font-size: 20px;
     }
 
@@ -135,24 +119,26 @@
     .container .btn{
         width: 80%;
     }
-}
+}*/
 
 @media (min-width:950px) {
 
-    .container {
-        width: 60%;
-    }
+    /*.container {
+        width: 70%;
+    }*/
 
-    .form-section {
-        margin-left: 70px;
-        margin-right: 70px;
-    }
+    /*.form-section {
+        width: 100%;
+        max-width: 500px;
+        margin-left: 50px;
+        margin-right: 50px;
+    }*/
 
     .form-container {
-        width: 70%;
+        width: 80%;
     }
 
     .container .btn{
-        width: 70%;
+        width: 80%;
     }
 }

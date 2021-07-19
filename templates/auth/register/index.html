@@ -1,4 +1,4 @@
-{% extends 'layout/index.html' %}
+{% extends "layout/index.html" %}
 
 {% block title %}
 <title>CodeLand | Registro</title>
@@ -13,8 +13,14 @@
   <body>
     <div id="register-section">
       <div class="register-container">
-        <div class="register-img">
-          <img src="static\styles\register\img\coding.svg">
+        <div class="image-text-section">
+          <div class="register-img">
+            <img src="static\styles\register\img\coding.svg" role="img">
+          </div>
+          <div class="text-section">
+            <h3> <b>Regístrate</b> </h3>
+            <p>Aprende, crea y comparte!</p>
+          </div>
         </div>
         <div class="register-forms">
           <form id="form">
