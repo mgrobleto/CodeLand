@@ -1,10 +1,9 @@
 "use strict";
 import tabUI from "../tabUI/tab.js";
-import storage from '../utils/storage.js'
-import { setTab } from '../action/index.js'
+import storage from "../utils/storage.js";
+import { setTab } from "../action/index.js";
 
 class ListDirTemplate {
-    
     constructor() {
         this.listDir = [];
         this.$showCode = document.querySelector("#show_code");
@@ -22,59 +21,54 @@ class ListDirTemplate {
     async handleClick(filename, path) {
         const file = {
             filename,
-            path
+            path,
         };
-        
+
         const response = await fetch(this.CURRENT_PATH, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(file)
+            body: JSON.stringify(file),
         });
         const responseJson = await response.json();
-        
-        if(responseJson.type == 'code') {
-            const store = storage.getStore()
-            const $tagStyle = document.querySelector('[data-style-code]') || document.createElement("style");
-            const tempStyle = responseJson.code.css
+
+        if (responseJson.type == "code") {
+            const store = storage.getStore();
             const key = path + filename;
 
-            if(!$tagStyle.getAttribute('[data-style-code]')) {
-                $tagStyle.appendChild(document.createTextNode(tempStyle));
-                $tagStyle.setAttribute('data-style-code', true);
-                document.head.appendChild($tagStyle);
-            } else {
-                $tagStyle.innerHTML = responseJson.code.css;
-            }
-            
-            
-            this.$showCode.innerHTML = responseJson.code.html;
-            if(store && !store.find(tab => tab.key === key)) {
-                storage.dispatch(setTab({
-                    ...file,
-                    key,
-                    code: {
-                        html: responseJson.code.html,
-                        css: responseJson.code.css
-                    },
-                    isActive: true
-                }))
-                tabUI.render(storage.getStore());
+            if (store) {
+                if (store.find((tab) => tab.key === key)) {
+                    tabUI.render(storage.getStore(), key)
+                } else {
+                    storage.dispatch(
+                        setTab({
+                            ...file,
+                            key,
+                            code: {
+                                html: responseJson.code.html,
+                                css: responseJson.code.css,
+                            },
+                            isActive: true,
+                        })
+                    );
+                    tabUI.render(storage.getStore());
+                }
             }
         } else {
             // let parse_binary = new Uint8Array(responseJson.file);
             let binaryInfo = JSON.parse(responseJson.image);
-            const ext = responseJson.info.file_ext
+            const ext = responseJson.info.file_ext;
             const type = responseJson.info.type;
-            
+
             this.$showCode.innerHTML = `
-                <img loading="lazy" src="data:${type}/${ext};base64,${atob(binaryInfo.$binary)}" alt="${ext}" />
+                <img loading="lazy" src="data:${type}/${ext};base64,${atob(
+                binaryInfo.$binary
+            )}" alt="${ext}" />
             `.trim();
         }
-
     }
-        
+
     listOfFileDOM(elements, path) {
         const list = [];
         const container = document.createElement("div");
@@ -91,13 +85,16 @@ class ListDirTemplate {
             li.dataset.filename = filename;
             li.dataset.location = path;
             li.innerHTML = filename;
-            li.addEventListener('click', this.handleClick.bind(this, filename, path));
-            
+            li.addEventListener(
+                "click",
+                this.handleClick.bind(this, filename, path)
+            );
+
             list.push(li);
         });
         ol.append(...list);
         container.appendChild(ol);
-        
+
         return container;
     }
 
@@ -119,10 +116,9 @@ class ListDirTemplate {
 
         summary.innerHTML = dirName;
         details.append(summary, listOfFileOrListOfDir);
-        
+
         return details;
     }
 }
 
-
-export { ListDirTemplate }
+export { ListDirTemplate };
