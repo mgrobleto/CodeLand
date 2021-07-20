@@ -10,10 +10,15 @@
         <section class="sidenav-explorer" id="sidenav-explorer">
 
         </section>
+        {% if description %}
         <div class="description-project" id="description">
             <h5>Descrición sobre el proyecto</h5>
             <p>{{description}}</p>
         </div>
+        {% endif %}
+        <section>
+            <a href="{{download_URI}}" download class="btn btn-primary">descargar código</a>
+        </section>
     </div>
     {% endif %}
     <div class="header_code">
