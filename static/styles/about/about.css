@@ -1,14 +1,3 @@
-/** {
-    padding: 0;
-    margin: 0;
-}*/
-
-#about {
-    padding-left: 10%;
-    padding-top: 5%;
-    padding-right: 10%;
-}
-
 #goals-section {
     padding-left: 5%;
     /*padding-top: 5%;*/
@@ -16,24 +5,29 @@
 }
 
 .who-we-are {
-    min-height: 100vh;
+    /*min-height: 100vh;*/
+    height: 100vh;
     width: 100%;
     background-color: #0a192f;
     background-position: center;
     background-size: cover;
 }
 
-.goals {
-    min-height: 100vh;
+.about-section {
     width: 100%;
-    background-color: #0a192f;
-    background-position: center;
-    background-size: cover;
+    padding-left: 10%;
+    padding-top: 5%;
+    padding-right: 10%;
+    display: flex;
+    flex-direction: column;
 }
 
 .header-section {
+    width: 50%;
+    /*max-width: 500px;*/
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     /*padding-left: 30px;*/
 }
 
@@ -43,7 +37,7 @@
     font-size: 40px;
     color: #EA37A3;
     margin-top: 10px;
-    padding-left: 40px;
+    /*margin-left: 20px;*/
 }
 
 .about-content {
@@ -52,7 +46,9 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-items: center;
     padding-top: 40px;
+    max-width: 100%;
 }
 
 .about-description {
@@ -61,12 +57,13 @@
     margin: 0;
     color: #ccd6f6;
     cursor: default;
-    display: flex;
-    flex-direction: column;
-    height: 50%;
+    /*display: flex;
+    flex-direction: column;*/
+    /*height: 50%;*/
     /*position: relative;*/
-    padding: 2rem 1.80rem;
-    padding-top: 4rem;
+    /*padding: 2rem 1.80rem;*/
+    padding: 1.80rem;
+    /*padding-top: 4rem;*/
     background-color: #112240;
     border-radius: 16px;
     margin-top: 40px;
@@ -80,13 +77,71 @@
 }
 
 .about-image {
-   padding-left: 150px;
+   /*padding-left: 150px;*/
+   margin-left: 100px;
 }
 
 .about-image img {
-    max-width: 400px;
+    max-width: 500px;
     height: auto;
-    padding-top: 20%;
+    /*padding-top: 20%;*/
+}
+
+@media (max-width: 768px) {
+
+    .who-we-are {
+        height: auto;
+    }
+
+    .about-section {
+        padding-top: 10%;
+    }
+
+    .about-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .header-section {
+        width: 100%;
+        /*max-width: 600px;*/
+        justify-content: center;
+    }
+
+    .header-section .head-img {
+        display: none;
+    }
+
+    .about-title {
+        font-size: 30px;
+    }
+
+    .about-description {
+        order: 2;
+        max-width: 600px;
+    }
+
+    /*.about-description p {
+        text-align: center;
+    }*/
+
+    .about-image img {
+        order: 1;
+        max-width: 300px; 
+    }
+
+    .about-image {
+        margin: 0;
+    }
+}
+
+.goals {
+    /*min-height: 100vh;*/
+    height: 100vh;
+    width: 100%;
+    background-color: #0a192f;
+    background-position: center;
+    background-size: cover;
 }
 
 .goals-description {
@@ -109,7 +164,7 @@
 
 .goals-content {
     font-family: "Nunito";
-    font-display: fallback;
+    /*font-display: fallback;*/
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -168,6 +223,47 @@
     margin-right: 20px;
     /*color: #A239EA;*/
     color: #EA37A3;
+}
+
+@media (max-width: 768px) {
+
+    .goals {
+        height: 125vh;
+    }
+
+    .goals-content {
+        flex-direction: column;
+    }
+
+    .goals-image {
+        padding: 0;
+        margin: auto;
+    }
+
+    .goals-image img {
+        max-width: 300px;
+        height: auto;
+    }
+
+    .goals-description {
+        margin-left: auto;
+        margin-right: auto;
+        justify-content: space-around;
+    }
+
+    .goals-title {
+        font-size: 30px;
+    }
+
+    .goals-description ul li {
+        font-size: 20px;
+        text-align: left;
+    }
+
+    .goals-description ul {
+        margin: 0;
+        padding: 0;
+    }
 }
 
 .developers {
@@ -291,4 +387,11 @@
 
 .social ul li:nth-child(2) a:hover {
     background-color: #c32aa3;
+}
+
+@media (max-width: 768px) {
+
+    .developers {
+        display: none;
+    }
 }
