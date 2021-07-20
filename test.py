@@ -164,3 +164,4 @@ for line in tree(Path.home() / 'project/Codeland/Codeland/static'):
     line
     # aguacate = aguacate +1
     # print(aguacate)
+

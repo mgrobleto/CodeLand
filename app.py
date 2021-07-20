@@ -190,25 +190,28 @@ def get_file_data(path_file, file, file_ext):
         formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
 
         css_string = formatter.get_style_defs()
-        md_css_string = "<style>" + css_string + "</style>"
-
-        md_template = md_css_string + md_template_string
 
         return {
-            "html": f'{md_template_string}',
-            "css": f'{css_string}',
+            "code": {    
+                "html": f'{md_template_string}',
+                "css": f'{css_string}',
+            },
             'file_ext': file_ext,
             'type': 'code'
         }
     else:
         code = bucket.blob(f'{path_file}{file}').download_as_string()
         image = encodebytes(code)
-        json_image = dumps(image,default=json_util.default)
-
-        return {
-            'info': json_image,
-            'type': 'binary'
+        info = {
+            'file_ext': file_ext,
+            'type': 'image'
         }
+        return {
+            'code': None,
+            'image': dumps(image, default=json_util.default),
+            'info': info,
+        }
+
 
 # Si el nombre tiene un carácter extraño
 def change_folder_name(string):
