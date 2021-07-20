@@ -2,6 +2,16 @@
     box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #09f;
+    border-radius: 12px;
+}
+
 .responsive-img {
     max-width: 100%;
     height: auto;
@@ -13,7 +23,7 @@ body {
 }
 .contenedorHome {
     /* HOME*/
-    position:static;
+    position: static;
     max-width: 1440px;
     width: 100%;
     margin: 0% auto;
