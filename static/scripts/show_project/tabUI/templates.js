@@ -38,21 +38,28 @@ class TabTemplates {
             const store = storage.getStore();
             const tabContainer = this.parentNode;
             
+
             if (tabContainer.classList.contains("active")) {
                 const $containerTab = document.getElementById("editor-group");
 
-                console.log(store)
-                store.forEach((tab, index) => {
-                    if (tab.key == key) {
-                        const indexOf = index > 0 ? index - 1 : store.length - 1
-                        const beforeTab = store[indexOf];
-                        const nodeStylesTemp = beforeTab.code.css;
-                        
-                        getStyle(nodeStylesTemp);
-                        $containerTab.children[indexOf].children[1].click();
-                        tabContainer.remove();
-                    }
-                });
+                // console.log(store)
+                if((store.length - 1) > 0) {
+                    store.forEach((tab, index) => {
+                        if (tab.key == key) {
+                            const indexOf = index > 0 ? index - 1 : store.length - 1
+                            const beforeTab = store[indexOf];
+                            const nodeStylesTemp = beforeTab.code.css;
+                            
+                            getStyle(nodeStylesTemp);
+                            $containerTab.children[indexOf].children[1].click();
+                            tabContainer.remove();
+                        }
+                    });
+                } else {
+                    const $showCode = document.querySelector("#show_code");
+                    $showCode.innerHTML = ''
+                    tabContainer.remove();
+                }
             } else {
                 tabContainer.remove();
             }

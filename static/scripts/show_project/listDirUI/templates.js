@@ -112,7 +112,7 @@ class ListDirTemplate {
 
         isOpen
             ? details.setAttribute("open", true)
-            : details.setAttribute("open", false);
+            : null;
 
         summary.innerHTML = dirName;
         details.append(summary, listOfFileOrListOfDir);

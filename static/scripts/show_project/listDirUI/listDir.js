@@ -3,10 +3,11 @@ import { ListDirTemplate } from "../listDirUI/templates.js";
 class ListDir extends ListDirTemplate {
     data = [];
     
-    constructor(data, projectName) {
+    constructor(data, projectName, depth) {
         super();
         this.data = data;
         this.projectName = projectName;
+        this.depth = depth;
         this.listDir = [];
         this.menu = document.querySelector("#sidenav-explorer");
 
@@ -36,8 +37,12 @@ class ListDir extends ListDirTemplate {
         const mainFiles = this.data.find((value) =>
             value.path.endsWith(`${this.projectName}/`)
         );
+        if(mainFiles) {
+            fragment.append(...dirs, this.listOfFileDOM(mainFiles.files, mainFiles.path));   
+        } else {
+            fragment.append(...dirs);
+        }
 
-        fragment.append(...dirs, this.listOfFileDOM(mainFiles.files, mainFiles.path));
 
         this.menu.appendChild(this.containerFilesDOM(
             this.projectName,
@@ -51,7 +56,7 @@ class ListDir extends ListDirTemplate {
         const fragment = document.createDocumentFragment();
         let dirsLength = this.data.length;
         // debugger
-        let relPath = data.path.split("/").slice(3).filter(Boolean);
+        let relPath = data.path.split("/").slice(this.depth).filter(Boolean);
         for (let j = index; j < dirsLength; j++) {
             let _relPath = this.data[j].path.split("/").slice(3).filter(Boolean);
             if (

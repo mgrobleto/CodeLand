@@ -1,62 +1,64 @@
-{% extends 'layout/index.html' %}
+{% extends 'layout/index.html' %} {% block style %}
+<link rel="stylesheet" href="/static/styles/show_static_project.css" />
+{% endblock %} {% block title %}
+<title>{{ type }}/{{ name }} | CodeLand</title>
+{% endblock %} {% block body %}
 
-{% block style %}
-<link rel="stylesheet" href="/static/styles/show_ejemplo.css" />
-{% endblock %}
+<section class="ide-container">
+    {% if directory %}
+    <div class="menu">
+        <section class="sidenav-explorer" id="sidenav-explorer">
 
-{% block title %}
-<title> {{ name }} | CodeLand</title>
-{% endblock %}
-
-{% block body %}
-
-{% if directory %}
-{% for dir in directory %}
-<div class="menu">
-    <details>
-        <summary> {{ (dir['path']).split('/')[-2] }} </summary>
-        <div class="content">
-            <ol>
-                {% for file in dir['files'] %}
-                    <li id="file" data-location="{{dir['path']}}" data-filename="{{file}}">{{file}}</li>
-                {% endfor %}
-            </ol>
+        </section>
+        {% if description %}
+        <div class="description-project" id="description">
+            <h5>Descrición sobre el proyecto</h5>
+            <p>{{description}}</p>
         </div>
-    </details>
-</div>
-{% endfor %}
-<script>
-    const $detailsList = document.querySelectorAll('details');
-
-    $detailsList.forEach(($details) => {
-        $details.addEventListener('toggle', closeDropdown)
-    })
-    function closeDropdown() {
-        'use strict'
-        if(!this.open) {
-            this.removeAttribute('open')
-        } else {
-            $detailsList.forEach($details => {
-                if($details !== this) {
-                    $details.removeAttribute('open')
-                }
-            })
-        }
-    }
-</script>
-{% endif %}
-
-<div class="container code_container">
-    <div class="header_code">
-        <div class="circle bg-danger p-2"></div>
-        <div class="circle bg-warning p-2"></div>
-        <div class="circle bg-success p-2"></div>
+        {% endif %}
+        <section>
+            <a href="{{download_URI}}" download class="btn btn-primary">descargar código</a>
+        </section>
     </div>
-    <div id="show_code"></div>
-</div>
-
-{% endblock %}
-
-{% block scripts %}
-<script src="/static/scripts/show_ejemplo.js"></script>
+    {% endif %}
+    <div class="header_code">
+        <div class="group-tab">
+            <div class="circle bg-danger p-2"></div>
+            <div class="circle bg-warning p-2"></div>
+            <div class="circle bg-success p-2"></div>
+        </div>
+        <section class="editor-group" id="editor-group">
+            <!-- <div class="tab active">
+                <div class="close-tab">
+                    <i>
+                        <img src="/static/icons/close-icon.svg" alt="Cerrar archivo">
+                    </i>
+                </div>
+                <div class="filename">
+                    <p>Presentación.c</p>
+                </div>
+            </div>
+            <div class="tab">
+                <div class="close-tab">
+                    <i>
+                        <img width="16px" src="/static/icons/close-icon.svg" alt="Cerrar archivo">
+                    </i>
+                </div>
+                <div class="filename">
+                    <p>Puente_desnivel.c</p>
+                </div>
+            </div> -->
+        </section>
+    </div>
+    <div class="code_container">
+        <div id="show_code"></div>
+    </div>
+</section>
+{% endblock %} {% block scripts %}
+<script>
+    window.__PRELOADED_STATE__  = JSON.parse("{{directory}}".replaceAll("&#39;", '"'))
+    window.__PROJECT_NAME__ = "{{name}}"
+    window.__DIR_DEPTH__ = 1
+</script>
+<script src="/static/scripts/show_project/show_project.js" type="module"></script>
 {% endblock %}

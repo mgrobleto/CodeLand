@@ -513,8 +513,11 @@ def show_project_graphic(project_name):
 
     # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = list_dir(route=project_path)
-    
-    return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
+    download_URI = f'/download-static_project/{db_project["_id"]}'
+
+    return render_template('show_static_project/index.html', directory=directory, name=project_name, download_URI=download_URI, type="graphic mode")
+
+@app.route('/static_projects/<project_name>/', methods=['GET', 'POST'])
 
 
 # Ruta para ver los proyectos predeterminados en modo texto
@@ -537,8 +540,9 @@ def show_static_project(project_name):
 
     # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = list_dir(route=project_path)
-    print(project_path)
-    return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
+    download_URI = f'/download-static_project/{db_project["_id"]}'
+    
+    return render_template('show_static_project/index.html', directory=directory, name=project_name, download_URI=download_URI, type="text mode")
   
 #para la parte de documentacion
 @app.route('/examples/basicos')
@@ -567,9 +571,10 @@ def show_ejemplo(ejemplo_name):
 
     # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = list_dir(route=example_path)
+    download_URI = f'/download-static_project/{db_example["_id"]}'
 
     print(directory)
-    return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name, id=db_example['_id'])
+    return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name, download_URI=download_URI, type="text mode")
 
 
 @app.route('/tools')

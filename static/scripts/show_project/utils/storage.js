@@ -15,7 +15,6 @@ class StorageCode {
     // Actualiza la cantidad de tabs en la interfaz
     async dispatch (action) {
         const state = JSON.stringify(this.reducer(this.getStore(), action));
-        console.log(JSON.parse(state))
         this.updateStore(state)
     }
 
