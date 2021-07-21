@@ -1,9 +1,3 @@
-#goals-section {
-    padding-left: 5%;
-    /*padding-top: 5%;*/
-    padding-right: 5%;
-}
-
 .who-we-are {
     /*min-height: 100vh;*/
     height: 100vh;
@@ -18,8 +12,8 @@
     padding-left: 10%;
     padding-top: 5%;
     padding-right: 10%;
-    display: flex;
-    flex-direction: column;
+    /*display: flex;
+    flex-direction: column;*/
 }
 
 .header-section {
@@ -28,6 +22,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     /*padding-left: 30px;*/
 }
 
@@ -48,10 +43,13 @@
     justify-content: space-around;
     align-items: center;
     padding-top: 40px;
-    max-width: 100%;
+    /*width: 100%;*/
+    margin: auto;
 }
 
 .about-description {
+    /*width: 90%;
+    height: max-content;*/
     max-width: 700px;
     font-size: 25px;
     margin: 0;
@@ -83,29 +81,37 @@
 
 .about-image img {
     max-width: 500px;
-    height: auto;
+    /*height: auto;*/
     /*padding-top: 20%;*/
 }
 
 @media (max-width: 768px) {
 
     .who-we-are {
-        height: auto;
+        height: 120vh;
     }
 
     .about-section {
         padding-top: 10%;
+        padding-left: unset;
+        padding-right: unset;
     }
 
     .about-content {
         flex-direction: column;
         align-items: center;
+        justify-content: space-between;
     }
 
     .header-section {
         width: 100%;
         /*max-width: 600px;*/
-        justify-content: center;
+        display: block;
+    }
+
+    .head-text {
+        text-align: center;
+        margin: auto;
     }
 
     .header-section .head-img {
@@ -113,17 +119,16 @@
     }
 
     .about-title {
-        font-size: 30px;
+        font-size: 35px;
     }
 
     .about-description {
         order: 2;
-        max-width: 600px;
+        text-align: start;
+        margin-left: 20px;
+        margin-right: 20px;
+        max-width: 500px;
     }
-
-    /*.about-description p {
-        text-align: center;
-    }*/
 
     .about-image img {
         order: 1;
@@ -133,6 +138,11 @@
     .about-image {
         margin: 0;
     }
+}
+
+#goals-section {
+    padding-left: 5%;
+    padding-right: 5%;
 }
 
 .goals {
@@ -152,9 +162,10 @@
     display: flex;
     flex-direction: column;
     /*height: 50%;*/
-    position: relative;
-    padding: 1rem 1.80rem;
-    padding-top: 3rem;
+    /*position: relative;*/
+    /*padding: 1rem 1.80rem;*/
+    /*padding-top: 3rem;*/
+    padding: 1.80rem;
     background-color: #112240;
     border-radius: 16px;
     margin-top: 40px;
@@ -175,6 +186,7 @@
     color:#1CC5DC;
     margin-top: 10px;
     font-weight: bold;
+    text-align: center;
 }
 
 .goals-image {
@@ -198,7 +210,21 @@
     background-position: center center;
 }
 
-.goals-description ul li {
+.goals-description ul .text-section {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    margin-top: 25px;
+}
+
+.text-section .text {
+    font-size: 25px;
+    font-weight: 400;
+}
+
+/*.goals-description ul li {
     list-style: none;
     font-size: 25px;
     font-weight: 400;
@@ -206,7 +232,7 @@
     text-align: justify;
     margin-bottom: 10px;
     margin-top: 20px;
-}
+}*/
 
 .goals-description ul li:hover {
     transform: translate(-7px);
@@ -217,22 +243,31 @@
     margin-bottom: 10px;
 }
 
-.goals-description ul li .bi {
-    line-height: 60px;
+.goals-description ul li .check-img {
+    /*line-height: 60px;*/
     transition: .6s;
     margin-right: 20px;
+    margin-top: 5px;
     /*color: #A239EA;*/
     color: #EA37A3;
+    justify-content: left;
 }
 
 @media (max-width: 768px) {
 
+    #goals-section {
+        padding-left: unset;
+        padding-right: unset;
+    }
+
     .goals {
-        height: 125vh;
+        /*height: 140vh;*/
+        height: unset;
     }
 
     .goals-content {
         flex-direction: column;
+        justify-content: space-between;
     }
 
     .goals-image {
@@ -246,18 +281,13 @@
     }
 
     .goals-description {
-        margin-left: auto;
-        margin-right: auto;
+        /*max-width: 500px;*/
+        margin: 40px 20px 20px;
         justify-content: space-around;
     }
 
     .goals-title {
-        font-size: 30px;
-    }
-
-    .goals-description ul li {
-        font-size: 20px;
-        text-align: left;
+        font-size: 35px;
     }
 
     .goals-description ul {
@@ -267,7 +297,7 @@
 }
 
 .developers {
-    min-height: 100vh;
+    height: 100vh;
     width: 100%;
     background-color: #0a192f;
     background-position: center;
@@ -276,35 +306,42 @@
     font-family: "Poppins";
 }
 
-.heading3 {
-    color: #EA37A3;
+.container {
+    width: 100%;
+}
+
+.developers-header {
     font-family: "Nunito";
     font-weight: bold;
-    height: 130px;
+}
+
+.heading3 {
+    color: #EA37A3;
+    /*height: 130px;*/
     font-size: 40px;
     text-align:center;
     letter-spacing: 3px;
-    /*padding-top: 5%;*/
-    /*font-style: italic;*/
-    /*margin-top: 15px;*/
+}
+
+.heading3 h1 {
+    margin-top: 10%;
 }
 
 .profiles {
     display: flex;
     justify-content: space-around;
-    /*margin-top: 10px;*/
-    margin: 20px 0px;
+    margin-top: 5%;
+    /*margin: 20px 0px;*/
 }
 
 .profile {
     color: #fff;
     flex-basis: 290px;
-    margin-bottom: 5px;
+    /*margin-bottom: 5px;*/
     padding: 2rem 1.80rem;
     padding-top: 1rem;
     background-color: #112240;
     border-radius: 16px;
-    margin-top: 0;
     box-shadow: 5px 10px 15px -5px rgba(0, 0, 0, 0.46);
     border: 2px solid #1CC5DC;
 }
@@ -342,11 +379,7 @@
     margin-left: 70px;
     transform: translate(-50%, -50%);
     display: flex;
-    /*position: absolute;
-    top: 50%;
-    left: 50%;
-    padding: 0;
-    margin: 0;*/
+    justify-content: space-around;
 }
 
 .social ul li {
@@ -392,6 +425,41 @@
 @media (max-width: 768px) {
 
     .developers {
-        display: none;
+        height: unset;
+    }
+
+    .developers-header {
+        padding-top: 10%;
+    }
+
+    .profiles {
+        flex-direction: column;
+        max-width: 500px;
+        margin-top: 20px;
+    }
+
+    .profile {
+        width: 100%;
+        max-width: 300px;
+        margin: auto;
+        margin-top: 5%;
+        justify-content: space-around;
+    }
+
+    .profile .profile-img {
+        width: 100%;
+        max-width: 300px;
+        height: unset;
+        filter: unset;
+    }
+
+    .social {
+        max-width: 400px;
+    }
+
+    .social ul {
+        margin-left: 80px;
+        margin-bottom: 0;
+        padding: 0;
     }
 }
