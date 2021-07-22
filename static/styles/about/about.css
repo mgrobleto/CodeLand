@@ -1,6 +1,4 @@
 .who-we-are {
-    /*min-height: 100vh;*/
-    height: 100vh;
     width: 100%;
     background-color: #0a192f;
     background-position: center;
@@ -8,63 +6,51 @@
 }
 
 .about-section {
-    width: 100%;
+    font-family: "Nunito";
+    /*width: 100%;*/
     padding-left: 10%;
     padding-top: 5%;
     padding-right: 10%;
-    /*display: flex;
-    flex-direction: column;*/
 }
 
 .header-section {
-    width: 50%;
-    /*max-width: 500px;*/
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-    /*padding-left: 30px;*/
+}
+
+.head-text {
+    margin-left: 20px;
 }
 
 .about-title {
-    font-family: "Nunito";
     font-weight: bold;
     font-size: 40px;
     color: #EA37A3;
     margin-top: 10px;
-    /*margin-left: 20px;*/
 }
 
 .about-content {
-    font-family: "Nunito";
-    font-display: fallback;
+    width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    padding-top: 40px;
-    /*width: 100%;*/
-    margin: auto;
+    padding-top: 5%;
 }
 
 .about-description {
-    /*width: 90%;
-    height: max-content;*/
-    max-width: 700px;
+    max-width: 600px;
     font-size: 25px;
+    /*position: relative;*/
     margin: 0;
     color: #ccd6f6;
     cursor: default;
-    /*display: flex;
-    flex-direction: column;*/
-    /*height: 50%;*/
-    /*position: relative;*/
-    /*padding: 2rem 1.80rem;*/
     padding: 1.80rem;
-    /*padding-top: 4rem;*/
     background-color: #112240;
     border-radius: 16px;
-    margin-top: 40px;
+    /*margin-top: 30px;*/
     box-shadow: 6px 13px 23px -5px rgba(0, 0, 0, 0.46);
     border: 2px solid #1CC5DC;
 }
@@ -75,21 +61,17 @@
 }
 
 .about-image {
-   /*padding-left: 150px;*/
-   margin-left: 100px;
+    width: 65%;
+    margin-left: 10%;
 }
 
 .about-image img {
-    max-width: 500px;
+    max-width: 400px;
     /*height: auto;*/
     /*padding-top: 20%;*/
 }
 
 @media (max-width: 768px) {
-
-    .who-we-are {
-        height: 120vh;
-    }
 
     .about-section {
         padding-top: 10%;
@@ -100,13 +82,14 @@
     .about-content {
         flex-direction: column;
         align-items: center;
-        justify-content: space-between;
+        justify-content: space-around;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .header-section {
         width: 100%;
-        /*max-width: 600px;*/
-        display: block;
+        display: unset;
     }
 
     .head-text {
@@ -125,6 +108,7 @@
     .about-description {
         order: 2;
         text-align: start;
+        margin-top: 30px;
         margin-left: 20px;
         margin-right: 20px;
         max-width: 500px;
@@ -136,49 +120,43 @@
     }
 
     .about-image {
+        width: auto;
         margin: 0;
     }
 }
 
 #goals-section {
+    font-family: "Nunito";
+    margin-top: 10%;
     padding-left: 5%;
     padding-right: 5%;
 }
 
-.goals {
-    /*min-height: 100vh;*/
-    height: 100vh;
-    width: 100%;
-    background-color: #0a192f;
-    background-position: center;
-    background-size: cover;
-}
-
 .goals-description {
-    max-width: 700px;
+    /*max-width: 700px;*/
     font-size: 25px;
     color: #E1E8EB;
     cursor: default;
     display: flex;
     flex-direction: column;
+    align-items: center;
     /*height: 50%;*/
     /*position: relative;*/
     /*padding: 1rem 1.80rem;*/
     /*padding-top: 3rem;*/
-    padding: 1.80rem;
+    padding: 2rem;
     background-color: #112240;
     border-radius: 16px;
-    margin-top: 40px;
-    margin-left: 50px;
+    /*margin-top: 40px;*/
+    /*margin-left: 50px;*/
     /*border: 2px solid #FFA645;*/
 }
 
 .goals-content {
-    font-family: "Nunito";
-    /*font-display: fallback;*/
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-items: center;
 }
 
 .goals-title {
@@ -189,25 +167,30 @@
     text-align: center;
 }
 
-.goals-image {
+/*.goals-image {
     padding-left: 10px;
-}
+}*/
 
 .goals-image img {
     max-width: 400px;
     height: auto;
     margin-bottom: 0;
-    margin-top: 40px;
+    margin-right: 50px;
+    /*margin-top: 40px;*/
     display: inline-block;
     justify-content: center;
     align-items: center;
     border: 2px solid #ddd;
     border-radius: 50%;
     /*width: 300px;*/
-    height: 400px;
+    /*height: 400px;*/
     padding: 20px;
     background-size: cover;
     background-position: center center;
+}
+
+.goals-description ul {
+    padding: 0;
 }
 
 .goals-description ul .text-section {
@@ -223,16 +206,6 @@
     font-size: 25px;
     font-weight: 400;
 }
-
-/*.goals-description ul li {
-    list-style: none;
-    font-size: 25px;
-    font-weight: 400;
-    line-height: 10px;
-    text-align: justify;
-    margin-bottom: 10px;
-    margin-top: 20px;
-}*/
 
 .goals-description ul li:hover {
     transform: translate(-7px);
@@ -260,29 +233,26 @@
         padding-right: unset;
     }
 
-    .goals {
-        /*height: 140vh;*/
-        height: unset;
-    }
-
     .goals-content {
         flex-direction: column;
         justify-content: space-between;
+        align-items: center;
     }
 
     .goals-image {
         padding: 0;
-        margin: auto;
     }
 
     .goals-image img {
         max-width: 300px;
-        height: auto;
+        margin: auto;
     }
 
     .goals-description {
-        /*max-width: 500px;*/
         margin: 40px 20px 20px;
+        /*margin-top: 40px;
+        margin-left: auto;
+        margin-right: auto;*/
         justify-content: space-around;
     }
 
@@ -296,18 +266,12 @@
     }
 }
 
-.developers {
-    height: 100vh;
+.developers-section {
     width: 100%;
-    background-color: #0a192f;
-    background-position: center;
-    background-size: cover;
-    /*position: relative;*/
-    font-family: "Poppins";
-}
-
-.container {
-    width: 100%;
+    padding: 0;
+    margin-top: 10%;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 .developers-header {
@@ -328,18 +292,29 @@
 }
 
 .profiles {
+    width: 80%;
+    /*max-width: 800px;*/
     display: flex;
+    flex-direction: row;
     justify-content: space-around;
     margin-top: 5%;
-    /*margin: 20px 0px;*/
+    margin-right: auto;
+    margin-left: auto;
 }
 
 .profile {
-    color: #fff;
-    flex-basis: 290px;
+    max-width: 600px;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: rgb(158, 95, 95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /*flex-basis: 200px;*/
     /*margin-bottom: 5px;*/
-    padding: 2rem 1.80rem;
-    padding-top: 1rem;
+    /*padding: 2rem 1.80rem;
+    padding-top: 1rem;*/
+    padding: 1.80rem;
     background-color: #112240;
     border-radius: 16px;
     box-shadow: 5px 10px 15px -5px rgba(0, 0, 0, 0.46);
@@ -347,8 +322,10 @@
 }
 
 .profile .profile-img {
-    height: 270px;
-    width: 280px;
+    width: 100%;
+    max-width: 280px;
+    /*height: 270px;
+    width: 280px;*/
     border-radius: 50%;
     filter: grayscale(100%);
     cursor: default;
@@ -362,29 +339,26 @@
 
 .user-name {
     margin-top: 30px;
-    margin-left: 10px;
+    /*margin-left: 10px;*/
+    text-align: center;
     font-size: 25px;
     color: #a8b2d1;
 }
 
-.profile h5 {
-    font-size: 18px;
-    font-weight: 100;
-    letter-spacing: 3px;
-    color: #ccc;
+.social {
+    margin-top: 60px;
 }
 
 .social ul {
-    margin-top: 60px;
-    margin-left: 70px;
-    transform: translate(-50%, -50%);
     display: flex;
-    justify-content: space-around;
+    margin: 0;
+    padding: 0;
+    /*transform: translate(-50%, -50%);*/
 }
 
 .social ul li {
     list-style: none;
-    margin: 0px 15px;
+    margin-right: 15px;
 }
 
 .social ul li .bi {
@@ -399,7 +373,7 @@
 }
 
 .social ul li a {
-    position: relative;
+    /*position: relative;*/
     display: block;
     width: 60px;
     height: 60px;
@@ -424,24 +398,21 @@
 
 @media (max-width: 768px) {
 
-    .developers {
-        height: unset;
-    }
-
     .developers-header {
         padding-top: 10%;
     }
 
     .profiles {
         flex-direction: column;
-        max-width: 500px;
+        align-items: center;
+        /*max-width: 500px;*/
         margin-top: 20px;
     }
 
     .profile {
-        width: 100%;
+        /*width: 100%;*/
         max-width: 300px;
-        margin: auto;
+        /*margin: 0;*/
         margin-top: 5%;
         justify-content: space-around;
     }
@@ -456,10 +427,11 @@
     .social {
         max-width: 400px;
     }
-
-    .social ul {
-        margin-left: 80px;
-        margin-bottom: 0;
-        padding: 0;
-    }
 }
+
+/*@media (min-width: 769px) {
+
+    .about-image img {
+        max-width: 400px;
+    }
+}*/
