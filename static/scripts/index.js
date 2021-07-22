@@ -17,9 +17,3 @@ $btnMenu.addEventListener('click', function() {
 $dropdownBtn.addEventListener('click', () => {
     $dropdownBtn.classList.toggle('active')
 })
-
-if('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/static/scripts/sw.js').catch(() => {
-        console.log('Noooooooooo')
-    })
-}

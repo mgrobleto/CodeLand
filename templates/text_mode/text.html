@@ -13,7 +13,7 @@
         <div class="row">
             {% for project in db_project %}
             <div class="column">
-                <img src="{{project['image_route']}}" class="p-img">
+                <img src="{{project['image_route']}}" id="conteinerImg">
                 <h5>{{project['program_title']}}</h5>
                 <div class="watch-code">
                     <a href="/static_projects/text_mode/{{project['program_title']}}" class="btn btn-primary"> Ver código </a>

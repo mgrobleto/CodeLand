@@ -24,9 +24,6 @@ from google.oauth2 import service_account
 # from google.api_core import page_iterator
 # from google.cloud.storage.bucket import Bucket
 
-# Librerias de Firebase
-from firebase import Firebase
-
 # Librerias de Mongodb
 from flask_pymongo import PyMongo
 
@@ -76,14 +73,12 @@ app = Flask(__name__)
 
 app.secret_key = environ['SESSION_KEY']
 app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config['SESSION_PERMANENT'] = False  # La cookie no se guarda para siempre
+app.config['SESSION_PERMANENT'] = True  # La cookie no se guarda para siempre
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['MONGO_URI'] = f'mongodb+srv://{USER_DB}:{PASSWORD_DB}@cluster0.73uuw.mongodb.net/cs50xni?retryWrites=true&w=majority'
 Session(app)
 mongo = PyMongo(app)
 # Initialize Firestore DB
-firebase = Firebase(config)
-storage_fb = firebase.storage()
 credentials_gc = service_account.Credentials.from_service_account_info(credentials)
 client = storage.Client(credentials=credentials_gc)
 bucket = client.get_bucket(STORAGE_BUCKET)
@@ -146,12 +141,15 @@ def list_dir(route):
     data = []
     info = {
         'files': [],
-        'path': None
+        'path': None,
+        'isListed': 0
     }
     list_ = bucket.list_blobs(prefix=route)
     # https://stackoverflow.com/questions/63743826/google-datastore-iterator-already-started-how-to-work-with-these-iterators
     class Padding: # Reelleno para que itere todos los elementos +1
         name = '/'
+        files: None
+        path=""
 
     data_arr = [Padding]
 
@@ -161,6 +159,14 @@ def list_dir(route):
         routes = dirs.name.split('/')
         filename = routes.pop(-1) # Si no termina con / quiere decir que no es una carpeta
         path_dir = '/'.join(map(str, routes)) + '/'
+        existFolder = False
+
+        for search in data:
+            if path_dir == search['path']:
+                search['files'].append(filename)
+                existFolder = True
+        if(existFolder):
+            continue
 
         if(filename == '' or info['path'] != path_dir):
             if info['path'] != path_dir and info['path'] != None and len(info['files']) > 0:
@@ -184,24 +190,28 @@ def get_file_data(path_file, file, file_ext):
         formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
 
         css_string = formatter.get_style_defs()
-        md_css_string = "<style>" + css_string + "</style>"
-
-        md_template = md_css_string + md_template_string
 
         return {
-            "info": f'{md_template}',
+            "code": {    
+                "html": f'{md_template_string}',
+                "css": f'{css_string}',
+            },
             'file_ext': file_ext,
             'type': 'code'
         }
     else:
         code = bucket.blob(f'{path_file}{file}').download_as_string()
         image = encodebytes(code)
-        json_image = dumps(image,default=json_util.default)
-
-        return {
-            'info': json_image,
-            'type': 'binary'
+        info = {
+            'file_ext': file_ext,
+            'type': 'image'
         }
+        return {
+            'code': None,
+            'image': dumps(image, default=json_util.default),
+            'info': info,
+        }
+
 
 # Si el nombre tiene un carácter extraño
 def change_folder_name(string):
@@ -230,6 +240,10 @@ def delete_project_storage(path):
     for blob in blobs:
         blob.delete()
 
+
+@app.before_request
+def before_request():
+    app.permanent_session_lifetime = datetime.timedelta(hours=12);
 
 @app.route('/')
 def home():
@@ -465,22 +479,23 @@ def delete_project():
 # Ruta para ver los proyectos en modo texto
 @app.route('/project/<username>/<project_name>/', methods=['GET', 'POST'])
 def show_project(username, project_name):
-    print(project_name)
+
     db_project = mongo.db.projects.find_one({ 'author': username, 'project_name': project_name })
     if db_project is None:
         flash('El proyecto no existe')
         return render_template('404.html'), 404
-    print(db_project['path'])
+
     project_path = db_project['path']
     if request.method == 'POST':
         file = (request.get_json())['filename']
+        path_file = (request.get_json())['path']
         file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
-        return jsonify(get_file_data(project_path, file, file_ext))
-
+        return jsonify(get_file_data(path_file, file, file_ext))
 
     directory = list_dir(route=project_path)
+    download_URI = f'/download-project/{db_project["_id"]}'
 
-    return render_template('show_project/index.html', directory=directory, name=project_name, username=db_project['author'])
+    return render_template('show_project/index.html', directory=directory, name=project_name, username=db_project['author'], download_URI=download_URI, description=db_project['description'])
 # Ruta para ver los proyectos en modo grafico
 @app.route('/static_projects/graphic_mode/<project_name>/', methods=['GET', 'POST'])
 def show_project_graphic(project_name):
@@ -498,8 +513,11 @@ def show_project_graphic(project_name):
 
     # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = list_dir(route=project_path)
-    
-    return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
+    download_URI = f'/download-static_project/{db_project["_id"]}'
+
+    return render_template('show_static_project/index.html', directory=directory, name=project_name, download_URI=download_URI, type="graphic mode")
+
+@app.route('/static_projects/<project_name>/', methods=['GET', 'POST'])
 
 
 # Ruta para ver los proyectos predeterminados en modo texto
@@ -522,8 +540,9 @@ def show_static_project(project_name):
 
     # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = list_dir(route=project_path)
-    print(project_path)
-    return render_template('show_static_project/index.html', directory=directory, name=project_name, id=db_project['_id'])
+    download_URI = f'/download-static_project/{db_project["_id"]}'
+    
+    return render_template('show_static_project/index.html', directory=directory, name=project_name, download_URI=download_URI, type="text mode")
   
 #para la parte de documentacion
 @app.route('/examples/basicos')
@@ -552,9 +571,10 @@ def show_ejemplo(ejemplo_name):
 
     # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = list_dir(route=example_path)
+    download_URI = f'/download-static_project/{db_example["_id"]}'
 
     print(directory)
-    return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name, id=db_example['_id'])
+    return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name, download_URI=download_URI, type="text mode")
 
 
 @app.route('/tools')
@@ -727,30 +747,30 @@ def download_google():
         # file.download_to_filename('filename.png')
     return 'ta bien'
 
-@app.route('/prueba', methods=['GET'])
-def prueba():
+# @app.route('/prueba', methods=['GET'])
+# def prueba():
     # storage_user = default_app.storage.bucket(name='gs://codeland-dcd2d.appspot.com')
     # storage_user = default_app.storage()
-    storage_random = storage_fb.child("documentacion/cuento.c").get_url(None)
+    # storage_random = storage_fb.child("documentacion/cuento.c").get_url(None)
 
-    gcs_file = bucket.get_blob('josue.png')
+    # gcs_file = bucket.get_blob('josue.png')
     # blob = bucket.blob('static_projects/')
     # blob.upload_from_string('', content_type='application/x-www-form-urlencoded;charset=UTF-8')
-    folders = bucket.list_blobs(None, prefix='static_project/')
+    # folders = bucket.list_blobs(None, prefix='static_project/')
 
-    folder = bucket.blob('/static_project/graphic_mode/')
+    # folder = bucket.blob('/static_project/graphic_mode/')
     # folder_2 = bucket.blob('static_projects/')
-    print(folders.path)
-    print(folders.max_results)
-    for folder_ref in folders:
-        print(folder_ref)
+    # print(folders.path)
+    # print(folders.max_results)
+    # for folder_ref in folders:
+    #     print(folder_ref)
     # Util
     # https://stackoverflow.com/questions/59829188/how-rename-folder-in-firebase-storage-android-studio
     # https://stackoverflow.com/questions/41075100/move-rename-folder-in-google-cloud-storage-using-nodejs-gcloud-api?noredirect=1&lq=1
     # https://stackoverflow.com/questions/38601548/how-to-move-files-with-firebase-storage
     # bucket.copy_blob(folder, bucket, '/copia/')
 
-    return send_file(BytesIO(gcs_file.download_as_string()), mimetype='image/jpg')
+    # return send_file(BytesIO(gcs_file.download_as_string()), mimetype='image/jpg')
 
 @app.errorhandler(404)
 def page_not_found(_):
