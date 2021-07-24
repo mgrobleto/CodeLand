@@ -23,8 +23,8 @@ body {
 }
 .contenedorHome {
     /* HOME*/
-    position: static;
-    max-width: 1440px;
+    position:static;
+    max-width: 100%;
     width: 100%;
     margin: 0% auto;
     background: #fafafa;
@@ -45,7 +45,7 @@ body {
 .entrada {
     /* Entrada */
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-gap: 8px;
     margin: 0% auto;
 }
@@ -131,7 +131,7 @@ body {
     top: 392px;
 
     background: #5976ee;
-    border-radius: 8px;
+    border-radius: 16px;
 
     flex: none;
     order: 2;

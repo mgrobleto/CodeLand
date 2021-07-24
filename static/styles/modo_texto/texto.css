@@ -1,41 +1,49 @@
-.all-projects {
-    min-height: 100vh;
+*{
+    box-sizing: border-box;
+}
+body{
+    margin: 0;
+    padding: 0;
+    width: 100%; 
+}
+#conteinerImg{
     width: 100%;
-    background-color: #fff;
-    background-position: center;
-    background-size: cover;
+    height: 300px;
 }
-
-.projects{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 8px;
+.row{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 2%;
+    background-color:#6441A5;
 }
-
-.projects .project-img {
-    margin-top: 20px;
-    margin-left: 70px;
-    height: 270px;
-    width: 400px;
-    transition: .6s;
-    box-shadow: 0 5px 4px rgba(0, 0, 0, .5);
+.column{
+    margin-block-end: auto;
+    justify-content: left;
+    align-items: flex-start;
 }
-
-.projects .project-img:hover {
+.row #conteinerImg:hover {
     transform: translate(0, -10px);
 }
 
-.projects .watch-code .btn {
-    margin-top: 0px;
-    margin-left: 70px;
+.row .watch-code .btn {
+    padding: 1%;
+    font-family: Roboto;
+    font-weight: bold;
+    letter-spacing: 1px;
+    border-radius: 16px;
 }
 
-.projects h5 {
+.row h5 {
+    text-align: left;
+    display: flex;
     font-family: Roboto;
     font-size: 18px;
     font-weight: 100;
-    letter-spacing: 3px;
-    margin-left: 70px;
-    margin-top: 15px;
+    letter-spacing: 1px;
     color:black;
+}
+@media screen and (min-width:700px) {
+    .column{
+        width: 33%;
+    }
 }

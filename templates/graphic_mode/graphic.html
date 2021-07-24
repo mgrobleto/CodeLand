@@ -2,18 +2,31 @@
 
 {% block title %}
 <title> Proyectos | Modo grafico </title>
-{% endblock %}
+{% endblock %} 
 
 {% block style %}
-<link rel="stylesheet" href="/static/styles/modo_grafico/grafico.css" />
+<link rel="stylesheet" href="/static/styles/modo_texto/texto.css" />
 {% endblock %}
 
 {% block body %}
 <body>
+        <div class="row">
+            {% for project in db_project %}
+            <div class="column">
+                <img src="{{project['image_route']}}" id="conteinerImg">
+                <h5>{{project['program_title']}}</h5>
+                <div class="watch-code">
+                    <a href="/static_projects/graphic_mode/{{project['program_title']}}" class="btn btn-primary"> Ver código </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+</body>
+<!--<body>
     <section class="all-projects">
         <div class="projects">
           {% for project in db_project %}
-            <!--{{project['program_title']}}--->
+           {{project['program_title']}}--
             <div class="single-project">
                 <img src="{{project['image_route']}}" class="project-img">
                 <h5>{{project['program_title']}}</h5>
@@ -24,5 +37,5 @@
           {% endfor %}
         </div>
     </section>
-</body>
+</body>*/-->
 {% endblock %} 
