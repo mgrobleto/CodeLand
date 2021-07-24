@@ -1,17 +1,16 @@
-#turbo-intro {
-    padding-top: 5%;
-    padding-left: 5%;
-    padding-right: 5%;
-}
-
-.landing {
-    /*width: 1440px;*/
-    /*height: 875px;*/
+.turbo-intro {
     height: 100vh;
     width: 100%;
     background-image: linear-gradient(#6CD0FF 0%,#447FA5 25%, #1C2E4C 100%);
     background-position: center;
     background-size: cover;
+}
+
+
+.intro-container {
+    padding-top: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
 }
 
 .tool-title {
@@ -270,7 +269,7 @@ slider ul li img {
     font-size: 18px;
 }
 
-#community-section {
+.community-section {
     padding-top: 12%;
     padding-right: 5%;
     display: flex;
@@ -336,59 +335,3 @@ slider ul li img {
     transition: .3s;
     cursor: pointer;
 }
-
-/*.community h1 {
-    position: absolute;
-    width: 397px;
-    height: 75px;
-    left: 536px;
-    top: 61px;
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 64px;
-    line-height: 75px;
-    color: #ffffff;
-}*/
-
-/*.community h2 {
-    position: absolute;
-    width: 661px;
-    height: 400px;
-    left: 86px;
-    top: 188px;
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 48px;
-    line-height: 56px;
-
-    color: #ffffff;
-}*/
-
-/*.invitation {
-    position: absolute;
-    width: 588px;
-    height: 412px;
-    left: 831px;
-    top: 222px;
-}
-
-.secondAstronaut{
-    position: absolute;
-    width: 289.28px;
-    height: 232.95px;
-    left: 42px;
-    top: 546.57px;
-    transform: rotate(-24.63deg);
-}
-
-.party{
-    position: absolute;
-    width: 406px;
-    height: 306px;
-    left: 334px;
-    top: 486px;
-}*/
