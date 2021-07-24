@@ -5,6 +5,7 @@ body{
     margin: 0;
     padding: 0;
     width: 100%; 
+    background-color: rgba(8, 11, 15);
 }
 #conteinerImg{
     width: 100%;
@@ -14,9 +15,10 @@ body{
     display: flex;
     flex-wrap: wrap;
     padding: 2%;
-    background-color:#6441A5;
+    background-color: rgba(8, 11, 15);
 }
 .column{
+    margin-top: 1%;
     margin-block-end: auto;
     justify-content: left;
     align-items: flex-start;
@@ -25,12 +27,8 @@ body{
     transform: translate(0, -10px);
 }
 
-.row .watch-code .btn {
-    padding: 1%;
-    font-family: Roboto;
-    font-weight: bold;
-    letter-spacing: 1px;
-    border-radius: 16px;
+.btn btn-primary {
+    border-radius: 16px !important;
 }
 
 .row h5 {
@@ -40,7 +38,7 @@ body{
     font-size: 18px;
     font-weight: 100;
     letter-spacing: 1px;
-    color:black;
+    color: #fafafa;
 }
 @media screen and (min-width:700px) {
     .column{
