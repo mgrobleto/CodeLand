@@ -10,19 +10,15 @@
 
 {% block body %}
 <body>
-    <section class="all-documentation">
-        <div class="documentation"> 
-          {% for documentation in db_documentation %}
-            <!--{{documentation['document_title']}}--->
-            <div class="single-document">
-                <img src="{{documentation['image_route']}}" class="document-img">
-                <h5>{{documentation['document_title']}}</h5>
-                <div class="watch-document">
-                    <a href="{{documentation['path']}}" download class="btn btn-primary">Descargar</a>
-                </div>   
-            </div>
-          {% endfor %}
-        </div>
-    </section>
+      <div class="row"> 
+        {% for documentation in db_documentation %}
+          <div class="column">
+              <img src="{{documentation['image_route']}}" class="img">
+              <h5>{{documentation['document_title']}}</h5>
+              <a class="btn btn-primary" href="{{documentation['path']}}" role="button">Ver código</a>
+          </div>
+        {% endfor %}
+      </div>
 </body>
+
 {% endblock %} 

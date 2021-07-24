@@ -9,20 +9,15 @@
 {% endblock %}
 
 {% block body %}
-
 <body>
-    <section class="all-projects">
-        <div class="projects">
+        <div class="row">
             {% for project in db_project %}
-            <div class="single-project">
-                <img src="{{project['image_route']}}" class="project-img">
+            <div class="column">
+                <img src="{{project['image_route']}}" id="conteinerImg">
                 <h5>{{project['program_title']}}</h5>
-                <div class="watch-code">
-                    <a href="/static_projects/text_mode/{{project['program_title']}}" class="btn btn-primary"> Ver código </a>
-                </div>
+                <a class="btn btn-primary" href="/static_projects/text_mode/{{project['program_title']}}" role="button">Ver código</a>
             </div>
             {% endfor %}
         </div>
-    </section>
 </body>
 {% endblock %}
