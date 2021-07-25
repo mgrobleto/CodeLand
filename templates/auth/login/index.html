@@ -9,27 +9,31 @@
 {% endblock %}
 
 {% block body %}
-<section id="login-section">
-  <div id="login-container">
-    <div class="header-section">
-      <h3> ¡Bienvenido de nuevo! </h3>
-    </div> 
-    <div class="container">
-      <form  action="/login" method="POST">
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Correo electrónico</label>
-          <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+<html>
+  <body>
+    <section id="login-section">
+      <div class="container">
+        <div class="login-welcome">
+          <h3> ¡Bienvenido! </h3>
         </div>
-        <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label">Contraseña</label>
-          <input type="password" name="password" class="form-control" id="exampleInputPassword1" required>
+        <div class="form-section">
+          <form  action="/login" method="POST" class="form-box">
+            <div class="form-container">
+              <label for="exampleInputEmail1" class="form-label">Correo electrónico</label>
+              <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+            <div class="form-container">
+              <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+              <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+            </div>
+            <button type="submit" class="btn btn-primary"> Ingresar </button>
+            <div class="register-access">
+              <small class="mx-2">¿Aún no tienes una cuenta?</small><a href="/register">Regístrate</a>
+            </div>
+          </form>
         </div>
-        <button type="submit" class="btn btn-primary"> Ingresar </button>
-        <div class="register-my-5">
-          <small class="mx-2">¿Aún no tienes una cuenta?</small><a href="/register">Regístrate</a>
-        </div>
-      </form>
-    </div>
-  </div>
-</section>
+      </div>
+    </section>
+  </body>
+</html>
 {% endblock %}

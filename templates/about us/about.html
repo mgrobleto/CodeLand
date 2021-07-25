@@ -9,84 +9,107 @@
 {% endblock %}
 
 {% block body %}
-<body>
-    <section class="who-we-are">
-        <div id="about">
-            <div class="header-section">
-                <div class="head-img">
-                    <svg width="109" height="87" viewBox="0 0 109 87" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M98.564 22.4091H86.9682V11.8636H76.5321V0H66.0959V11.8636H44.0639V0H33.6277V11.8636H23.1915V22.4091H11.5958V35.5909H0V59.3182V72.5H11.5958V59.3182V48.7727H23.1915V60.6364H33.6277V72.5H23.1915V87H33.1673H44.0637V72.8808V60.6361H66.0957V72.8808V87H76.9923H86.9682V72.5H76.5321V60.6364H86.9682V48.7727H98.564V72.5H109V35.5909H98.564V22.4091ZM45.2235 42.1818H33.6277V29H45.2235V42.1818ZM77.6916 42.1818H66.0959V29H77.6916V42.1818Z" fill="#7DEAC8"/>
-                    </svg>                                                                    
-                </div>
-                <span class="about-title"> ¿Qué es CodeLand? </span>
-            </div>
-            <div class="about-content">
-                <div class="about-description">
-                    <p>
-                        Una pagina dedicada a la programación en 
-                        <b> Turbo C 2.0, </b>donde puedes tener acceso a múltiples 
-                        códigos y documentación para facilitarte su uso y estudio.
-                    </p>
-                </div>
-                <div class="about-image">
-                    <img src="\static\styles\about\images\Logo-1.svg" />
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="goals">
-        <div id="goals-section">
-            <div class="goals-content">
-                <div class="goals-image">
-                    <img src="/static/styles/about/images/2.png" />
-                </div>
-                <div class="goals-description">
-                    <span class="goals-title"> Objetivos </span>
-                    <ul>
-                        <li class="text"> <i class="bi bi-check-lg" role="img"></i>Proporcionar códigos en <b>Turbo C 2.0</b>. </li>
-                        <li class="text"> <i class="bi bi-check-lg" role="img"></i>Ofrecer documentación del <b>Lenguaje C</b>. </li>
-                        <li class="text"> <i class="bi bi-check-lg" role="img"></i>Brindar herramientas para el uso de <b>Turbo C 2.0</b>. </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="developers">
-        <div class="container">
-            <h1 class="heading3"> Desarrolladores </h1>
-            <div class="profiles">
-                <div class="profile">
-                    <img src="/static/styles/about/images/Gabriela.jpeg" class="profile-img">
-                    <h3 class="user-name"> Gabriela Robleto </h3>
-                    <div class="social">
-                        <ul>
-                            <li> <a href="https://github.com/cafeconlechee"> <i class="bi bi-github" role="img" aria-label="GitHub"> </i></a></li>
-                            <li> <a href="https://www.instagram.com/cafeeeeconleche/"> <i class="bi bi-instagram" role="img" aria-label="Instagram"> </i></a></li>
-                        </ul>
+<html>
+    <body>
+        <section class="who-we-are">
+            <div class="about-section">
+                <div class="header-section">
+                    <div class="head-img">
+                        <svg width="109" height="87" viewBox="0 0 109 87" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M98.564 22.4091H86.9682V11.8636H76.5321V0H66.0959V11.8636H44.0639V0H33.6277V11.8636H23.1915V22.4091H11.5958V35.5909H0V59.3182V72.5H11.5958V59.3182V48.7727H23.1915V60.6364H33.6277V72.5H23.1915V87H33.1673H44.0637V72.8808V60.6361H66.0957V72.8808V87H76.9923H86.9682V72.5H76.5321V60.6364H86.9682V48.7727H98.564V72.5H109V35.5909H98.564V22.4091ZM45.2235 42.1818H33.6277V29H45.2235V42.1818ZM77.6916 42.1818H66.0959V29H77.6916V42.1818Z" fill="#7DEAC8"/>
+                        </svg>                                                                    
+                    </div>
+                    <div class="head-text">
+                        <span class="about-title"> ¿Qué es CodeLand? </span>
                     </div>
                 </div>
-                <div class="profile">
-                    <img src="/static/styles/about/images/Miguel.jpeg" class="profile-img">
-                    <h3 class="user-name"> Miguel Hernandez </h3>
-                    <div class="social">
-                        <ul>
-                            <li> <a href="https://github.com/MiguelHG2351"> <i class="bi bi-github" role="img" aria-label="GitHub"> </i></a></li>
-                            <li> <a href="https://www.instagram.com/miguelhg2351/"> <i class="bi bi-instagram" role="img" aria-label="Instagram"> </i></a></li>
-                        </ul>
+                <div class="about-content">
+                    <div class="about-description">
+                        <p>
+                            Una pagina dedicada a la programación en 
+                            <b> Turbo C 2.0, </b>donde puedes tener acceso a múltiples 
+                            códigos y documentación para facilitarte su uso y estudio.
+                        </p>
+                    </div>
+                    <div class="about-image">
+                        <img src="\static\styles\about\images\Logo-1.svg" role="img"/>
                     </div>
                 </div>
-                <div class="profile">
-                    <img src="/static/styles/about/images/Michelle.jpeg" class="profile-img">
-                    <h3 class="user-name"> Michelle Calderon </h3>
-                    <div class="social">
+            </div>
+            <div id="goals-section">
+                <div class="goals-content">
+                    <div class="goals-image">
+                        <img src="/static/styles/about/images/2.png" />
+                    </div>
+                    <div class="goals-description">
+                        <span class="goals-title"> Objetivos </span>
                         <ul>
-                            <li> <a href="https://github.com/Mitch-coder"> <i class="bi bi-github" role="img" aria-label="GitHub"> </i></a></li>
-                            <li> <a href="https://instagram.com/mitch007_?utm_medium=copy_link"> <i class="bi bi-instagram" role="img" aria-label="Instagram"> </i></a></li>
+                            <li class="text-section">
+                                <div class="check-img">
+                                    <i class="bi bi-check-lg" role="img"></i>
+                                </div>
+                                <div class="text">
+                                    Proporcionar códigos en <b>Turbo C 2.0</b>. 
+                                </div> 
+                            </li>
+                            <li class="text-section"> 
+                                <div class="check-img">
+                                    <i class="bi bi-check-lg" role="img"></i>
+                                </div> 
+                                <div class="text">
+                                    Ofrecer documentación del <b>Lenguaje C</b>. 
+                                </div>
+                            </li>
+                            <li class="text-section"> 
+                                <div class="check-img">
+                                    <i class="bi bi-check-lg" role="img"></i>
+                                </div> 
+                                <div class="text">
+                                    Brindar herramientas para el uso de <b>Turbo C 2.0</b>. 
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-</body>
+            <div class="developers-section">
+                <div class="developers-header">
+                    <h1 class="heading3"> Desarrolladores </h1>
+                </div>
+                <div class="profiles">
+                    <div class="profile">
+                        <img src="/static/styles/about/images/Gabriela.jpeg" class="profile-img">
+                        <h3 class="user-name"> Gabriela Robleto </h3>
+                        <div class="social">
+                            <ul>
+                                <li> <a href="https://github.com/cafeconlechee"> <i class="bi bi-github" role="img" aria-label="GitHub"> </i></a></li>
+                                <li> <a href="mailto:magabriela0715@gmail.com"> <i class="bi bi-envelope-fill"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="profile">
+                        <img src="/static/styles/about/images/Miguel.jpeg" class="profile-img">
+                        <h3 class="user-name"> Miguel Hernandez </h3>
+                        <div class="social">
+                            <ul>
+                                <li> <a href="https://github.com/MiguelHG2351"> <i class="bi bi-github" role="img" aria-label="GitHub"> </i></a></li>
+                                <li> <a href="mailto:miguelhgaitan2351@gmail.com"> <i class="bi bi-envelope-fill"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="profile">
+                        <img src="/static/styles/about/images/Michelle.jpeg" class="profile-img">
+                        <h3 class="user-name"> Michelle Calderon </h3>
+                        <div class="social">
+                            <ul>
+                                <li> <a href="https://github.com/Mitch-coder"> <i class="bi bi-github" role="img" aria-label="GitHub"> </i></a></li>
+                                <li> <a href="mailto:michellescalderon2002@gmail.com"> <i class="bi bi-envelope-fill"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>
 {% endblock %}
