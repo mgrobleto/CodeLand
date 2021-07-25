@@ -5,22 +5,38 @@
 {% endblock %} {% block body %}
 
 <section class="ide-container">
-    {% if directory %}
-    <div class="menu">
-        <section class="sidenav-explorer" id="sidenav-explorer">
-
-        </section>
-        {% if description %}
-        <div class="description-project" id="description">
-            <h5>Descrición sobre el proyecto</h5>
-            <p>{{description}}</p>
+    <div class="sidenav-editor">
+        <div class="menu">
+            <button class="btn open-option-menu" id="open-info">
+                <img src="/static/icons/info-icon.svg" width="48px" alt="Abrir información del proyecto">
+            </button>
+            <button class="btn open-option-menu" id="open-explorer">
+                <img src="/static/icons/folder-menu-icon.svg" width="48px" alt="Mostrar código">
+            </button>
+            <button class="btn open-option-menu" id="open-github">
+                <img src="/static/icons/github-icon.svg" width="48px" alt="Explorar repositorio">
+            </button>
+            <button class="btn open-option-menu" id="open-setting">
+                <img src="/static/icons/settings-icon.svg" width="48px" alt="Configurar proyecto">
+            </button>
         </div>
-        {% endif %}
-        <section>
-            <a href="{{download_URI}}" download class="btn btn-primary">descargar código</a>
-        </section>
+        <div class="code">
+            {% if directory %}
+            <section class="explorer-editor" id="explorer-editor">
+            </section>
+            {% if description %}
+            <div class="description-project" id="description">
+                <h5>Descrición sobre el proyecto</h5>
+                <p>{{description}}</p>
+            </div>
+            {% endif %}
+            {% endif %}
+    
+            <section>
+                <a href="{{download_URI}}" download class="btn btn-primary">descargar código</a>
+            </section>
+        </div>
     </div>
-    {% endif %}
     <div class="header_code">
         <div class="group-tab">
             <div class="circle bg-danger p-2"></div>

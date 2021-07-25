@@ -6,16 +6,21 @@
 
 <section class="ide-container">
     {% if directory %}
-    <div class="menu">
-        <section class="sidenav-explorer" id="sidenav-explorer">
+    <div class="sidenav-editor">
+        <div class="menu">
 
-        </section>
-        {% if description %}
-        <div class="description-project" id="description">
-            <h5>Descrición sobre el proyecto</h5>
-            <p>{{description}}</p>
         </div>
-        {% endif %}
+        <div class="directories">
+            <section class="explorer-editor" id="explorer-editor">
+    
+            </section>
+            {% if description %}
+            <div class="description-project" id="description">
+                <h5>Descrición sobre el proyecto</h5>
+                <p>{{description}}</p>
+            </div>
+            {% endif %}
+        </div>
         <section>
             <a href="{{download_URI}}" download class="btn btn-primary">descargar código</a>
         </section>
@@ -28,26 +33,6 @@
             <div class="circle bg-success p-2"></div>
         </div>
         <section class="editor-group" id="editor-group">
-            <!-- <div class="tab active">
-                <div class="close-tab">
-                    <i>
-                        <img src="/static/icons/close-icon.svg" alt="Cerrar archivo">
-                    </i>
-                </div>
-                <div class="filename">
-                    <p>Presentación.c</p>
-                </div>
-            </div>
-            <div class="tab">
-                <div class="close-tab">
-                    <i>
-                        <img width="16px" src="/static/icons/close-icon.svg" alt="Cerrar archivo">
-                    </i>
-                </div>
-                <div class="filename">
-                    <p>Puente_desnivel.c</p>
-                </div>
-            </div> -->
         </section>
     </div>
     <div class="code_container">

@@ -9,7 +9,7 @@ class ListDir extends ListDirTemplate {
         this.projectName = projectName;
         this.depth = depth;
         this.listDir = [];
-        this.menu = document.querySelector("#sidenav-explorer");
+        this.menu = document.querySelector("#explorer-editor");
 
         if(ListDir._instance) {
             return ListDir._instance

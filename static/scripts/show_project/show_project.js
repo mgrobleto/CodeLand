@@ -3,6 +3,7 @@ import ListDir from "./listDirUI/listDir.js";
 import storage from './utils/storage.js'
 import reducer from "./reducer/index.js";
 import tabUI from "./tabUI/tab.js";
+import './settings.js'
 
 const data = window.__PRELOADED_STATE__;
 const projectName = window.__PROJECT_NAME__;
