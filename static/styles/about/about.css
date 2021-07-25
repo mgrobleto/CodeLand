@@ -346,39 +346,40 @@
     margin-right: 15px;
 }
 
-.social ul li .bi {
+.social .bi {
     font-size: 30px;
-    line-height: 60px;
+    /*line-height: 60px;*/
     transition: .6s;
     color: #000;
 }
 
-.social ul li .bi:hover {
+.social .bi:hover {
     color: #fff;
 }
 
-.social ul li a {
+.social a {
     /*position: relative;*/
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
     width: 60px;
     height: 60px;
     border-radius: 50%;
     background-color: #fff;
-    text-align: center;
     transition: .6s;
     box-shadow: 0 5px 4px rgba(0, 0, 0, .5);
 }
 
-.social ul li a:hover {
+.social a:hover {
     transform: translate(0, -10px);
 }
 
-.social ul li:nth-child(1) a:hover {
+.social li:nth-child(1) a:hover {
     background-color: #211F1F;
 }
 
-.social ul li:nth-child(2) a:hover {
-    background-color: #c32aa3;
+.social li:nth-child(2) a:hover {
+    background-color: #EA4335;
 }
 
 @media (max-width: 768px) {
