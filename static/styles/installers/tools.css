@@ -1,7 +1,8 @@
 .turbo-intro {
     width: 100%;
     /*background-color: #0b0c1b;*/
-    background-image: linear-gradient(#0b0c1b 32%, #1C2E4C 100%);
+    /*background-image: linear-gradient(#0b0c1b 32%, #1C2E4C 100%);*/
+    background-image: linear-gradient(#4485a5 0%, #325d7c 50%, #1C2E4C 100%);
     background-position: center;
     background-size: cover;
 }
