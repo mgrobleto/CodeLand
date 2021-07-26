@@ -1,7 +1,8 @@
 .turbo-intro {
     width: 100%;
     /*background-color: #0b0c1b;*/
-    background-image: linear-gradient(#0b0c1b 32%, #1C2E4C 100%);
+    background: linear-gradient(180deg, #0E3964 10%, #2C6E9B 100%);
+    /*background-image: linear-gradient(#4485a5 0%, #325d7c 50%, #1C2E4C 100%);*/
     background-position: center;
     background-size: cover;
 }
@@ -20,7 +21,7 @@
 }
 
 .tool-title {
-    font-weight: bold;
+    font-weight: 500;
     font-size: 80px;
     color: #fafafa;
 }
@@ -30,7 +31,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-top: 10%;
+    margin-top: 4rem;
 }
 
 .imgTurboCLogo img {
@@ -55,7 +56,7 @@
 .turbo-description a {
     text-decoration: none;
     /*color: #112D60;*/
-    color: #1c2e4c;
+    color: #0E3964;
     font-size: 40px;
     font-weight: 600;
     /*display: grid;*/
@@ -115,16 +116,16 @@
     cursor: pointer;
 }
 
-.interface {
+/*.interface {
     height: 150vh;
     width: 100%;
     background-color: #1C2E4C;
     background-position: center;
     background-size: cover;
-}
+}*/
 
 .interface-section {
-    padding-top: 15%;
+    padding-top: 12%;
     padding-bottom: 15%;
 }
 
