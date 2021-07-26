@@ -1,6 +1,7 @@
 .turbo-intro {
     width: 100%;
-    background-image: linear-gradient(#6CD0FF 0%,#447FA5 25%, #1C2E4C 100%);
+    /*background-color: #0b0c1b;*/
+    background-image: linear-gradient(#0b0c1b 32%, #1C2E4C 100%);
     background-position: center;
     background-size: cover;
 }
@@ -53,7 +54,8 @@
 
 .turbo-description a {
     text-decoration: none;
-    color: #112D60;
+    /*color: #112D60;*/
+    color: #1c2e4c;
     font-size: 40px;
     font-weight: 600;
     /*display: grid;*/
@@ -62,7 +64,7 @@
     justify-content: space-around;
     height: 80px;
     width: 250px;
-    background-color: #FFFFFF;
+    background-color: #fafafa;
     border-radius: 50px;
     /*margin: auto;*/
     /*place-items: center;*/
@@ -108,7 +110,7 @@
 }
 
 .turbo-description a:hover {
-    transform: translateX(7px);
+    transform: translateY(7px);
     transition: .3s;
     cursor: pointer;
 }
@@ -139,9 +141,9 @@
 }
 
 .interface-description h1 {
-    font-weight: bold;
+    font-weight: 500;
     font-size: 50px;
-    color: #6CD0FF;
+    color: #CCD6F6;
     letter-spacing: 3px;
     /*margin-left: 35%;*/
 }
