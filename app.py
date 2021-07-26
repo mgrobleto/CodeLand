@@ -719,6 +719,11 @@ def delete_user(user_id):
         return redirect('/admin/login')
 
 
+@app.route('/google5e97d84d9d35c069.html')
+def googleSearchConsole():
+    return render_template("google5e97d84d9d35c069.html")
+
+
 @app.route('/dirs', methods=['GET'])
 def getDirs():
     datas = []

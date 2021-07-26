@@ -2,6 +2,11 @@
     box-sizing: border-box;
 }
 
+:root {
+    --primary-color: #09f;
+    --danger-color: #f00;
+}
+
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;

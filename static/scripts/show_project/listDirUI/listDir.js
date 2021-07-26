@@ -43,12 +43,7 @@ class ListDir extends ListDirTemplate {
             fragment.append(...dirs);
         }
 
-
-        this.menu.appendChild(this.containerFilesDOM(
-            this.projectName,
-            fragment,
-            true
-        ));
+        this.menu.appendChild(this.template(fragment))
     }
 
     subDirs(data, index = 1) {

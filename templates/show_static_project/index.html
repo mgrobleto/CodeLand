@@ -5,27 +5,55 @@
 {% endblock %} {% block body %}
 
 <section class="ide-container">
-    {% if directory %}
     <div class="sidenav-editor">
         <div class="menu">
-
+            <button class="btn open-option-menu" id="open-info" title="Información del proyecto">
+                <svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M127.667 21C68.7867 21 21 68.7867 21 127.667C21 186.547 68.7867 234.333 127.667 234.333C186.547 234.333 234.333 186.547 234.333 127.667C234.333 68.7867 186.547 21 127.667 21ZM138.333 181H117V117H138.333V181ZM138.333 95.6667H117V74.3333H138.333V95.6667Z" fill="#999999"/>
+                </svg>                    
+            </button>
+            <button class="btn open-option-menu is-active" id="open-explorer" title="Explorador de archivos">
+                <svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M106.667 42.6667H42.6667C30.9334 42.6667 21.44 52.2667 21.44 64L21.3334 192C21.3334 203.733 30.9334 213.333 42.6667 213.333H213.333C225.067 213.333 234.667 203.733 234.667 192V85.3333C234.667 73.6 225.067 64 213.333 64H128L106.667 42.6667Z" fill="#999999"/>
+                </svg>                    
+            </button>
+            <button class="btn open-option-menu" id="open-download" title="Descargar proyecto">
+                <svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M206.4 107.093C199.147 70.2933 166.827 42.6667 128 42.6667C97.1733 42.6667 70.4 60.16 57.0667 85.76C24.96 89.1733 0 116.373 0 149.333C0 184.64 28.6933 213.333 64 213.333H202.667C232.107 213.333 256 189.44 256 160C256 131.84 234.133 109.013 206.4 107.093ZM181.333 138.667L128 192L74.6667 138.667H106.667V96H149.333V138.667H181.333Z" fill="#999999"/>
+                </svg>
+            </button>
         </div>
-        <div class="directories">
-            <section class="explorer-editor" id="explorer-editor">
-    
+        <div class="menu-options" id="menu-options">
+            <section class="menu-option info-option-container">
+                <div class="info-basic">
+                    <div class="title-menu-option">
+                        <h3>Proyecto: {{name}}</h3>
+                    </div>
+                    <div class="info-basic-user">
+                        <p>Creado por: Estudiantes</p>
+                    </div>
+                </div>
             </section>
-            {% if description %}
-            <div class="description-project" id="description">
-                <h5>Descrición sobre el proyecto</h5>
-                <p>{{description}}</p>
-            </div>
-            {% endif %}
+            <section class="menu-option explorer-option-container is-active">
+                {% if directory %}
+                <section class="explorer-editor" id="explorer-editor">
+                </section>
+                {% else %}
+                <section class="menu-option explorer-option">
+                    <h5>Proyecto sin directorio</h5>
+                </section>
+                {% endif %}
+            </section>
+            <section class="menu-option download-option-container">
+                <div class="title-menu-option">
+                    <h3>Descargar</h3>
+                </div>
+                <div class="download" align="center">
+                    <a href="{{download_URI}}" download class="btn btn-primary">descargar código</a>
+                </div>
+            </section>
         </div>
-        <section>
-            <a href="{{download_URI}}" download class="btn btn-primary">descargar código</a>
-        </section>
     </div>
-    {% endif %}
     <div class="header_code">
         <div class="group-tab">
             <div class="circle bg-danger p-2"></div>
@@ -36,6 +64,9 @@
         </section>
     </div>
     <div class="code_container">
+        <button class="btn copy-code" id="copy-code" title="Copiar código">
+            <img src="/static/icons/paste-icon.svg" width="32px" alt="Copiar código">
+        </button>
         <div id="show_code"></div>
     </div>
 </section>
@@ -46,5 +77,6 @@
     window.__PROJECT_NAME__ = "{{name}}"
     window.__DIR_DEPTH__ = 3
 </script>
+<script src="/static/scripts/ejemploSettings.js"></script>
 <script src="/static/scripts/show_project/show_project.js" type="module"></script>
 {% endblock %}
