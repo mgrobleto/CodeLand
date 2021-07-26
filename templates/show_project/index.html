@@ -1,38 +1,79 @@
 {% extends 'layout/index.html' %} {% block style %}
 <link rel="stylesheet" href="/static/styles/show_project.css" />
 {% endblock %} {% block title %}
-<title>{{ username }}/{{ name }} | CodeLand</title>
+<title>{{ project_info['author'] }}/{{ name }} | CodeLand</title>
 {% endblock %} {% block body %}
 
 <section class="ide-container">
     <div class="sidenav-editor">
         <div class="menu">
             <button class="btn open-option-menu" id="open-info">
-                <img src="/static/icons/info-icon.svg" width="48px" alt="Abrir información del proyecto">
+                <svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M127.667 21C68.7867 21 21 68.7867 21 127.667C21 186.547 68.7867 234.333 127.667 234.333C186.547 234.333 234.333 186.547 234.333 127.667C234.333 68.7867 186.547 21 127.667 21ZM138.333 181H117V117H138.333V181ZM138.333 95.6667H117V74.3333H138.333V95.6667Z" fill="#999999"/>
+                </svg>                    
             </button>
-            <button class="btn open-option-menu" id="open-explorer">
-                <img src="/static/icons/folder-menu-icon.svg" width="48px" alt="Mostrar código">
+            <button class="btn open-option-menu is-active" id="open-explorer">
+                <svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M106.667 42.6667H42.6667C30.9334 42.6667 21.44 52.2667 21.44 64L21.3334 192C21.3334 203.733 30.9334 213.333 42.6667 213.333H213.333C225.067 213.333 234.667 203.733 234.667 192V85.3333C234.667 73.6 225.067 64 213.333 64H128L106.667 42.6667Z" fill="#999999"/>
+                </svg>                    
             </button>
             <button class="btn open-option-menu" id="open-github">
-                <img src="/static/icons/github-icon.svg" width="48px" alt="Explorar repositorio">
+                <svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M214.571 62.944C213.704 61.7943 212.779 60.6906 211.797 59.6373C212.784 57.0074 213.534 54.2943 214.037 51.5307C215.523 41.4208 214.233 31.0971 210.304 21.664C210.304 21.664 198.357 17.9307 170.944 36.384C159.306 33.1706 147.284 31.5557 135.211 31.584C123.102 31.5628 111.047 33.1774 99.3707 36.384C71.9573 17.7173 60.0107 21.664 60.0107 21.664C56.1288 30.9972 54.839 41.2053 56.2773 51.2107C56.7835 54.0892 57.5694 56.9115 58.624 59.6373C57.664 60.704 56.704 61.8773 55.8507 62.944C47.891 72.9282 43.6658 85.3775 43.904 98.144C43.8787 101.172 44.0211 104.199 44.3307 107.211C47.744 154.464 79.2107 165.451 109.184 168.864C104.942 172.809 102.065 178.002 100.971 183.691C99.9792 187.485 99.5127 191.397 99.584 195.317V209.291C87.648 210.357 75.4027 208.619 71.6053 197.973C67.5291 187.784 60.7688 178.89 52.0427 172.235C51.4049 171.889 50.7982 171.49 50.2293 171.04C49.4631 169.026 48.1055 167.291 46.335 166.063C44.5645 164.836 42.4639 164.172 40.3093 164.16H40.256C37.4362 164.16 34.7312 165.276 32.7323 167.265C30.7334 169.254 29.6034 171.954 29.5893 174.773C29.5573 183.435 38.2293 189.035 41.7813 190.933C45.9312 195.115 49.2695 200.03 51.6267 205.429C55.5093 216.341 66.8693 232.928 99.264 230.773L99.2853 231.819L99.328 234.677C99.328 237.506 100.452 240.219 102.452 242.22C104.453 244.22 107.166 245.344 109.995 245.344H160.277C163.106 245.344 165.819 244.22 167.82 242.22C169.82 240.219 170.944 237.506 170.944 234.677C170.944 234.677 171.029 200.971 171.029 195.317C171.1 191.397 170.634 187.485 169.643 183.691L169.621 183.627L169.664 183.691C169.568 183.317 169.429 183.019 169.323 182.656C168.134 177.371 165.384 172.566 161.429 168.864L161.557 169.088L161.344 168.875C191.317 165.461 222.571 154.261 225.984 107.221C226.294 104.209 226.436 101.182 226.411 98.1547C226.6 85.4135 222.422 72.9914 214.571 62.9547V62.944Z" fill="#999999"/>
+                </svg>
             </button>
-            <button class="btn open-option-menu" id="open-setting">
-                <img src="/static/icons/settings-icon.svg" width="48px" alt="Configurar proyecto">
+            <button class="btn open-option-menu" id="open-settings">
+                <svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M204.16 137.984C204.544 134.784 204.8 131.456 204.8 128C204.8 124.544 204.544 121.216 204.032 118.016L225.664 101.12C227.584 99.5839 228.096 96.7679 226.944 94.5919L206.464 59.1359C205.184 56.8319 202.496 56.0639 200.192 56.8319L174.72 67.0719C169.344 62.9759 163.712 59.6479 157.44 57.0879L153.6 29.9519C153.216 27.3919 151.04 25.5999 148.48 25.5999H107.52C104.96 25.5999 102.912 27.3919 102.528 29.9519L98.6879 57.0879C92.4159 59.6479 86.6559 63.1039 81.4079 67.0719L55.9359 56.8319C53.6319 55.9359 50.9439 56.8319 49.6639 59.1359L29.1839 94.5919C27.9039 96.8959 28.4159 99.5839 30.4639 101.12L52.0959 118.016C51.5839 121.216 51.1999 124.672 51.1999 128C51.1999 131.328 51.4559 134.784 51.9679 137.984L30.3359 154.88C28.4159 156.416 27.9039 159.232 29.0559 161.408L49.5359 196.864C50.8159 199.168 53.5039 199.936 55.8079 199.168L81.2799 188.928C86.6559 193.024 92.2879 196.352 98.5599 198.912L102.4 226.048C102.912 228.608 104.96 230.4 107.52 230.4H148.48C151.04 230.4 153.216 228.608 153.472 226.048L157.312 198.912C163.584 196.352 169.344 192.896 174.592 188.928L200.064 199.168C202.368 200.064 205.056 199.168 206.336 196.864L226.816 161.408C228.096 159.104 227.584 156.416 225.536 154.88L204.16 137.984V137.984ZM128 166.4C106.88 166.4 89.5999 149.12 89.5999 128C89.5999 106.88 106.88 89.5999 128 89.5999C149.12 89.5999 166.4 106.88 166.4 128C166.4 149.12 149.12 166.4 128 166.4Z" fill="#999999"/>
+                </svg>    
+            </button>
+            <button class="btn open-option-menu" id="open-download">
+                <svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M206.4 107.093C199.147 70.2933 166.827 42.6667 128 42.6667C97.1733 42.6667 70.4 60.16 57.0667 85.76C24.96 89.1733 0 116.373 0 149.333C0 184.64 28.6933 213.333 64 213.333H202.667C232.107 213.333 256 189.44 256 160C256 131.84 234.133 109.013 206.4 107.093ZM181.333 138.667L128 192L74.6667 138.667H106.667V96H149.333V138.667H181.333Z" fill="#999999"/>
+                </svg>
             </button>
         </div>
-        <div class="code">
-            {% if directory %}
-            <section class="explorer-editor" id="explorer-editor">
+        <div class="menu-options" id="menu-options">
+            <section class="menu-option info-option-container">
+                <div class="info-basic">
+                    <div class="info-basic-name">
+                        <h3>Proyecto: {{name}}</h3>
+                    </div>
+                    <div class="info-basic-user">
+                        <p>Creado por: <a href="/p/{{project_info['author']}}">{{project_info['author']}}</a></p>
+                        <p>Creado: <b>{{project_info['created_at'].strftime('%d %b %Y')}}</b></p>
+                        <p>Actualizado por última vez: {{project_info['updated_at'].strftime('%d %b %Y')}}</p>
+                    </div>
+                </div>
+                {% if project_info['description'] %}
+                <div class="description-project" id="description">
+                    <h5>Descripción sobre el proyecto</h5>
+                    <p>{{project_info['description']}}</p>
+                </div>
+                {% endif %}
             </section>
-            {% if description %}
-            <div class="description-project" id="description">
-                <h5>Descrición sobre el proyecto</h5>
-                <p>{{description}}</p>
-            </div>
-            {% endif %}
-            {% endif %}
-    
-            <section>
+            <section class="menu-option explorer-option-container is-active">
+                {% if directory %}
+                <section class="explorer-editor" id="explorer-editor">
+                </section>
+                {% else %}
+                <section class="menu-option explorer-option">
+                    <h5>Proyecto sin directorio</h5>
+                </section>
+                {% endif %}
+            </section>
+            <section class="menu-option github-option-container">
+                <h2>GitHub</h2>
+                {% if github %}
+                <h2>link: {{github}}</h2>
+                {% else %}
+                <p>No tiene un link hacia github</p>
+                {% endif %}
+            </section>
+            <section class="menu-option settings-option-container">
+                <h2>xD</h2>
+            </section>
+            <section class="menu-option download-option-container">
                 <a href="{{download_URI}}" download class="btn btn-primary">descargar código</a>
             </section>
         </div>
@@ -67,6 +108,9 @@
         </section>
     </div>
     <div class="code_container">
+        <button class="btn copy-code" id="copy-code" title="Copiar código">
+            <img src="/static/icons/paste-icon.svg" width="32px" alt="Copiar código">
+        </button>
         <div id="show_code"></div>
     </div>
 </section>

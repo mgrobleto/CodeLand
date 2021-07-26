@@ -38,7 +38,7 @@ class ListDir extends ListDirTemplate {
             value.path.endsWith(`${this.projectName}/`)
         );
         if(mainFiles) {
-            fragment.append(...dirs, this.listOfFileDOM(mainFiles.files, mainFiles.path));   
+            fragment.append(...dirs, this.listOfFileDOM(mainFiles.files, mainFiles.path));
         } else {
             fragment.append(...dirs);
         }

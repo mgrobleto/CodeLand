@@ -90,7 +90,8 @@
     width: 12px;
 }
 
-.close-tab, .filename {
+.close-tab,
+.filename {
     display: inline-flex;
     align-items: center;
     height: 100%;
@@ -108,10 +109,19 @@
     width: 100%;
     padding: 0;
     background-color: var(--background-code);
+    position: relative;
 }
 
 .code_container::-webkit-scrollbar {
     width: 0;
+}
+
+.copy-code {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    left: unset;
+    cursor: pointer;
 }
 
 #show_code {
@@ -127,7 +137,6 @@
     font-size: 16px;
     font-weight: bold;
     display: inline-flex;
-    justify-content: space-between;
     background-color: rgba(8, 11, 15);
     overflow: hidden;
     overflow-y: auto;
@@ -139,45 +148,107 @@
 
 .menu {
     height: 100%;
-    border: 1px solid rgba(255, 255, 255, .1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 0.5rem;
-    padding: 0.5rem;
+    padding: calc(0.5rem + 6px);
     display: flex;
     flex-direction: column;
     gap: 12px 0;
 }
 
 .btn.open-option-menu {
-    padding: 0;
+    padding: 6px;
     border-radius: 0.5rem;
     font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
 }
 
-.btn.open-option-menu img {
-    width: 36px;
+.btn.open-option-menu svg {
+    width: 28px;
+    height: 28px;
 }
 
-.code {
+.btn.open-option-menu:hover svg path {
+    fill: #fff;
+}
+
+.open-option-menu.is-active {
+    background-color: #09f;
+}
+
+.open-option-menu.is-active svg path {
+    fill: #eee;
+}
+.menu-options {
     overflow: hidden;
 }
 
+.explorer-option-container,
+.info-option-container,
+.download-option-container,
+.settings-option-container,
+.github-option-container {
+    display: none;
+}
+
+.info-basic-name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #eee;
+    text-align: center;
+}
+
+.info-basic-name h3 {
+    margin-bottom: 0;
+    font-size: 18px;
+}
+
+.info-basic-user {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4px 12px;
+    color: #eee;
+}
+
 .description-project {
-    border-top: 1px solid rgba(255, 255, 255, .1);
-    padding-top: 22px;
     color: #09f;
+    padding-top: 22px;
+    padding-left: 12px;
+    padding-right: 12px;
 }
 
 .description-project h5 {
-    color: #eee;
-    font-size: 14px;
-    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .description-project p {
-    text-align: center;
+    color: #b7b7b7;
     font-size: 12px;
+}
+
+.info-option-container.is-active {
+    display: block;
+}
+
+.explorer-option-container.is-active {
+    display: block;
+}
+
+.github-option-container.is-active {
+    display: block;
+}
+
+.settings-option-container.is-active {
+    display: block;
+}
+
+
+.download-option-container.is-active {
+    display: block;
 }
 
 details {
@@ -206,14 +277,14 @@ details > summary {
     align-items: center;
     list-style: none;
     cursor: pointer;
-    transition: .2s ease-in-out;
+    transition: 0.2s ease-in-out;
     color: #eee;
     padding-left: 2px;
     border-radius: 4px;
 }
 
 details > summary:hover {
-    background-color: rgba(255, 255, 255, .2);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .content ol {
@@ -225,7 +296,7 @@ details > summary:hover {
 }
 
 .file {
-    transition: .2s ease-in-out;
+    transition: 0.2s ease-in-out;
     overflow: hidden;
     font-size: 13px;
     border-radius: 4px;
@@ -237,48 +308,48 @@ details > summary:hover {
 }
 
 .file:active {
-    background-color: rgba(255, 255, 255, .2);
-    color: #4CD7D0;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #4cd7d0;
 }
 
 .file:hover {
-    background-color: rgba(255, 255, 255, .2);
-    color: #4CD7D0;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #4cd7d0;
 }
 
 .file.c::before {
-    content: url('/static/icons/c-icon.png');
+    content: url("/static/icons/c-icon.png");
     width: 1.6rem;
     line-height: 100%;
 }
 
 .file.h::before {
-    content: url('/static/icons/header-file-icon.svg');
+    content: url("/static/icons/header-file-icon.svg");
     width: 1.6rem;
     line-height: 100%;
 }
 
 .file.js::before {
     width: 1.6rem;
-    content: url('/static/icons/javascript-icon.png');
+    content: url("/static/icons/javascript-icon.png");
 }
 
 .file.jsx::before {
     width: 1.6rem;
-    content: url('/static/icons/javascript-icon.png');
+    content: url("/static/icons/javascript-icon.png");
 }
 
 .file.png::before {
     width: 1.6rem;
-    content: url('/static/icons/image-icon.svg');
+    content: url("/static/icons/image-icon.svg");
 }
 
 .file.jpg::before {
     width: 1.6rem;
-    content: url('/static/icons/image-icon.svg');
+    content: url("/static/icons/image-icon.svg");
 }
 
 .file.jpeg::before {
     width: 1.6rem;
-    content: url('/static/icons/image-icon.svg');
+    content: url("/static/icons/image-icon.svg");
 }
