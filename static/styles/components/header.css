@@ -93,7 +93,8 @@
     padding: 12px;
     width: 100%;
     height: 100%;
-    color: #959DA5;
+    /*color: #959DA5;*/
+    color: #fff;
     font-size: 14px;
     text-decoration: none;
     border-bottom: 1px solid #333;
@@ -129,7 +130,7 @@
 }
 
 .dropdown-list-item a {
-    color: #000;
+    color: #fff;
     display: inline-block;
     height: 100%;
     width: 100%;
@@ -149,26 +150,46 @@
 }
 
 @media screen and (max-width: 995px) {
+    .header-list {
+        background: #0a192f;
+        color: #fff;
+    }
+
+    .list-item a {
+        color: #fff;
+        border-bottom: 1px solid #ffffff;
+    }
+
     .dropdown-container {
         max-height: 0;
         transition: max-height 0.15s ease-out;
         overflow: hidden;
-        background: #fff;
+        font-weight: 600;
+        color: #1cbfff;
+    }
+
+    .dropdown-container header {
+        margin-left: 5px;
     }
 
     .sidenav {
         overflow: auto;
     }
-    
+
     .example.active .dropdown-container {
         max-height: 380px;
         transition: max-height 0.25s ease-in;
+        background: #0a192f;
+    }
+
+    .m-3 {
+        width: 28%;
+        padding: 0;
     }
 
     .login-desktop {
         display: none;
     }
-
 }
 
 /* Esto es como un if, donde el ancho va de [996px, + infinito) */
@@ -254,7 +275,7 @@
     .dropdown-list-item {
         height: 30px;
         line-height: 30px;
-        border-left: 2px solid #fff
+        border-left: 2px solid #fff;
     }
 
     .dropdown-list li:first-child {
