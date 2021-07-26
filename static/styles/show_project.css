@@ -4,7 +4,7 @@
     --background-header-ide: rgb(17, 24, 32);
     background-color: var(--background-color);
     display: grid;
-    grid-template-columns: 20% 80%;
+    grid-template-columns: 30% 70%;
     grid-template-rows: 40px 1fr;
     flex-shrink: 1;
     justify-content: space-between;
@@ -90,7 +90,8 @@
     width: 12px;
 }
 
-.close-tab, .filename {
+.close-tab,
+.filename {
     display: inline-flex;
     align-items: center;
     height: 100%;
@@ -108,52 +109,184 @@
     width: 100%;
     padding: 0;
     background-color: var(--background-code);
+    position: relative;
 }
 
 .code_container::-webkit-scrollbar {
     width: 0;
 }
 
+.copy-code {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    left: unset;
+    cursor: pointer;
+}
+
 #show_code {
     padding: 10px;
 }
 
-.menu {
+.sidenav-editor {
     grid-column: 1 / 2;
     grid-row: 1 / 3;
     width: 100%;
-    color: #333;
     font-family: Nunito;
     font-size: 16px;
     font-weight: bold;
-    padding: 1rem;
     display: inline-flex;
-    flex-direction: column;
-    justify-content: space-between;
     background-color: rgba(8, 11, 15);
     overflow: hidden;
     overflow-y: auto;
 }
 
-.menu::-webkit-scrollbar {
+.sidenav-editor::-webkit-scrollbar {
     width: 0;
 }
 
+.menu {
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: calc(0.5rem + 6px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px 0;
+}
+
+.btn.open-option-menu {
+    padding: 6px;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn.open-option-menu svg {
+    width: 28px;
+    height: 28px;
+}
+
+.btn.open-option-menu:hover svg path {
+    fill: #fff;
+}
+
+.open-option-menu.is-active {
+    background-color: #09f;
+}
+
+.open-option-menu.is-active svg path {
+    fill: #eee;
+}
+.menu-options {
+    width: 100%;
+    overflow: hidden;
+}
+
+.explorer-option-container,
+.info-option-container,
+.download-option-container,
+.settings-option-container,
+.github-option-container {
+    display: none;
+}
+
+.title-menu-option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #eee;
+    text-align: center;
+}
+
+.title-menu-option h3 {
+    margin-bottom: 0;
+    font-size: 18px;
+}
+
+.info-basic-user {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4px 12px;
+    color: #eee;
+}
+
+.profile-link {
+    color: var(--primary-color);
+}
+
 .description-project {
-    border-top: 1px solid rgba(255, 255, 255, .1);
+    color: #eee;
     padding-top: 22px;
-    color: #09f;
+    padding-left: 12px;
+    padding-right: 12px;
 }
 
 .description-project h5 {
-    color: #eee;
-    font-size: 14px;
-    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .description-project p {
-    text-align: center;
+    color: #b7b7b7;
     font-size: 12px;
+}
+
+.info-option-container.is-active {
+    display: block;
+}
+
+.explorer-option-container.is-active {
+    display: block;
+}
+
+.project-name {
+    color: #fff;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    cursor: pointer;
+    padding: 8px;
+}
+
+.project-name h1 {
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.github-option-container.is-active {
+    display: block;
+}
+
+.github-option-container {
+    color: #eee;
+}
+
+.btn-github {
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    margin: 12px 0;
+}
+
+.btn-github {
+    color: #fff;
+}
+
+.btn-github:hover {
+    color: #fff;
+    background-color: transparent;
+}
+
+.settings-option-container {
+    color: rgb(0, 255, 42);
+}
+
+.settings-option-container.is-active {
+    display: block;
+}
+
+.download-option-container.is-active {
+    display: block;
 }
 
 details {
@@ -182,14 +315,14 @@ details > summary {
     align-items: center;
     list-style: none;
     cursor: pointer;
-    transition: .2s ease-in-out;
+    transition: 0.2s ease-in-out;
     color: #eee;
     padding-left: 2px;
     border-radius: 4px;
 }
 
 details > summary:hover {
-    background-color: rgba(255, 255, 255, .2);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .content ol {
@@ -201,7 +334,7 @@ details > summary:hover {
 }
 
 .file {
-    transition: .2s ease-in-out;
+    transition: 0.2s ease-in-out;
     overflow: hidden;
     font-size: 13px;
     border-radius: 4px;
@@ -213,48 +346,48 @@ details > summary:hover {
 }
 
 .file:active {
-    background-color: rgba(255, 255, 255, .2);
-    color: #4CD7D0;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #4cd7d0;
 }
 
 .file:hover {
-    background-color: rgba(255, 255, 255, .2);
-    color: #4CD7D0;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #4cd7d0;
 }
 
 .file.c::before {
-    content: url('/static/icons/c-icon.png');
+    content: url("/static/icons/c-icon.png");
     width: 1.6rem;
     line-height: 100%;
 }
 
 .file.h::before {
-    content: url('/static/icons/header-file-icon.svg');
+    content: url("/static/icons/header-file-icon.svg");
     width: 1.6rem;
     line-height: 100%;
 }
 
 .file.js::before {
     width: 1.6rem;
-    content: url('/static/icons/javascript-icon.png');
+    content: url("/static/icons/javascript-icon.png");
 }
 
 .file.jsx::before {
     width: 1.6rem;
-    content: url('/static/icons/javascript-icon.png');
+    content: url("/static/icons/javascript-icon.png");
 }
 
 .file.png::before {
     width: 1.6rem;
-    content: url('/static/icons/image-icon.svg');
+    content: url("/static/icons/image-icon.svg");
 }
 
 .file.jpg::before {
     width: 1.6rem;
-    content: url('/static/icons/image-icon.svg');
+    content: url("/static/icons/image-icon.svg");
 }
 
 .file.jpeg::before {
     width: 1.6rem;
-    content: url('/static/icons/image-icon.svg');
+    content: url("/static/icons/image-icon.svg");
 }

@@ -69,6 +69,25 @@ class ListDirTemplate {
         }
     }
 
+    template(filesAndDirs) {
+        const template = document.createElement("template");
+        
+        template.innerHTML = 
+        `
+        <div class="main-project">
+            <div class="project-name">
+                <h1>${this.projectName}</h1>
+            </div>
+            <div class="project-content" id="project-content">
+            </div>
+        </div>
+        `;
+
+        template.content.querySelector('#project-content').appendChild(filesAndDirs)
+
+        return template.content;
+    }
+
     listOfFileDOM(elements, path) {
         const list = [];
         const container = document.createElement("div");

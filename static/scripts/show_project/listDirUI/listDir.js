@@ -9,7 +9,7 @@ class ListDir extends ListDirTemplate {
         this.projectName = projectName;
         this.depth = depth;
         this.listDir = [];
-        this.menu = document.querySelector("#sidenav-explorer");
+        this.menu = document.querySelector("#explorer-editor");
 
         if(ListDir._instance) {
             return ListDir._instance
@@ -38,17 +38,12 @@ class ListDir extends ListDirTemplate {
             value.path.endsWith(`${this.projectName}/`)
         );
         if(mainFiles) {
-            fragment.append(...dirs, this.listOfFileDOM(mainFiles.files, mainFiles.path));   
+            fragment.append(...dirs, this.listOfFileDOM(mainFiles.files, mainFiles.path));
         } else {
             fragment.append(...dirs);
         }
 
-
-        this.menu.appendChild(this.containerFilesDOM(
-            this.projectName,
-            fragment,
-            true
-        ));
+        this.menu.appendChild(this.template(fragment))
     }
 
     subDirs(data, index = 1) {

@@ -262,16 +262,20 @@ def login():
     if session.get('user_id') != None:
         return redirect('/profile')
     if request.method == 'POST':
+        email = (request.get_json())['email']
+        if(email == None):
+            return jsonify({'error': 'Email is required'})
+            
         get_user = mongo.db.users.find_one(
-            {"email": request.form.get("email")})
+            {"email": email})
         if not get_user:
             return redirect('/login')
-        if not check_password_hash(get_user["password"], request.form.get('password')):
+        if not check_password_hash(get_user["password"], request.get_json().get('password')):
             return redirect('/login')
 
         session['user_id'] = get_user['_id']
         session['username'] = get_user['username']
-        return redirect('/')
+        return jsonify({'success': True})
 
     return render_template('auth/login/index.html')
 
@@ -450,12 +454,20 @@ def download_project(project_id):
 # Ruta para descargar los codigos predeterminados en modo texto
 @app.route('/download-static_project/<project_id>', methods=['GET'])
 def download_static_project(project_id):
-
     project = mongo.db.static_projects.find_one({ '_id': ObjectId(project_id)})
+    print(project)
     project_title = project['program_title']
     memory_file = create_zip(project['path'], 3)
 
     return send_file(memory_file, attachment_filename=f'{project_title}.zip', as_attachment=True)
+
+@app.route('/download-example/<example_id>')
+def download_examples(example_id):
+    example = mongo.db.ejemplos.find_one({ '_id': ObjectId(example_id)})
+    example_title = example['example_name']
+    memory_file = create_zip(example['path'], 1)
+    return send_file(memory_file, attachment_filename=f'{example_title}.zip', as_attachment=True)
+
 
 @app.route('/delete-project', methods=['DELETE'])
 def delete_project():
@@ -495,7 +507,7 @@ def show_project(username, project_name):
     directory = list_dir(route=project_path)
     download_URI = f'/download-project/{db_project["_id"]}'
 
-    return render_template('show_project/index.html', directory=directory, name=project_name, username=db_project['author'], download_URI=download_URI, description=db_project['description'])
+    return render_template('show_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI)
 # Ruta para ver los proyectos en modo grafico
 @app.route('/static_projects/graphic_mode/<project_name>/', methods=['GET', 'POST'])
 def show_project_graphic(project_name):
@@ -571,7 +583,7 @@ def show_ejemplo(ejemplo_name):
 
     # Muestra los directorios del proyecto correspondiente para ver los codigos
     directory = list_dir(route=example_path)
-    download_URI = f'/download-static_project/{db_example["_id"]}'
+    download_URI = f'/download-example/{db_example["_id"]}'
 
     print(directory)
     return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name, download_URI=download_URI, type="text mode")
@@ -709,6 +721,11 @@ def delete_user(user_id):
     else:
         flash('Acceso denegado >:v')
         return redirect('/admin/login')
+
+
+@app.route('/google5e97d84d9d35c069.html')
+def googleSearchConsole():
+    return render_template("google5e97d84d9d35c069.html")
 
 
 @app.route('/dirs', methods=['GET'])

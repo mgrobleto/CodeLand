@@ -17,7 +17,7 @@
           <h3> ¡Bienvenido! </h3>
         </div>
         <div class="form-section">
-          <form  action="/login" method="POST" class="form-box">
+          <form id="login-form" class="form-box">
             <div class="form-container">
               <label for="exampleInputEmail1" class="form-label">Correo electrónico</label>
               <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
@@ -36,4 +36,8 @@
     </section>
   </body>
 </html>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/scripts/login.js"></script>
 {% endblock %}
