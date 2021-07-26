@@ -262,16 +262,20 @@ def login():
     if session.get('user_id') != None:
         return redirect('/profile')
     if request.method == 'POST':
+        email = (request.get_json())['email']
+        if(email == None):
+            return jsonify({'error': 'Email is required'})
+            
         get_user = mongo.db.users.find_one(
-            {"email": request.form.get("email")})
+            {"email": email})
         if not get_user:
             return redirect('/login')
-        if not check_password_hash(get_user["password"], request.form.get('password')):
+        if not check_password_hash(get_user["password"], request.get_json().get('password')):
             return redirect('/login')
 
         session['user_id'] = get_user['_id']
         session['username'] = get_user['username']
-        return redirect('/')
+        return jsonify({'success': True})
 
     return render_template('auth/login/index.html')
 
