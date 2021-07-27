@@ -248,6 +248,7 @@ def before_request():
 @app.route('/')
 def home():
     user = {}
+    print(session.get('user_id'))
     if session.get('user_id'):
         user_id = ObjectId(session.get('user_id'))
         user = mongo.db.users.find_one({"_id": user_id})
@@ -273,7 +274,7 @@ def login():
         if not check_password_hash(get_user["password"], request.get_json().get('password')):
             return redirect('/login')
 
-        session['user_id'] = get_user['_id']
+        session['user_id'] = get_user['_id'].__str__()
         session['username'] = get_user['username']
         return jsonify({'success': True})
 
