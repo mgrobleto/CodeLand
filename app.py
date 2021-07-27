@@ -248,7 +248,6 @@ def before_request():
 @app.route('/')
 def home():
     user = {}
-    print(session.get('user_id'))
     if session.get('user_id'):
         user_id = ObjectId(session.get('user_id'))
         user = mongo.db.users.find_one({"_id": user_id})
@@ -356,7 +355,6 @@ def update_profile(user_id):
         findUser = list(findUsers_cursor)
 
         if len(findUser) > 1:
-            print('F')
             return 'el usuario ya existe'
 
         if not check_password_hash((findUser[-1])['password'], password_confirm):
@@ -413,7 +411,7 @@ def addProject():
             description = request.form.get('description')
             image = request.files['image'].read()
             file_names = []
-            print(session.get('user_id'))
+            # print(session.get('user_id'))
             directory = path_join('project', session.get('user_id'), modo, title)
 
             # Valida si el proyecto ya existe
@@ -456,7 +454,7 @@ def download_project(project_id):
 @app.route('/download-static_project/<project_id>', methods=['GET'])
 def download_static_project(project_id):
     project = mongo.db.static_projects.find_one({ '_id': ObjectId(project_id)})
-    print(project)
+    # print(project)
     project_title = project['program_title']
     memory_file = create_zip(project['path'], 3)
 
@@ -586,7 +584,6 @@ def show_ejemplo(ejemplo_name):
     directory = list_dir(route=example_path)
     download_URI = f'/download-example/{db_example["_id"]}'
 
-    print(directory)
     return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name, download_URI=download_URI, type="text mode")
 
 
@@ -676,7 +673,6 @@ def update_user(user_id):
         ]})
         findUser = list(findUsers_cursor)
 
-        print(len(findUser))
         if len(findUser) > 1:
             return 'el usuario ya existe'
 
@@ -689,7 +685,7 @@ def update_user(user_id):
         if len(password) > 4:
             newInfo['password'] = generate_password_hash(password, method="sha256", salt_length=10)
         newInfo['updated_at'] = datetime.datetime.now()
-        print(newInfo)
+
         file = request.files['perfil']
         if file.filename != '':
             if file.mimetype in IMAGE_MIMETYPE:
@@ -706,7 +702,7 @@ def update_user(user_id):
         })
 
         data = dumps(user,default=json_util.default)
-        print(data)
+        
         return data
     else:
         flash('Acceso denegado :/')
