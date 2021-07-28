@@ -11,362 +11,83 @@
     background-color: #09f;
     border-radius: 12px;
 }
-
-.responsive-img {
-    max-width: 100%;
-    height: auto;
-}
-
 body {
     font-family: "Nunito", "Poppins", Arial, Helvetica, sans-serif;
     margin: 0;
 }
-.contenedorHome {
-    /* HOME*/
-    position:static;
+@media screen and (max-width:700px)  {
+    .row{
+        flex-direction: column;
+    }
+    #landing-text{
+        order: 2 !important;
+        margin-top:0% !important;
+        text-align: center;
+    }
+    #intro{
+        margin-top: 0% !important;
+        text-align: center;
+    }
+    #description{
+        text-align: center;
+    }
+    #btn-home{
+        margin: 20%;
+    }
+}
+#btn-home{
+    font-family: roboto !important;
+    text-align: center !important;
+    font-size: 150%;
+}
+#hero-img{
+    order:1;
+}
+#landing-text{
+    order: 0;
+   padding-left: 5%;
+}
+#explorer{
+    font-family: roboto;
+    text-align: center;
+}
+.landing{
+    background: #1B1B1B;
+    color: rgb(255, 255, 255);
     max-width: 100%;
     width: 100%;
-    margin: 0% auto;
-    background: #fafafa;
+    height:100%;
+    padding: 5%;
 }
-
-.container-entrada > [class*="entrada"] {
-    margin-top: 24px;
+#intro{
+    font-family: roboto;
+    font-style: bold;
+    margin-top: 20%;
 }
-
-.entrada-informacion > [class*="contenedor"] {
-    margin-top: 24px;
+#img1,#img2,#img3{
+    justify-content: center !important;
+    text-align: center !important;
 }
-
-.entrada-informacion > [class*="contenedor"]:nth-child(2n+1) {
-    align-self: flex-end;
+.information-space{
+    padding: 8%;
 }
-
-.entrada {
-    /* Entrada */
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 8px;
-    margin: 0% auto;
-}
-.contenedor-de-textos {
-    /* hero_title */
-
-    /* Auto Layout */
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 0px;
-    width: 514px;
-    left: 103px;
-    top: 237px;
-}
-.contenedor-imagenInicioHome {
-    /*Imagen de inicio del home*/
-  
-    width: 586px;
-    left: 720px;
-    top: 114px;
-}
-.bienvenida {
-    position: static;
-    width: 514px;
-    left: 0px;
-    top: 55px;
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 28px;
-    line-height: 33px;
-    /* identical to box height */
-
+#intro-options{
     text-align: center;
-
-    color: #959da5;
-
-    /* Inside Auto Layout */
-
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-    margin: 29px 0px;
+    color: rgb(255, 255,255);
 }
-.descripcion {
-    position: static;
-    width: 514px;
-    left: 0px;
-    top: 60px;
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 48px;
-    line-height: 56px;
-    text-align: center;
-
-    color: #000000;
-
-    /* Inside Auto Layout */
-
-    flex: none;
-    order: 1;
-    flex-grow: 0;
-    margin: 29px 0px;
+.options{
+    border-radius: 32px;
+    width: 95%;
+    height: 100%;
+    background-color: #07273D;
+    padding: 10%;
+    margin-left: 2.5%;
+    margin-block-end: 5%;
 }
-.btnSignInHome {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 2px 59px;
-    text-decoration:none;
-
-
-    position: static;
-    width: 332px;
-    left: 91px;
-    top: 392px;
-
-    background: #5976ee;
-    border-radius: 16px;
-
-    flex: none;
-    order: 2;
-    flex-grow: 0;
-    margin: 29px 0px;
-    /*Para el texto*/
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 24px;
-    line-height: 28px;
-
-    color: #ffffff;
-}
-.entrada-explorer {
-    display: flex;
-    height: 100vh;
-    flex-direction: column;
-    justify-content: center;
-    left: 0px;
-    top: 827px;
-    background: linear-gradient(90deg, #4776e6 0%, #8e54e9 100%);
-}
-.titulo1 {
-    margin-top: 30px;
-    width: 1345px;
-    left: 50px;
-    top: 91px;
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 200px;
-    line-height: 56px;
-    text-align: center;
-
-    color: #fafafa;
-}
-.secundario {
-    color: rgba(0, 0, 0, 0.32);
+#conteiner-options{
+    justify-content: space-around;
 }
 
-.contenedor-imagenInicioHomeExplorer {
-    display: flex;
-    justify-content: center;
-}
-
-.contenedor-imagenInicioHomeExplorer1 {
-    /* explora */
-   
-    width: 406px;
-    left: 103px;
-    top: 267px;
-}
-.contenedor-imagenInicioHomeExplorer2 {
-    /* descarga */
-   
-    width: 406px;
-    left: 519px;
-    top: 275px;
-}
-.contenedor-imagenInicioHomeExplorer3 {
-    /* aprende */
-    width: 406px;
-    left: 923px;
-    top: 266px;
-}
-.entrada-informacion {
-    /* Bloque de info */
-    display: flex;
-    flex-direction: column;
-    left: 0px;
-    top: 1529px;
-}
-.contenedorLenguajeC {
-    /*Lenguaje C*/
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 50px;
-    width: 1180px;
-    left: 191px;
-    top: 38px;
-
-    background: #726868;
-    border: 1px solid #000000;
-    box-sizing: border-box;
-    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.textoC {
-    margin-top: 30px;
-    margin-left: 100px;
-    width: 586px;
-    left: 14px;
-    top: 40px;
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 36px;
-    line-height: 50px;
-    text-align: center;
-
-    color: rgba(250, 250, 250, 0.85);
-}
-.imagenLenguajeC {
-    margin-left: 40px;
-    width: 303px;
-    left: 900px;
-    top: 76px;
-}
-.contenedorCompiladorTC20 {
-    /*info del compilador*/
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-columns: 350px 250px;
-    grid-gap: 8px;
-    width: 1180px;
-    left: 57px;
-    top: 401px;
-
-    background: rgba(114, 104, 104, 0.96);
-    backdrop-filter: blur(4px);
-
-    border-radius: 3px;
-}
-.compilador {
-    margin-top: 60px;
-    width: 684px;
-    left: 360px;
-    top: 200px;
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 36px;
-    line-height: 50px;
-    text-align: center;
-
-    color: #fafafa;
-}
-.imagenCompilador {
-    margin-top: -10px;
-    margin-left: 75px;
-    width: 263px;
-    left: 75px;
-    top: -3px;
-}
-.contenedorHeader {
-    /*cabecera .h <informacion>*/
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 8px;
-    width: 1176px;
-    left: 206px;
-    top: 773px;
-
-    background: #726868;
-    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-.cabeceraH {
-    margin-top: 60px;
-    margin-left: 120;
-    width: 682px;
-    /*left: 12px;*/
-    top: 22px;
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 36px;
-    line-height: 50px;
-    text-align: center;
-    color: #fafafa;
-}
-.imagenCabeceraH {
-    /*CabeceraH*/
-   /* position: sticky;*/
-   margin-left: 40;
-    width: 380px;
-    left: 971px;
-    top: 720px;
-}
-.entrada-documentacion {
-    display: grid;
-    grid-template-areas: "title title"
-                         "text image";
-    align-items: center;
-    justify-content: space-between;
-    grid-gap: 20px 10px;
-    padding: 0 50px;
-    background: linear-gradient(90deg, #485563 0%, #29323c 100%);
-}
-.tituloDoc {
-    /* Documentacion de el lenguaje C en español */
-    grid-area: title;
-    width: 100%;
-    left: 377px;
-    top: 50px;
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 48px;
-    line-height: 56px;
-    text-align: center;
-
-    color: #fafafa;
-}
-
-.tituloDoc h1 {
-    text-align: center;
-}
-
-.descripcionDoc {
-    /**/
-   grid-area: text;
-    width: 416px;
-    left: 52px;
-    top: 140px;
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 40px;
-    line-height: 47px;
-    color: #ffffff;
-}
-.imagenDocumentacion {
-    grid-area: image;
-    width: 409px;
-    left: 783px;
-    top: 252px;
-    backdrop-filter: blur(4px);
-}
 .entrada-pieDePagina {
     /* Entrada-PieDePagina */
    padding: 20px;
