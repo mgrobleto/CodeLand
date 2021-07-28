@@ -3,6 +3,7 @@ const openExplorer = document.getElementById("open-explorer");
 const openDownload = document.getElementById("open-download");
 const copyCode = document.getElementById("copy-code");
 const menuOptions = document.querySelector("#menu-options");
+const $backItem = document.querySelector('#back-history')
 
 copyCode.addEventListener("click", copyToClipboard);
 
@@ -21,6 +22,10 @@ function copyToClipboard(element) {
     }
     console.log('xD')
 }
+
+$backItem.addEventListener("click", () => {
+    history.back();
+});
 
 function changeOptionMenu(classElement) {
     if(!this.classList.contains("is-active")) {

@@ -26,7 +26,9 @@
 </head>
 <body>
     <main class="contenedorHome">
+    {% if not ('/project/' in request.path or '/example/' in request.path or '/static_projects/' in request.path) %}
     {% include 'components/header.html' %}
+    {% endif  %}
     {% block body %}
     {% endblock %}
 

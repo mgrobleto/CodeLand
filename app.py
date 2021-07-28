@@ -75,6 +75,7 @@ app.secret_key = environ['SESSION_KEY']
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config['SESSION_PERMANENT'] = True  # La cookie no se guarda para siempre
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_COOKIE_SECURE'] = True
 app.config['MONGO_URI'] = f'mongodb+srv://{USER_DB}:{PASSWORD_DB}@cluster0.73uuw.mongodb.net/cs50xni?retryWrites=true&w=majority'
 Session(app)
 mongo = PyMongo(app)
@@ -275,6 +276,7 @@ def login():
 
         session['user_id'] = get_user['_id'].__str__()
         session['username'] = get_user['username']
+        print('user_id' in session)
         return jsonify({'success': True})
 
     return render_template('auth/login/index.html')
@@ -526,7 +528,7 @@ def show_project_graphic(project_name):
     directory = list_dir(route=project_path)
     download_URI = f'/download-static_project/{db_project["_id"]}'
 
-    return render_template('show_static_project/index.html', directory=directory, name=project_name, download_URI=download_URI, type="graphic mode")
+    return render_template('show_static_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI, type="graphic mode")
 
 @app.route('/static_projects/<project_name>/', methods=['GET', 'POST'])
 
@@ -553,7 +555,7 @@ def show_static_project(project_name):
     directory = list_dir(route=project_path)
     download_URI = f'/download-static_project/{db_project["_id"]}'
     
-    return render_template('show_static_project/index.html', directory=directory, name=project_name, download_URI=download_URI, type="text mode")
+    return render_template('show_static_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI, type="text mode")
   
 #para la parte de documentacion
 @app.route('/examples/basicos')
@@ -561,7 +563,7 @@ def documentacion():
     db_documentation = mongo.db.documentation.find({'type':'document'})
     return render_template("pdf/documentacion.html",db_documentation=db_documentation)
 # Ruta para ver ejemplos
-@app.route('/examples/<ejemplo_name>/', methods=['GET', 'POST'])
+@app.route('/example/<ejemplo_name>/', methods=['GET', 'POST'])
 def show_ejemplo(ejemplo_name):
 
     # Trae el ejemplo correspondiente al nombre de la db
@@ -584,7 +586,7 @@ def show_ejemplo(ejemplo_name):
     directory = list_dir(route=example_path)
     download_URI = f'/download-example/{db_example["_id"]}'
 
-    return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name, download_URI=download_URI, type="text mode")
+    return render_template('show_ejemplo/index.html', example_info=db_example, directory=directory, name=ejemplo_name, download_URI=download_URI, type="text mode")
 
 
 @app.route('/tools')
