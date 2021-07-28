@@ -75,6 +75,7 @@ app.secret_key = environ['SESSION_KEY']
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config['SESSION_PERMANENT'] = True  # La cookie no se guarda para siempre
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_COOKIE_SECURE'] = True
 app.config['MONGO_URI'] = f'mongodb+srv://{USER_DB}:{PASSWORD_DB}@cluster0.73uuw.mongodb.net/cs50xni?retryWrites=true&w=majority'
 Session(app)
 mongo = PyMongo(app)
@@ -248,7 +249,6 @@ def before_request():
 @app.route('/')
 def home():
     user = {}
-    print(session.get('user_id'))
     if session.get('user_id'):
         user_id = ObjectId(session.get('user_id'))
         user = mongo.db.users.find_one({"_id": user_id})
@@ -276,6 +276,7 @@ def login():
 
         session['user_id'] = get_user['_id'].__str__()
         session['username'] = get_user['username']
+        print('user_id' in session)
         return jsonify({'success': True})
 
     return render_template('auth/login/index.html')
@@ -356,7 +357,6 @@ def update_profile(user_id):
         findUser = list(findUsers_cursor)
 
         if len(findUser) > 1:
-            print('F')
             return 'el usuario ya existe'
 
         if not check_password_hash((findUser[-1])['password'], password_confirm):
@@ -413,7 +413,7 @@ def addProject():
             description = request.form.get('description')
             image = request.files['image'].read()
             file_names = []
-            print(session.get('user_id'))
+            # print(session.get('user_id'))
             directory = path_join('project', session.get('user_id'), modo, title)
 
             # Valida si el proyecto ya existe
@@ -456,7 +456,7 @@ def download_project(project_id):
 @app.route('/download-static_project/<project_id>', methods=['GET'])
 def download_static_project(project_id):
     project = mongo.db.static_projects.find_one({ '_id': ObjectId(project_id)})
-    print(project)
+    # print(project)
     project_title = project['program_title']
     memory_file = create_zip(project['path'], 3)
 
@@ -528,7 +528,7 @@ def show_project_graphic(project_name):
     directory = list_dir(route=project_path)
     download_URI = f'/download-static_project/{db_project["_id"]}'
 
-    return render_template('show_static_project/index.html', directory=directory, name=project_name, download_URI=download_URI, type="graphic mode")
+    return render_template('show_static_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI, type="graphic mode")
 
 @app.route('/static_projects/<project_name>/', methods=['GET', 'POST'])
 
@@ -555,7 +555,7 @@ def show_static_project(project_name):
     directory = list_dir(route=project_path)
     download_URI = f'/download-static_project/{db_project["_id"]}'
     
-    return render_template('show_static_project/index.html', directory=directory, name=project_name, download_URI=download_URI, type="text mode")
+    return render_template('show_static_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI, type="text mode")
   
 #para la parte de documentacion
 @app.route('/examples/basicos')
@@ -563,7 +563,7 @@ def documentacion():
     db_documentation = mongo.db.documentation.find({'type':'document'})
     return render_template("pdf/documentacion.html",db_documentation=db_documentation)
 # Ruta para ver ejemplos
-@app.route('/examples/<ejemplo_name>/', methods=['GET', 'POST'])
+@app.route('/example/<ejemplo_name>/', methods=['GET', 'POST'])
 def show_ejemplo(ejemplo_name):
 
     # Trae el ejemplo correspondiente al nombre de la db
@@ -586,8 +586,7 @@ def show_ejemplo(ejemplo_name):
     directory = list_dir(route=example_path)
     download_URI = f'/download-example/{db_example["_id"]}'
 
-    print(directory)
-    return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name, download_URI=download_URI, type="text mode")
+    return render_template('show_ejemplo/index.html', example_info=db_example, directory=directory, name=ejemplo_name, download_URI=download_URI, type="text mode")
 
 
 @app.route('/tools')
@@ -676,7 +675,6 @@ def update_user(user_id):
         ]})
         findUser = list(findUsers_cursor)
 
-        print(len(findUser))
         if len(findUser) > 1:
             return 'el usuario ya existe'
 
@@ -689,7 +687,7 @@ def update_user(user_id):
         if len(password) > 4:
             newInfo['password'] = generate_password_hash(password, method="sha256", salt_length=10)
         newInfo['updated_at'] = datetime.datetime.now()
-        print(newInfo)
+
         file = request.files['perfil']
         if file.filename != '':
             if file.mimetype in IMAGE_MIMETYPE:
@@ -706,7 +704,7 @@ def update_user(user_id):
         })
 
         data = dumps(user,default=json_util.default)
-        print(data)
+        
         return data
     else:
         flash('Acceso denegado :/')

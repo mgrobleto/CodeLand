@@ -23,47 +23,68 @@
                 </svg>
             </button>
         </div>
-        <div class="menu-options" id="menu-options">
-            <section class="menu-option info-option-container">
-                <div class="info-basic">
-                    <div class="title-menu-option">
-                        <h3>Proyecto: {{name}}</h3>
-                    </div>
-                    <div class="info-basic-user">
-                        <p>Creado por: Estudiantes</p>
-                    </div>
-                </div>
-            </section>
-            <section class="menu-option explorer-option-container is-active">
-                {% if directory %}
-                <section class="explorer-editor" id="explorer-editor">
-                </section>
-                {% else %}
-                <section class="menu-option explorer-option">
-                    <h5>Proyecto sin directorio</h5>
-                </section>
-                {% endif %}
-            </section>
-            <section class="menu-option download-option-container">
-                <div class="title-menu-option">
-                    <h3>Descargar</h3>
-                </div>
-                <div class="download" align="center">
-                    <a href="{{download_URI}}" download class="btn btn-primary">descargar código</a>
-                </div>
-            </section>
-        </div>
     </div>
-    <div class="header_code">
-        <div class="group-tab">
-            <div class="circle bg-danger p-2"></div>
-            <div class="circle bg-warning p-2"></div>
-            <div class="circle bg-success p-2"></div>
-        </div>
-        <section class="editor-group" id="editor-group">
+    <div class="menu-options" id="menu-options">
+        <section class="menu-option info-option-container">
+            <div class="info-basic">
+                <div class="title-menu-option">
+                    <h3>Proyecto: {{name}}</h3>
+                </div>
+                <div class="info-basic-user">
+                    <p>Creado por: Estudiantes</a></p>
+                </div>
+            </div>
+            {% if project_info['description'] %}
+            <div class="description-project" id="description">
+                <h5>Descripción sobre el proyecto</h5>
+                <p>{{project_info['description']}}</p>
+            </div>
+            {% endif %}
+        </section>
+        <section class="menu-option explorer-option-container is-active">
+            {% if directory %}
+            <section class="explorer-editor" id="explorer-editor">
+            </section>
+            {% else %}
+            <section class="menu-option explorer-option">
+                <h5>Proyecto sin directorio</h5>
+            </section>
+            {% endif %}
+        </section>
+        <section class="menu-option github-option-container">
+            <div class="title-menu-option">
+                <h3>GitHub</h3>
+            </div>
+            {% if project_info['github'] %}
+            <div class="show-code-github" align="center">
+                <a class="btn btn-github" target="_blank" href="{{project_info['github']}}">Ver en Github</a>
+            </div>
+            {% else %}
+            <p>No tiene un link hacia github</p>
+            {% endif %}
+        </section>
+        <section class="menu-option settings-option-container">
+            <h3>Proximamente...</h3>
+        </section>
+        <section class="menu-option download-option-container">
+            <div class="title-menu-option">
+                <h3>Descargar</h3>
+            </div>
+            <div class="download" align="center">
+                <a href="{{download_URI}}" download class="btn btn-primary">descargar código</a>
+            </div>
         </section>
     </div>
     <div class="code_container">
+        <div class="header_code">
+            <div class="group-tab">
+                <div class="circle bg-danger p-2" id="back-history"></div>
+                <div class="circle bg-warning p-2"></div>
+                <div class="circle bg-success p-2"></div>
+            </div>
+            <section class="editor-group" id="editor-group">
+            </section>
+        </div>
         <button class="btn copy-code" id="copy-code" title="Copiar código">
             <img src="/static/icons/paste-icon.svg" width="32px" alt="Copiar código">
         </button>

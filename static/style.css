@@ -20,6 +20,11 @@ body {
     font-family: "Nunito", "Poppins", Arial, Helvetica, sans-serif;
     margin: 0;
 }
+
+.btn.btn-menu {
+    padding: 0;
+}
+
 @media screen and (max-width:700px)  {
     .row{
         flex-direction: column;

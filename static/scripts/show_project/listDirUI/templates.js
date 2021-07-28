@@ -74,13 +74,11 @@ class ListDirTemplate {
         
         template.innerHTML = 
         `
-        <div class="main-project">
             <div class="project-name">
                 <h1>${this.projectName}</h1>
             </div>
             <div class="project-content" id="project-content">
             </div>
-        </div>
         `;
 
         template.content.querySelector('#project-content').appendChild(filesAndDirs)
