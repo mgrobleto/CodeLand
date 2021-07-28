@@ -4,95 +4,120 @@
 <title>Welcome to CodeLand</title>
 {% endblock %}
 <!--Aqui modifico para darle el estilo al home--->
+  
 {% block body %}
-<div class="container-entrada">
-    <div class="entrada">
-        <div class="contenedor-de-textos">
-            <h2 class = "bienvenida">Bienvenido</h2>
-            <h1 class = "descripcion">Comparte tu código<br>escrito en<br> lenguaje C<br> con otros!</h1>
-            <a href="/register" class="btnSignInHome">Registrarse</a>
+<body>
+    <section class="landing">
+    <div class="row">
+        <div class="col" id="landing-text">
+            <section class="w-100 mx-auto text-left pt-6">
+                <h1 class="display-2" id="intro">!Comparte tu código!</h1>
+                <h2 class="display-4" id="description">Aprende C y ayuda a <br>otros en el proceso.</h2>
+                <a href="/register" class="btn btn-primary w-50 p-3 mt-4" id="btn-home">Registrarse</a>
+            </section>
         </div>
-        <div class="contenedor-imagenInicioHome">
-            <img src="static\images\home.svg" alt="">
-        </div>
+        <div class="col">
+            <img src="static\images\home.svg" class="img-fluid" id="hero-img" alt="">
+        </div>      
     </div>
-    <!--hay un ligero problema con el ancho del frame--->
-    <div class="entrada-explorer">
-        <div class="titulo1">
-            <h1 class = "principal">Explorar el código que otros han creado</h1>
-            <h2 class = "secundario">Explora, descarga y aprende</h2>
-        </div>
-        <div class="contenedor-imagenInicioHomeExplorer">
-            <div class="imagenInicioHomeExplorer1">
-                <img src="static\images\explora.svg" alt="">
-            </div>
-            <div class="imagenInicioHomeExplorer2">
-                <img src="static\images\descarga.svg" alt="">
-            </div>
-            <div class="imagenInicioHomeExplorer3">
-                <img src="static\images\aprende.svg" alt="">
-            </div>
-        </div>
-    </div>
+    </section>
 
-    <div class="entrada-informacion">
-        <div class="contenedorLenguajeC">
-            <h1 class = "textoC">Encuentra código escrito en un<br>
-                lenguaje de programación complejo<br>
-                como lo es C. Desde lo básico en él,<br>
-                hasta proyectos más elaborados<br>
-                tanto en modo texto como gráfico.</h1>
-            <div class="imagenLenguajeC">
-                <img src="static\images\lenguajeC.svg" alt="">
-            </div>
+    <section class="information-space">
+    <div class="row">
+        <h1 class="display-5" id="explorer">Explora el código que otros han creado</h1>
+        <div class="col" id="img1">
+            <img class="bd-placeholder-img rounded-circle" width="200" height="200" src="static\images\explora.svg" alt="">
+            <h1>Explora</h1> 
         </div>
-        
-        <div class="contenedorCompiladorTC20">
-            <div class="imagenCompilador">
-                <img src="static\images\compilador.svg" alt="">
-            </div>
-            <h1 class = "compilador">Los códigos proporcionados pueden ser
-                <br>compilados desde la versión turbo c 2.0
-                <br>en adelante.
-                </h1>
+        <div class="col" id="img2">
+            <img class="bd-placeholder-img rounded-circle" width="200" height="200" src="static\images\descarga.svg" alt="">
+            <h1>Descarga</h1> 
         </div>
-        <div class="contenedorHeader">
-            <h1 class = "cabeceraH">Podrás obtener librerías<br>
-                personalizadas de los desarrolladores<br>
-                que proporcionan funciones para el C<br>
-                principal.
-                </h1>
-            <div class="imagenCabeceraH">
-                <img src="static\images\cabeceraH.svg" alt="">
-            </div>
+        <div class="col" id="img3">
+            <img class="bd-placeholder-img rounded-circle" width="200" height="200" src="static\images\aprende.svg" alt="">
+            <h1>Aprende</h1> 
         </div>
-        
     </div>
+    </section>
 
-    <div class = "entrada-documentacion">
-        <div class="tituloDoc">
-            <h1>Documentación del lenguaje <br>
-                en español
-                </h1>
+    <section class="options">
+        <div class="row" id="conteiner-options">
+            <h1 class="display-2" id="intro-options">Encontraras</h1>
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="static\images\lenguajeC.svg" class="img-fluid rounded-start" alt="">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Código Fuente</h5>
+                      <p class="card-text">Programas escritos en el lenguaje de turbo c, desde funcionamiento de sintaxis básica a proyectos complejos en modo gráfico y texto.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="static\images\compilador.svg" class="img-fluid rounded-end" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Compilador TC2.0</h5>
+                      <p class="card-text">Los códigos aquí presentados han sido previamente compilados en TC2.0 así también en sus otras dos versiones TC/TC++.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="static\images\cabeceraH.svg" class="img-fluid rounded-end" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Librerías</h5>
+                      <p class="card-text">Podrás obtener lo que son librerías personalizadas por los desarrolladores, que cuentan con diferentes funciones para validar entradas y demás.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="static\images\documentacionHome.svg" class="img-fluid rounded-end" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Documentación</h5>
+                      <p class="card-text">Te brindamos una colección de libros sobre lenguaje C en el idioma español para profundizar o reforzar tus conocimientos en este.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="static\styles\installers\img\logo.png" class="img-fluid rounded-end" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Turbo C Studio</h5>
+                      <p class="card-text">Es una herramienta para el uso de c, que facilita el proceso de compilación reduciéndolo a un click en un entorno más amigable e intuitivo.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
         </div>
-        <div class="descripcionDoc">
-            <h1>CodeLand te ofrece<br>
-                una colección de libros<br>
-                en el idioma<br>
-                español donde<br>
-                encontraras desde lo<br>
-                más básico de la<br>
-                sintaxis hasta<br>
-                algoritmos complejos<br>
-                aplicados en las<br>
-                primitivas graficas.
-                </h1>
-        </div>
-        <div class="imagenDocumentacion">
-            <img src="static\images\documentacionHome.svg" alt="">
-        </div>
-    </div>
-</div>
+      
+    </section>
+    
+</body>
    <footer class="entrada-pieDePagina">
        <div class="imagenLogo">
          <img src="static\images\Logo.svg" alt="">
@@ -100,5 +125,4 @@
         <h1 class="tituloPieDePagina">CodeLand</h1>
         <h2 class="titulo2PieDePagina"> ©2021 CodeLand</h2>
    </footer>
-
 {% endblock %}
