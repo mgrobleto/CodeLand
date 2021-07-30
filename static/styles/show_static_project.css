@@ -415,14 +415,16 @@ details > summary:hover {
         position: relative;
         grid-auto-flow: dense;
         grid-template-columns: 100%;
-        grid-template-rows: 85% 15%;
+        grid-template-rows: 15% 85%;
         width: 100%;
     }
 
     .sidenav-editor {
-        grid-column: 1 / 2;
-        grid-row: 2 / 3;
+        /* grid-column: 1 / 2;
+        grid-row: 2 / 3; */
         display: block;
+        position: relative;
+        z-index: 16;
         width: 100%;
     }
 
@@ -432,10 +434,10 @@ details > summary:hover {
         align-items: center;
     }
     
-    .code_container {
+    /* .code_container {
         grid-row: 1 / 2;
         grid-column: 1 / 2;
-    }
+    } */
 
     .menu-option {
         width: 100%;
@@ -444,9 +446,16 @@ details > summary:hover {
     .menu-options {
         position: absolute;
         width: 100%;
-        bottom: 15vh;
+        top: 15vh;
+        transform: translate(0, calc(-15vh - 350px));
         z-index: 14;
+        transition: all .5s ease-in-out;
+        max-height: 0px;
     }
-
+    
+    .menu-options.is-active {
+        max-height: 350px;
+        transform: translate(0, 0);
+    }
 
 }
