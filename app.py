@@ -1,3 +1,8 @@
+# utils
+from utils.auth.login import login_token, isLogged
+from utils.schema.login import loginSchema
+from utils.schema.register import registerSchema
+
 # data transfer
 from io import BytesIO
 from zipfile import ZipFile
@@ -13,7 +18,7 @@ from bson import json_util
 from json import dumps
 
 # Configuración del servidor
-from flask import Flask, render_template, request, Response, redirect, session, flash, jsonify, send_file
+from flask import Flask, render_template, request, Response, redirect, session, flash, jsonify, send_file, make_response, after_this_request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_session import Session
 from werkzeug.utils import secure_filename
@@ -26,6 +31,9 @@ from google.oauth2 import service_account
 
 # Librerias de Mongodb
 from flask_pymongo import PyMongo
+
+# Libreria de tokens
+import jwt
 
 # Actualización del tiempo
 import datetime
@@ -245,12 +253,35 @@ def delete_project_storage(path):
 @app.before_request
 def before_request():
     app.permanent_session_lifetime = datetime.timedelta(hours=12);
+    if(not '/static/' in request.path):
+        @after_this_request
+        def request_after(resp):
+            token = request.cookies.get('USER_TOKEN')
+            if not token is None:
+                try:
+                    get_info = jwt.decode(token, environ['KEY_JWT'], algorithms=['HS256'])
+                except jwt.ExpiredSignatureError:
+                    resp.set_cookie('USER_TOKEN', expires=0)
+                    resp.set_cookie('username', expires=0)
+                    resp.set_cookie('email', expires=0)
+                    resp.set_cookie('user_id', expires=0)
+                    return resp
+                except jwt.InvalidTokenError:
+                    resp.set_cookie('USER_TOKEN', expires=0)
+                    resp.set_cookie('username', expires=0)
+                    resp.set_cookie('email', expires=0)
+                    resp.set_cookie('user_id', expires=0)
+                    return resp
+            return resp
+
 
 @app.route('/')
 def home():
     user = {}
-    if session.get('user_id'):
-        user_id = ObjectId(session.get('user_id'))
+    validation = isLogged('USER_TOKEN')
+    if validation.get('success'):
+        user_info = validation.get('info')
+        user_id = ObjectId(user_info.get('user_id'))
         user = mongo.db.users.find_one({"_id": user_id})
 
     return render_template('index.html', user=user)
@@ -258,39 +289,64 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if session.get('admin_id'):
-        session.clear()
-    if session.get('user_id') != None:
-        return redirect('/profile')
-    if request.method == 'POST':
-        email = (request.get_json())['email']
-        if(email == None):
-            return jsonify({'error': 'Email is required'})
-            
-        get_user = mongo.db.users.find_one(
-            {"email": email})
-        if not get_user:
-            return redirect('/login')
-        if not check_password_hash(get_user["password"], request.get_json().get('password')):
-            return redirect('/login')
+    admin_token = isLogged('ADMIN_TOKEN')
+    if admin_token['success']:
+        return redirect('/admin/profile')
+    
+    user_token = isLogged('USER_TOKEN')
 
-        session['user_id'] = get_user['_id'].__str__()
-        session['username'] = get_user['username']
-        print('user_id' in session)
-        return jsonify({'success': True})
+    if user_token['success']:
+        return redirect('/profile')    
+    
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+            
+        validation = loginSchema(email, password)
+
+        if not validation['success']:
+            return jsonify(validation)
+        user = mongo.db.users.find_one({
+            'email': email
+        })
+
+        if not user:
+            return jsonify({'success': False,'error': 'El usuario no existe'})
+        if not check_password_hash(user["password"], password):
+            return jsonify({'success': False,'error': 'Correo o contraseña incorrecta'})
+
+        resp = make_response(jsonify({"success": True, 'token': 'valid'}))
+        resp.set_cookie('USER_TOKEN', login_token(user['username'], email, user['_id'].__str__()))
+        resp.set_cookie('username', user['username'])
+        resp.set_cookie('email', email)
+        resp.set_cookie('user_id', user['_id'].__str__())
+
+        return resp
+
 
     return render_template('auth/login/index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if session.get('user_id') != None:
+    admin_token = isLogged('ADMIN_TOKEN')
+    if admin_token['success']:
+        return redirect('/admin/profile')
+    
+    user_token = isLogged('USER_TOKEN')
+    if user_token['success']:
         return redirect('/profile')
+            
     if(request.method == 'POST'):
         email = request.form.get("email")
         username = request.form.get("username")
         password = generate_password_hash(request.form.get(
             "password"), method="sha256", salt_length=10 # se encripta con sha256 10 veces
         )
+
+        validation = registerSchema(email, username, password)
+
+        if not validation['success']:
+            return jsonify(validation)
 
         find_user = mongo.db.users.find_one({
             '$or': [
@@ -299,12 +355,7 @@ def register():
             ]
         }) # busca un usuario donde uno de esos dos campos tenga ese valor
         if find_user != None:
-            flash(f"{username} already exist")
-            return redirect('/register')
-
-        if not username or not password or not email:
-            flash("username or password is empty")
-            return redirect('/register')
+            return jsonify({"success": True, 'message': f'{username} ya existe'})
 
         file = request.files['image']
         if file.filename != '':
@@ -323,27 +374,38 @@ def register():
 
         user = mongo.db.users.insert( # inserta un usuario
             {"username": username, "password": password, "email": email, **timestamp(), "perfil": image, "contentType": mimetype})
-        session['user_id'] = user
-        session['username'] = username
 
-        return redirect('/profile')
+        resp = make_response(jsonify({"success": True, 'message': 'Usuario creado con éxito'}))
+
+        resp.set_cookie('USER_TOKEN', login_token(email, user.__str__()))
+        resp.set_cookie('USER_TOKEN', login_token(username, email, user.__str__()))
+        resp.set_cookie('username', username)
+        resp.set_cookie('email', email)
+        resp.set_cookie('user_id', user.__str__())
+
+        return resp
 
     return render_template('auth/register/index.html')
 
 @app.route('/profile')
 def profile():
-    if session.get('user_id') == None:
+    session_exist = isLogged('USER_TOKEN')
+    if session_exist['success']:
+        user_id = (session_exist['info'])['user_id']
+        user = get_user_and_project(user_id)
+
+        return render_template('user/profile/index.html', user=user)
+    else:
         flash("You are not logged in. Please log in to see the profile.")
         return redirect('/login')
 
-    user_id = session.get('user_id')
-    user = get_user_and_project(user_id)
-
-    return render_template('user/profile/index.html', user=user)
 
 @app.route('/update-account/<user_id>', methods=['PUT'])
 def update_profile(user_id):
-    if(session.get('user_id') == ObjectId(user_id)):
+    user_payload = isLogged('USER_TOKEN')
+    user_info = user_payload.get('info')
+
+    if(user_info['user_id'] == user_id):
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
@@ -383,13 +445,15 @@ def update_profile(user_id):
                 flash('error mimetype')
                 return redirect('/register')
 
-        mongo.db.projects.update_many({'users_id': session.get('user_id')}, { '$set': { 'author': newInfo['username'] }})
+        mongo.db.projects.update_many({'users_id': ObjectId(user_info['user_id'])}, { '$set': { 'author': newInfo['username'] }})
         user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
             '$set': newInfo
         })
-        session['username'] = newInfo['username']
+
         data = dumps(user,default=json_util.default)
-        return data
+        resp = make_response(data)
+        resp.set_cookie('USER_TOKEN', login_token(newInfo['username'], user['email'], user['_id'].__str__()))
+        return resp
     else:
         flash('No puedes cambiar la info de otro usuario >:v')
 
@@ -398,7 +462,9 @@ def update_profile(user_id):
 @app.route('/add-project', methods=['GET', 'POST'])
 def addProject():
     if request.method == 'POST':
-        if session.get('user_id') != None:
+        user_payload = isLogged('USER_TOKEN')
+        user_info = user_payload.get('info')
+        if user_payload['success'] and user_info['user_id']:
             if 'files' not in request.files:
                 flash('No file')
                 return redirect('/add-project')
@@ -414,7 +480,7 @@ def addProject():
             image = request.files['image'].read()
             file_names = []
             # print(session.get('user_id'))
-            directory = path_join('project', session.get('user_id'), modo, title)
+            directory = path_join('project', user_info.get('user_id'), modo, title)
 
             # Valida si el proyecto ya existe
             if not bucket.blob(directory).exists():
@@ -436,7 +502,7 @@ def addProject():
                     blob.upload_from_string(data, content_type = file.content_type)
                     file_names.append(filename)
 
-            mongo.db.projects.insert({ "project_name": title, 'author': session.get('username'), "description": description, 'modo': modo, "users_id": session.get('user_id'), "path": directory, **timestamp(), "image": encodebytes(image)})
+            mongo.db.projects.insert({ "project_name": title, 'author': user_info.get('username'), "description": description, 'modo': modo, "users_id": user_info.get('user_id'), "path": directory, **timestamp(), "image": encodebytes(image)})
             return redirect('/profile')
         else:
             flash('You are not logged in')
@@ -472,15 +538,17 @@ def download_examples(example_id):
 
 @app.route('/delete-project', methods=['DELETE'])
 def delete_project():
-    if session.get('user_id'):
+    user_payload = isLogged('USER_TOKEN')
+    user_info = user_payload.get('info')
+    if user_info.get('user_id'):
         project_id = ObjectId(request.form.get('id'))
-        project = mongo.db.projects.find_one_and_delete({ 'users_id': ObjectId(session.get('user_id')), '_id': project_id}, {'_id': False, 'image': False, 'users_id': False})
+        project = mongo.db.projects.find_one_and_delete({ 'users_id': ObjectId(user_info.get('user_id')), '_id': project_id}, {'_id': False, 'image': False, 'users_id': False})
 
         if project is None:
             flash('El proyecto no existe')
             return redirect('/profile')
         delete_project_storage(project['path'])
-        data_cursor = mongo.db.projects.find({ 'users_id': ObjectId(session.get('user_id'))})
+        data_cursor = mongo.db.projects.find({ 'users_id': ObjectId(user_info.get('user_id'))})
         data_list = [doc for doc in data_cursor]
         data = dumps(data_list,default=json_util.default)
 
@@ -622,8 +690,13 @@ def graphic_mode():
 @app.route('/logout')
 def logout():
     session.clear()
+    resp = make_response(redirect('/login'))
+    resp.set_cookie('USER_TOKEN', expires=0)
+    resp.set_cookie('username', expires=0)
+    resp.set_cookie('email', expires=0)
+    resp.set_cookie('user_id', expires=0)
     flash("Session closed")
-    return redirect('/')
+    return resp
 
 @app.route('/admin', methods=['GET'])
 def admin_panel():
