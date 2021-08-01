@@ -6,6 +6,7 @@ const $project = document.querySelector('#projects')
 const $overlayModal = document.querySelector('#overlay-modal')
 const $editmodal = document.querySelector('#custom-modal')
 const $showModal = document.querySelector('#btn-modal-editar')
+const $makePublic = document.querySelector('#make-public')
 
 function renderTemplate(project) {
     return `
@@ -69,4 +70,14 @@ $showModal.addEventListener('click', () => {
 $overlayModal.addEventListener('click', () => {
     $editmodal.classList.remove('active')
     $overlayModal.classList.remove('active')
+})
+
+$makePublic.addEventListener('click', async () => {
+    const response = await fetch(`/make-public/${$makePublic.value}`)
+    const data = await response.json()
+    if(data.success) {
+        alert('Proyecto publicado')
+    } else {
+        alert('F')
+    }
 })

@@ -13,7 +13,7 @@
                         <div class="background"></div>
                         <div class="user-info">
                             <div class="avatar">
-                                <img src="/static/images/minecraft.webp" alt="avatar del usuario" loading="lazy">
+                                <img src="{{request.cookies.get('user_image')}}" alt="avatar del usuario" loading="lazy">
                             </div>
                             <a href="#">{{ request.cookies.get('username') }}</a>
                             <a href="{{ request.cookies.get('email') }}">{{ request.cookies.get('email') }}</a>
