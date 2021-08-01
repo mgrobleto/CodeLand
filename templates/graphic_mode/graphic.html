@@ -18,6 +18,14 @@
             <a class="btn btn-primary" href="/static_projects/graphic_mode/{{project['program_title']}}" role="button">Ver código</a>
         </div>
         {% endfor %}
+        <h2>Proyectos de estudiantes</h2>
+        {% for project in db_project %}
+        <div class="column">
+            <img src="/static/icons/background.webp" id="conteinerImg">
+            <h5>{{project['program_title']}}</h5>
+            <a class="btn btn-primary" href="/project/{{project['author']}}/{{project['project_name']}}" role="button">Ver código</a>
+        </div>
+        {% endfor %}
     </div>
 </body>
 {% endblock %} 
