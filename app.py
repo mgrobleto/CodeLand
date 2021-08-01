@@ -12,7 +12,7 @@ from tempfile import mkdtemp
 from os import path, environ
 
 # manipular información 
-from base64 import encodebytes
+from base64 import encodebytes, b64decode
 from bson.objectid import ObjectId
 from bson import json_util
 from json import dumps
@@ -266,12 +266,14 @@ def before_request():
                     resp.set_cookie('username', expires=0)
                     resp.set_cookie('email', expires=0)
                     resp.set_cookie('user_id', expires=0)
+                    resp.set_cookie('user_image', expires=0)
                     return resp
                 except jwt.InvalidTokenError:
                     resp.set_cookie('USER_TOKEN', expires=0)
                     resp.set_cookie('username', expires=0)
                     resp.set_cookie('email', expires=0)
                     resp.set_cookie('user_id', expires=0)
+                    resp.set_cookie('user_image', expires=0)
                     return resp
             return resp
 
@@ -321,6 +323,7 @@ def login():
         resp.set_cookie('username', user['username'])
         resp.set_cookie('email', email)
         resp.set_cookie('user_id', user['_id'].__str__())
+        resp.set_cookie('user_image', user['cover'])
 
         return resp
 
@@ -362,8 +365,8 @@ def register():
         if file.filename != '':
             if file.mimetype in IMAGE_MIMETYPE:
                 mimetype = file.mimetype
-                image = file.read()
-                image = encodebytes(image)
+                extension_image = file.filename.split('.')[-1]
+                image_data = file.read()
             else:
                 flash('error mimetype')
                 return redirect('/register')
@@ -371,10 +374,18 @@ def register():
         else:
             image = open('./static/images/user_default_logo.png', 'rb').read()
             mimetype = 'image/png'
-            image = encodebytes(image)
+            extension_image = 'png'
+            image_data = encodebytes(image)
+
+        user_id = ObjectId()
+        image_url = 'user_image/' + user_id.__str__() + f'.{extension_image}'
+
+        blob = bucket.blob(image_url)
+        blob.upload_from_string(image_data, content_type=mimetype)
+        blob.make_public()
 
         user = mongo.db.users.insert( # inserta un usuario
-            {"username": username, "password": password, "email": email, **timestamp(), "perfil": image, "contentType": mimetype})
+            {"_id": user_id, "username": username, "password": password, "email": email, "cover": blob.public_url, **timestamp()})
 
         resp = make_response(jsonify({"success": True, 'message': 'Usuario creado con éxito'}))
 
@@ -382,6 +393,7 @@ def register():
         resp.set_cookie('username', username)
         resp.set_cookie('email', email)
         resp.set_cookie('user_id', user.__str__())
+        resp.set_cookie('user_image', blob.public_url)
 
         return resp
 
@@ -513,6 +525,24 @@ def addProject():
             return redirect('/login')
 
     return render_template('user/addCode.html')
+
+
+@app.route('/make-public/<project_id>')
+def make_public(project_id):
+    user = isLogged('USER_TOKEN')
+    if user['success']:
+        user_info = user['info']
+        is_owner = user_info['user_id'] == mongo.db.projects.find_one({'_id': ObjectId(project_id)})['users_id']
+        if is_owner:
+            project = mongo.db.projects.find_one_and_update({'_id': ObjectId(project_id)}, {'$set': {'public': True}})
+            print(project)
+            return redirect('/profile')
+        else:
+            return 'no tienes permisos'
+    else:
+        flash('You are not logged in')
+        return redirect('/login')
+
 
 @app.route('/download-project/<project_id>', methods=['GET'])
 def download_project(project_id):
@@ -673,27 +703,25 @@ def about():
 
 @app.route('/examples/intro')
 def text_mode():
-    """user = {}
-    if session.get('user_id'):
-        user_id = ObjectId(session.get('user_id'))
-        user = get_user_and_project(user_id)"""
 
     db_project = mongo.db.static_projects.find({'mode': 'text_mode'})
+    db_project_user = mongo.db.projects.find({"modo": "text_mode", 'public': True})
 
     if db_project is None:
         return render_template('404.html'), 404
 
-    return render_template("text_mode/text.html", db_project=db_project)
+    return render_template("text_mode/text.html", db_project=db_project, db_project_user=db_project_user)
 
 #Cuando se consulte en el modo grafico
 @app.route('/examples/node')
 def graphic_mode():
     db_project = mongo.db.static_projects.find({'mode': 'graphic_mode'})
-    return render_template("graphic_mode/graphic.html", db_project=db_project)
+    db_project_user = mongo.db.projects.find({"modo": "graphic_mode", 'public': True})
+
+    return render_template("graphic_mode/graphic.html", db_project=db_project, db_project_user=db_project_user)
 
 @app.route('/logout')
 def logout():
-    session.clear()
     resp = make_response(redirect('/login'))
     resp.set_cookie('USER_TOKEN', expires=0)
     resp.set_cookie('username', expires=0)

@@ -20,7 +20,7 @@
         </div>
         <div class="user-image">
             {# <a href="/edit/{{user._id}}" class="btn btn-primary">Edit</a> #}
-            <img src="data:image/{{user.contentType}};base64,{{user.perfil.decode('ascii')}}" alt="user profile">
+            <img src="{{user.cover}}" alt="user profile" alt="">
         </div>
     </section>
     <h3>Agrega un proyecto</h3>
@@ -34,7 +34,7 @@
             {% for project in user['projects'] %}
             <div class='col col-lg-4'>
                 <div class='card' style='width: 18rem;'>
-                    <img src="data:image/{{project.contentType}};base64,{{project.image.decode('ascii')}}" alt="{{project.title}}">
+                    <img src="{{project.image}}" alt="{{project.title}}">
                     <div class='card-body'>
                         <h5 class='card-title'>{{project.project_name}}</h5>
                         <p class='card-text'>
@@ -45,6 +45,11 @@
                             <input type="hidden" name="id" value="{{project._id}}">
                             <button class='btn btn-danger'>Borrar proyecto</button>
                         </form>
+                        {% if not project.public%}
+                            <button class="btn btn-primary" id="make-public" value="{{project._id}}">
+                                Publicar proyecto
+                            </button>
+                        {% endif %}
                         <a class='btn btn-primary' href="/download-project/{{project._id}}" download>Descargar</a>
                         <form id="formPublic">
                             <input type="hidden" value="{{project._id}}" name="publicProject">
