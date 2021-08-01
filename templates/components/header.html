@@ -73,8 +73,8 @@
     <div class="header-right">
         {% if request.cookies.get('user_id') %}
         <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-            {{ request.cookies.get('username') }}
+            <button class="btn btn-user dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="{{request.cookies.get('user_image')}}" class="responsive-img btn-user-image" alt="perfil de {{ request.cookies.get('username') }}">
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li><a class="dropdown-item" href="/profile"> Perfil </a></li>
