@@ -1,18 +1,33 @@
 .custom-container {
     width: 100%;
+    background-color: #252836;
+    padding-block-end: 12%;
+    padding-top: 2%;
     /*margin: 0 auto;*/
-    background-color: aqua;
+   
 }
-
+h1,h2,h3,h4,h5,p,small{
+    color: whitesmoke !important;
+}
+.card-title,.card-text{
+    color: black !important;
+}
 .user-image img {
     width: 20vw;
     height: auto;
     border-radius: 50%;
+    
+}
+.user-image{
+    width: 50%;
+    margin-right: 3%;
 }
 
 .hero_profile {
-    /*margin: 20px 0;*/
+    margin: 20px 0;
+    width:50%;
 }
+
 
 @media screen and (min-width: 996px) {
     .custom-container {
@@ -28,10 +43,11 @@
 }
 
 .custom-modal {
-    /*position: fixed;
+    background-color: #252836;
+    position: fixed;
     border-radius: 12px;
     padding: 1.2em;
-   /* top: 50%;
+    top: 50%;
     left: 50%;
     width: 80%;
     max-width: 800px;
@@ -39,9 +55,9 @@
     margin: 0 auto;
     overflow: auto;
     transition: transform .6s ease-in-out;
-    transform: translateY(-1000px) translateX(-50%);*/
+    transform: translateY(-1000px) translateX(-50%);
     display: flex;
-    /*justify-content: center;*/
+    justify-content: center;
     flex-direction: column;
     align-items: center;
     z-index: 12;

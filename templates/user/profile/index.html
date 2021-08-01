@@ -7,8 +7,9 @@
 <link rel="stylesheet" href="/static/styles/profile.css">
 {% endblock %}
 
-{% block body %}
-<div class="custom-container">
+{% block body %} 
+ <body>
+ <div class="custom-container">
     <section class="hero_profile">
         <div class="my-5">
             <h1>Hola, {{ user.username}}!</h1>
@@ -23,8 +24,9 @@
             <img src="{{user.cover}}" alt="user profile" alt="">
         </div>
     </section>
+    
     <h3>Agrega un proyecto</h3>
-    <a href="/add-project"  class="btn btn-primary">Submit code</a>
+    <a href="/add-project"  class="btn btn-primary">Agregar codigo</a>
     <section>
         <div class='row' id="projects">
             {% if user['projects'] %}
@@ -40,10 +42,10 @@
                         <p class='card-text'>
                             {{project.description}}
                         </p>
-                        <a href='/project/{{user.username}}/{{project.project_name}}' class='btn btn-primary'>Ver y editar</a>
+                        <a href='/project/{{user.username}}/{{project.project_name}}' class='btn bi bi-pencil-fill'> Ver y editar</a>
                         <form id="delete-project">
                             <input type="hidden" name="id" value="{{project._id}}">
-                            <button class='btn btn-danger'>Borrar proyecto</button>
+                            <button class='bi bi-trash-fill'>Borrar proyecto</button>
                         </form>
                         {% if not project.public%}
                             <button class="btn btn-primary" id="make-public" value="{{project._id}}">
@@ -53,7 +55,7 @@
                         <a class='btn btn-primary' href="/download-project/{{project._id}}" download>Descargar</a>
                         <form id="formPublic">
                             <input type="hidden" value="{{project._id}}" name="publicProject">
-                            <button class="btn btn-primary">Publicar Proyecto</button>
+                            <button class="btn bi bi-share-fill">Publicar Proyecto</button>
                         </form>
                     </div>
                 </div>
@@ -65,9 +67,9 @@
         {% endif %}
     </div>    
 </section>
-</div>
+ </div>
 
-<div class="custom-modal" id="custom-modal">
+ <div class="custom-modal" id="custom-modal">
     <h2>Actualiza tu información</h2>
     <form id="edit-info">
         <input type="hidden" name="id" value="{{user._id}}">
@@ -93,8 +95,9 @@
         </div>
         <button type="submit" class="btn btn-primary">Actualizar</button>
     </form>
-</div>
-<div class="overlay-modal" id="overlay-modal"></div>
+ </div>
+ <div class="overlay-modal" id="overlay-modal"></div>
+</body>
 {% endblock %}
 
 {% block scripts %}
