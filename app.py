@@ -116,6 +116,7 @@ def get_user_and_project(user_id):
         },
         { "$match": { "_id": ObjectId(user_id) } }
     ])
+    print(user_cursor)
     return list(user_cursor)[0]
 
 # Es una herramienta sorpresa que nos ayudara más tarde
@@ -377,7 +378,6 @@ def register():
 
         resp = make_response(jsonify({"success": True, 'message': 'Usuario creado con éxito'}))
 
-        resp.set_cookie('USER_TOKEN', login_token(email, user.__str__()))
         resp.set_cookie('USER_TOKEN', login_token(username, email, user.__str__()))
         resp.set_cookie('username', username)
         resp.set_cookie('email', email)
@@ -392,7 +392,12 @@ def profile():
     session_exist = isLogged('USER_TOKEN')
     if session_exist['success']:
         user_id = (session_exist['info'])['user_id']
-        user = get_user_and_project(user_id)
+        find_user = mongo.db.users.find({'_id':ObjectId(user_id)}) 
+        print(user_id)
+        if find_user:
+            user = get_user_and_project(user_id)
+        else:
+            return redirect('/logout')
 
         return render_template('user/profile/index.html', user=user)
     else:
@@ -695,7 +700,7 @@ def logout():
     resp.set_cookie('username', expires=0)
     resp.set_cookie('email', expires=0)
     resp.set_cookie('user_id', expires=0)
-    flash("Session closed")
+    flash("Session closed") 
     return resp
 
 @app.route('/admin', methods=['GET'])
@@ -860,6 +865,13 @@ def download_google():
     # bucket.copy_blob(folder, bucket, '/copia/')
 
     # return send_file(BytesIO(gcs_file.download_as_string()), mimetype='image/jpg')
+@app.route("/publicProject/<projectID>")
+def publicProjects(projectID): 
+    update = mongo.db.projects.update_one({"_id":ObjectId(projectID)},{"$set":{
+        "public": True
+    }})
+    return jsonify({"success":True})
+
 
 @app.errorhandler(404)
 def page_not_found(_):
@@ -871,6 +883,7 @@ if __name__ == '__main__':
         app.run(debug=True)
     else:
         app.run(debug=False)
+
 
 # https://stackoverflow.com/questions/37074977/how-to-get-list-of-folders-in-a-given-bucket-using-google-cloud-api :0
 # https://stackoverflow.com/questions/583791/is-it-possible-to-generate-and-return-a-zip-file-with-app-engine creara el zip

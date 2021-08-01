@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="/static/styles/profile.css">
 {% endblock %}
 
-
 {% block body %}
 <div class="custom-container">
     <section class="hero_profile">
@@ -47,6 +46,10 @@
                             <button class='btn btn-danger'>Borrar proyecto</button>
                         </form>
                         <a class='btn btn-primary' href="/download-project/{{project._id}}" download>Descargar</a>
+                        <form id="formPublic">
+                            <input type="hidden" value="{{project._id}}" name="publicProject">
+                            <button class="btn btn-primary">Publicar Proyecto</button>
+                        </form>
                     </div>
                 </div>
             </div>

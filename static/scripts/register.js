@@ -10,7 +10,9 @@ $form.addEventListener('submit', async event => {
         body: formData
     })
     const data = await response.json()
-
+    console.log(
+        data
+    )
     if (data.success) {
         window.location.href = '/profile'
     }
