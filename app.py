@@ -1,4 +1,5 @@
 # utils
+import json
 from utils.auth.login import login_token, isLogged
 from utils.schema.login import loginSchema
 from utils.schema.register import registerSchema
@@ -477,26 +478,36 @@ def update_profile(user_id):
 
 @app.route('/add-project', methods=['GET', 'POST'])
 def addProject():
+    user_payload = isLogged('USER_TOKEN')
+    user_info = user_payload.get('info')
+
+    if not user_payload['success']:
+        return redirect('/login')
+
     if request.method == 'POST':
-        user_payload = isLogged('USER_TOKEN')
-        user_info = user_payload.get('info')
         if user_payload['success'] and user_info['user_id']:
             if 'files' not in request.files:
                 flash('No file')
-                return redirect('/add-project')
+                return jsonify({'success': False, 'message': 'No file'})
 
-            modo = request.form.get('modo')
+            modo = request.form.get('project_mode')
             if not (modo != 'text_mode' or modo != 'graphic_mode'):
-                flash('Ahh sos retroll')
-                return redirect('/add-project')
+                return jsonify({'success': False, 'message': 'El modo no existe'})
                 
             files = request.files.getlist('files')
-            title = request.form.get('title')
+            project_name = request.form.get('projectName')
             description = request.form.get('description')
-            image = request.files['image'].read()
+            github_url = request.form.get('github_url')
+            isPublic = request.form.get('isPublic')
+            if(isPublic == 'on'):
+                isPublic = True
+            else:
+                isPublic = False
+
+            image = request.files['image']
             file_names = []
             # print(session.get('user_id'))
-            directory = path_join('project', user_info.get('user_id'), modo, title)
+            directory = path_join('project', user_info.get('user_id'), modo, project_name)
 
             # Valida si el proyecto ya existe
             if not bucket.blob(directory).exists():
@@ -504,8 +515,7 @@ def addProject():
                 blob.upload_from_string('', content_type='application/x-www-form-urlencoded;charset=UTF-8')
 
             else:
-                flash('project already exist')
-                return redirect('/add-project')
+                return jsonify({'success': False, 'message': 'El proyecto ya existe'})
 
             for file in files:
                 if file and allowed_file(file.filename):
@@ -518,11 +528,20 @@ def addProject():
                     blob.upload_from_string(data, content_type = file.content_type)
                     file_names.append(filename)
 
-            mongo.db.projects.insert({ "project_name": title, 'author': user_info.get('username'), "description": description, 'modo': modo, "users_id": user_info.get('user_id'), "path": directory, **timestamp(), "image": encodebytes(image)})
-            return redirect('/profile')
+            project_id = ObjectId()
+            print(image.name)
+            print(image.name.split('.')[-1])
+            image_url = 'project_image/' + project_id.__str__() + '.' + image.name.split('.')[-1]
+
+            upload_image = bucket.blob(image_url)
+            upload_image.upload_from_string(image.read(), content_type=image.content_type)
+            upload_image.make_public()
+
+            mongo.db.projects.insert({"_id": project_id, "project_name": project_name, 'author': user_info.get('username'), "public": isPublic, "description": description, 'modo': modo, "users_id": ObjectId(user_info.get('user_id')), "path": directory, **timestamp(), "image": upload_image.public_url, "files": file_names, "github": github_url})
+            
+            return jsonify({'success': True, 'message': 'Proyecto creado'})
         else:
-            flash('You are not logged in')
-            return redirect('/login')
+            return jsonify({'success': False, 'message': 'No tienes permisos'})
 
     return render_template('user/addCode.html')
 

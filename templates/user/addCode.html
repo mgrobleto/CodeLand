@@ -9,13 +9,18 @@
 {% endblock %}
 
 {% block body %}
-<form class="form-project-container container-fluid" method="POST" action="/add-project" enctype="multipart/form-data">
+
+<form class="form-project-container container-fluid" method="POST" id="form">
+	<section class="title">
+		<h2>Comparte tu proyecto con los demas estudiantes!</h2>
+		<img class="ilustracion" src="/static/images/share.svg" alt="Comparte tu código con los demas">
+	</section>
 	<div class="form-project">	
 		<div class="project-basic-info">
 			<div class="title-project">
-				<label for="inputName" class="col-sm-2 col-form-label">Titulo</label>
+				<label for="inputName" class="col-sm-2 col-form-label">Nombre del proyecto</label>
 				<div class="col-sm-10">
-					<input type="text" name="title" class="form-control" id="inputName" required>
+					<input type="text" name="projectName" class="form-control" id="inputName" required>
 				</div>
 			</div>
 			<div class="select-option">
@@ -32,32 +37,41 @@
 				</div>
 			</div>
 		</div>
-		<div class="">
-		<label for="inputDescription" class="col-form-label">Descripcion</label>
-		<div class="">
-			<input type="text" name="description" class="form-control" id="inputDescription">
+		<div class="description-project">
+			<label for="inputDescription" class="col-form-label">Descripción</label>
+			<div class="">
+				<input type="text" name="description" class="form-control" id="inputDescription">
+			</div>
+			<label for="inputGitHub" class="col-form-label">Link a github (opcional)</label>
+			<div class="">
+				<input type="url" name="github_url" class="form-control" id="inputGitHub">
+			</div>
 		</div>
-		</div>
-		<fieldset class="description-project">
+		<fieldset class="assets-project">
 			<div class="file-project">
 				<span>Archivos por defecto</span>
-				<input class="input-file-project" name="files" multiple type="file" id="formFile" required>
+				<input class="input-file-project" title="Agrega archivos por defecto y luego añade más" name="files" multiple type="file" id="formFile" required>
 			</div>
 			<div class="file-project">
 				<span>Imagen del proyecto</span>
-				<input class="input-file-project" type="file" name="image" id="image" required>
+				<input class="input-file-project" title="Agrega una imagen para que todos conozcan de que trata" type="file" name="image" id="image" required>
 			</div>
 		</fieldset>
 		<div class="submit">
-			<label>
-				<input type="checkbox" name="isPublic">
-				Quieres que sea publico?
-			</label>
-			<button type="submit" class="btn btn-primary">Subir projecto</button>
+			<div class="submit-container">
+				<label class="title-submit" title="Con esto, tu proyecto aparecera en la sección explorer">
+					<input type="checkbox" name="isPublic">
+					Quieres que sea publico?
+				</label>
+				<button type="submit" class="btn btn-primar submit-project">Subir projecto</button>
+			</div>
 		</div>
 	</div>
 </form>
 {% endblock %}
 {% block scripts %}
+<script>
+	CSS.paintWorklet.addModule('/static/scripts/libs/bezel.js')
+</script>
 <script src="/static/scripts/addCode.js"></script>
 {% endblock %}

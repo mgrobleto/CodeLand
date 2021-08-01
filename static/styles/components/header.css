@@ -1,3 +1,27 @@
+.responsive-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-user {
+    border: 1px solid rgb(223, 0, 130);
+    padding: 0;
+}
+
+.btn-user::after {
+    color: rgb(223, 0, 130);
+    vertical-align: 0;
+    font-size: 24px;
+    margin-left: 0;
+}
+
+.btn-user-image {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
 .header-site {
     width: 100%;
     height: 70px;
@@ -7,6 +31,8 @@
 }
 
 .header-left {
+    display: flex;
+    align-items: center;
     height: 100%;
 }
 
