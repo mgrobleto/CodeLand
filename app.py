@@ -116,6 +116,7 @@ def get_user_and_project(user_id):
         },
         { "$match": { "_id": ObjectId(user_id) } }
     ])
+    print(user_cursor)
     return list(user_cursor)[0]
 
 # Es una herramienta sorpresa que nos ayudara más tarde
@@ -403,8 +404,12 @@ def profile():
     session_exist = isLogged('USER_TOKEN')
     if session_exist['success']:
         user_id = (session_exist['info'])['user_id']
-        user = get_user_and_project(user_id)
-
+        find_user = mongo.db.users.find({'_id':ObjectId(user_id)}) 
+        print(user_id)
+        if find_user:
+            user = get_user_and_project(user_id)
+        else:
+            return redirect('/logout')
         return render_template('user/profile/index.html', user=user)
     else:
         flash("You are not logged in. Please log in to see the profile.")
@@ -722,7 +727,7 @@ def logout():
     resp.set_cookie('username', expires=0)
     resp.set_cookie('email', expires=0)
     resp.set_cookie('user_id', expires=0)
-    flash("Session closed")
+    flash("Session closed") 
     return resp
 
 @app.route('/admin', methods=['GET'])
@@ -887,34 +892,13 @@ def download_google():
     # bucket.copy_blob(folder, bucket, '/copia/')
 
     # return send_file(BytesIO(gcs_file.download_as_string()), mimetype='image/jpg')
-@app.route('/migracionAStorage')
-def migracion():
-    allUser = bucket.list_blobs(prefix='user_image/')
-    binarys = []
-    image_name = []
-    
-    for user_bin in allUser:
-        binarys.append(b64decode(user_bin.download_as_string()))
-        image_name.append(user_bin.name)
-    
+@app.route("/publicProject/<projectID>")
+def publicProjects(projectID): 
+    update = mongo.db.projects.update_one({"_id":ObjectId(projectID)},{"$set":{
+        "public": True
+    }})
+    return jsonify({"success":True})
 
-    for binary in binarys:
-        blob = bucket.blob('user_image/' + image_name[binarys.index(binary)])
-        blob.upload_from_string(binary, content_type = 'image/png')
-        blob.make_public()
-
-            # mongo.db.projects.update_one({ '_id': project['_id'] }, {
-            #     '$set': {
-            #         'perfil': None,
-            #         'contentType': None,
-            #         "cover": blob.public_url
-            #     }
-            # })
-
-    
-    return ":D"
-
-    
 
 @app.errorhandler(404)
 def page_not_found(_):
@@ -926,6 +910,7 @@ if __name__ == '__main__':
         app.run(debug=True)
     else:
         app.run(debug=False)
+
 
 # https://stackoverflow.com/questions/37074977/how-to-get-list-of-folders-in-a-given-bucket-using-google-cloud-api :0
 # https://stackoverflow.com/questions/583791/is-it-possible-to-generate-and-return-a-zip-file-with-app-engine creara el zip

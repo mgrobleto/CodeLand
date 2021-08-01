@@ -34,7 +34,7 @@ def login_token(username, email, user_id):
         'email': email,
         'user_id': user_id,
         'authorization': 'user',
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=15),
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1),
         'nbf': datetime.datetime.utcnow()
     }
 
