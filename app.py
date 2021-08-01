@@ -398,7 +398,6 @@ def profile():
             user = get_user_and_project(user_id)
         else:
             return redirect('/logout')
-
         return render_template('user/profile/index.html', user=user)
     else:
         flash("You are not logged in. Please log in to see the profile.")
