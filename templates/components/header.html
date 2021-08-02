@@ -99,9 +99,10 @@
 </header>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
-    <div class="alert alert-primary">
-        <p>{{ messages | join(' ') }}</p>
-    </div>
+  <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+    <p>{{ messages | join(' ') }}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
   {% endif %}
 {% endwith %}
 <div class="overlay" id="overlay"></div>
