@@ -746,7 +746,7 @@ def logout():
     resp.set_cookie('username', expires=0)
     resp.set_cookie('email', expires=0)
     resp.set_cookie('user_id', expires=0)
-    flash("Session closed") 
+    flash(f'Session closed') 
     return resp
 
 @app.route('/admin', methods=['GET'])

@@ -27,7 +27,9 @@ body {
 .alert{
     z-index: 1 !important;
 }
-
+.alert alert-primary{
+    padding: 0% !important;
+}
 @media screen and (max-width:700px)  {
     .row{
         flex-direction: column;
