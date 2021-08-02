@@ -7,16 +7,16 @@
         </div>
         <div class="block"></div>
         <div class="header-nav sidenav" id="sidenav">
-            {% if session.get('user_id') %}
+            {% if request.cookies.get('user_id')  %}
                 <div class="user">
                     <div class="sidenav-profile">
                         <div class="background"></div>
                         <div class="user-info">
                             <div class="avatar">
-                                <img src="/static/images/minecraft.webp" alt="avatar del usuario" loading="lazy">
+                                <img src="{{request.cookies.get('user_image')}}" alt="avatar del usuario" loading="lazy">
                             </div>
-                            <a href="#">ElNombreDelUser</a>
-                            <a href="mailto:admin@gmail.com">admin@gmail.com</a>
+                            <a href="#">{{ request.cookies.get('username') }}</a>
+                            <a href="{{ request.cookies.get('email') }}">{{ request.cookies.get('email') }}</a>
                         </div>
                     </div>
                 </div>
@@ -32,10 +32,10 @@
                                     <header>Ejemplos</header>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/arrays/"> Arreglos </a>
+                                    <a href="/example/arrays/"> Arreglos </a>
                                 </li>
                                 <li class="dropdown-list-item">
-                                    <a href="/examples/functions/"> Funciones </a>
+                                    <a href="/example/functions/"> Funciones </a>
                                 </li>
                             </ul>
                             <ul class="dropdown-list">
@@ -61,19 +61,20 @@
                     </li>
                     <li class="list-item"><a href="/tools"> Herramientas </a></li>
                     <li class="list-item"><a href="/about-us"> Acerca de </a></li>
+                    {% if not request.cookies.get('user_id') %}
                     <div class="login m-3">
                         <a href="/login" class="btn btn-primary"> Ingresar </a>
-                        <!-- <button class="btn btn-primary">Ingresar</button> -->
                     </div>
+                    {% endif %}
                 </ul>
             </nav>
         </div>
     </div>
     <div class="header-right">
-        {% if session.get('user_id') %}
+        {% if request.cookies.get('user_id') %}
         <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-            {{ session.get('username') }}
+            <button class="btn btn-user dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="{{request.cookies.get('user_image')}}" class="responsive-img btn-user-image" alt="perfil de {{ request.cookies.get('username') }}">
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li><a class="dropdown-item" href="/profile"> Perfil </a></li>

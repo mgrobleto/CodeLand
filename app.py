@@ -1,3 +1,9 @@
+# utils
+import json
+from utils.auth.login import login_token, isLogged
+from utils.schema.login import loginSchema
+from utils.schema.register import registerSchema
+
 # data transfer
 from io import BytesIO
 from zipfile import ZipFile
@@ -7,13 +13,13 @@ from tempfile import mkdtemp
 from os import path, environ
 
 # manipular información 
-from base64 import encodebytes
+from base64 import encodebytes, b64decode
 from bson.objectid import ObjectId
 from bson import json_util
 from json import dumps
 
 # Configuración del servidor
-from flask import Flask, render_template, request, Response, redirect, session, flash, jsonify, send_file
+from flask import Flask, render_template, request, Response, redirect, session, flash, jsonify, send_file, make_response, after_this_request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_session import Session
 from werkzeug.utils import secure_filename
@@ -26,6 +32,9 @@ from google.oauth2 import service_account
 
 # Librerias de Mongodb
 from flask_pymongo import PyMongo
+
+# Libreria de tokens
+import jwt
 
 # Actualización del tiempo
 import datetime
@@ -75,6 +84,7 @@ app.secret_key = environ['SESSION_KEY']
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config['SESSION_PERMANENT'] = True  # La cookie no se guarda para siempre
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_COOKIE_SECURE'] = True
 app.config['MONGO_URI'] = f'mongodb+srv://{USER_DB}:{PASSWORD_DB}@cluster0.73uuw.mongodb.net/cs50xni?retryWrites=true&w=majority'
 Session(app)
 mongo = PyMongo(app)
@@ -107,6 +117,7 @@ def get_user_and_project(user_id):
         },
         { "$match": { "_id": ObjectId(user_id) } }
     ])
+    print(user_cursor)
     return list(user_cursor)[0]
 
 # Es una herramienta sorpresa que nos ayudara más tarde
@@ -244,12 +255,37 @@ def delete_project_storage(path):
 @app.before_request
 def before_request():
     app.permanent_session_lifetime = datetime.timedelta(hours=12);
+    if(not '/static/' in request.path):
+        @after_this_request
+        def request_after(resp):
+            token = request.cookies.get('USER_TOKEN')
+            if not token is None:
+                try:
+                    get_info = jwt.decode(token, environ['KEY_JWT'], algorithms=['HS256'])
+                except jwt.ExpiredSignatureError:
+                    resp.set_cookie('USER_TOKEN', expires=0)
+                    resp.set_cookie('username', expires=0)
+                    resp.set_cookie('email', expires=0)
+                    resp.set_cookie('user_id', expires=0)
+                    resp.set_cookie('user_image', expires=0)
+                    return resp
+                except jwt.InvalidTokenError:
+                    resp.set_cookie('USER_TOKEN', expires=0)
+                    resp.set_cookie('username', expires=0)
+                    resp.set_cookie('email', expires=0)
+                    resp.set_cookie('user_id', expires=0)
+                    resp.set_cookie('user_image', expires=0)
+                    return resp
+            return resp
+
 
 @app.route('/')
 def home():
     user = {}
-    if session.get('user_id'):
-        user_id = ObjectId(session.get('user_id'))
+    validation = isLogged('USER_TOKEN')
+    if validation.get('success'):
+        user_info = validation.get('info')
+        user_id = ObjectId(user_info.get('user_id'))
         user = mongo.db.users.find_one({"_id": user_id})
 
     return render_template('index.html', user=user)
@@ -257,38 +293,65 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if session.get('admin_id'):
-        session.clear()
-    if session.get('user_id') != None:
-        return redirect('/profile')
-    if request.method == 'POST':
-        email = (request.get_json())['email']
-        if(email == None):
-            return jsonify({'error': 'Email is required'})
-            
-        get_user = mongo.db.users.find_one(
-            {"email": email})
-        if not get_user:
-            return redirect('/login')
-        if not check_password_hash(get_user["password"], request.get_json().get('password')):
-            return redirect('/login')
+    admin_token = isLogged('ADMIN_TOKEN')
+    if admin_token['success']:
+        return redirect('/admin/profile')
+    
+    user_token = isLogged('USER_TOKEN')
 
-        session['user_id'] = get_user['_id']
-        session['username'] = get_user['username']
-        return jsonify({'success': True})
+    if user_token['success']:
+        return redirect('/profile')    
+    
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+            
+        validation = loginSchema(email, password)
+
+        if not validation['success']:
+            return jsonify(validation)
+        user = mongo.db.users.find_one({
+            'email': email
+        })
+
+        if not user:
+            return jsonify({'success': False,'error': 'El usuario no existe'})
+        if not check_password_hash(user["password"], password):
+            return jsonify({'success': False,'error': 'Correo o contraseña incorrecta'})
+
+        resp = make_response(jsonify({"success": True, 'token': 'valid'}))
+        resp.set_cookie('USER_TOKEN', login_token(user['username'], email, user['_id'].__str__()))
+        resp.set_cookie('username', user['username'])
+        resp.set_cookie('email', email)
+        resp.set_cookie('user_id', user['_id'].__str__())
+        resp.set_cookie('user_image', user['cover'])
+
+        return resp
+
 
     return render_template('auth/login/index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if session.get('user_id') != None:
+    admin_token = isLogged('ADMIN_TOKEN')
+    if admin_token['success']:
+        return redirect('/admin/profile')
+    
+    user_token = isLogged('USER_TOKEN')
+    if user_token['success']:
         return redirect('/profile')
+            
     if(request.method == 'POST'):
         email = request.form.get("email")
         username = request.form.get("username")
         password = generate_password_hash(request.form.get(
             "password"), method="sha256", salt_length=10 # se encripta con sha256 10 veces
         )
+
+        validation = registerSchema(email, username, password)
+
+        if not validation['success']:
+            return jsonify(validation)
 
         find_user = mongo.db.users.find_one({
             '$or': [
@@ -297,19 +360,14 @@ def register():
             ]
         }) # busca un usuario donde uno de esos dos campos tenga ese valor
         if find_user != None:
-            flash(f"{username} already exist")
-            return redirect('/register')
-
-        if not username or not password or not email:
-            flash("username or password is empty")
-            return redirect('/register')
+            return jsonify({"success": True, 'message': f'{username} ya existe'})
 
         file = request.files['image']
         if file.filename != '':
             if file.mimetype in IMAGE_MIMETYPE:
                 mimetype = file.mimetype
-                image = file.read()
-                image = encodebytes(image)
+                extension_image = file.filename.split('.')[-1]
+                image_data = file.read()
             else:
                 flash('error mimetype')
                 return redirect('/register')
@@ -317,31 +375,54 @@ def register():
         else:
             image = open('./static/images/user_default_logo.png', 'rb').read()
             mimetype = 'image/png'
-            image = encodebytes(image)
+            extension_image = 'png'
+            image_data = encodebytes(image)
+
+        user_id = ObjectId()
+        image_url = 'user_image/' + user_id.__str__() + f'.{extension_image}'
+
+        blob = bucket.blob(image_url)
+        blob.upload_from_string(image_data, content_type=mimetype)
+        blob.make_public()
 
         user = mongo.db.users.insert( # inserta un usuario
-            {"username": username, "password": password, "email": email, **timestamp(), "perfil": image, "contentType": mimetype})
-        session['user_id'] = user
-        session['username'] = username
+            {"_id": user_id, "username": username, "password": password, "email": email, "cover": blob.public_url, **timestamp()})
 
-        return redirect('/profile')
+        resp = make_response(jsonify({"success": True, 'message': 'Usuario creado con éxito'}))
+
+        resp.set_cookie('USER_TOKEN', login_token(username, email, user.__str__()))
+        resp.set_cookie('username', username)
+        resp.set_cookie('email', email)
+        resp.set_cookie('user_id', user.__str__())
+        resp.set_cookie('user_image', blob.public_url)
+
+        return resp
 
     return render_template('auth/register/index.html')
 
 @app.route('/profile')
 def profile():
-    if session.get('user_id') == None:
+    session_exist = isLogged('USER_TOKEN')
+    if session_exist['success']:
+        user_id = (session_exist['info'])['user_id']
+        find_user = mongo.db.users.find({'_id':ObjectId(user_id)}) 
+        print(user_id)
+        if find_user:
+            user = get_user_and_project(user_id)
+        else:
+            return redirect('/logout')
+        return render_template('user/profile/index.html', user=user)
+    else:
         flash("You are not logged in. Please log in to see the profile.")
         return redirect('/login')
 
-    user_id = session.get('user_id')
-    user = get_user_and_project(user_id)
-
-    return render_template('user/profile/index.html', user=user)
 
 @app.route('/update-account/<user_id>', methods=['PUT'])
 def update_profile(user_id):
-    if(session.get('user_id') == ObjectId(user_id)):
+    user_payload = isLogged('USER_TOKEN')
+    user_info = user_payload.get('info')
+
+    if(user_info['user_id'] == user_id):
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
@@ -355,7 +436,6 @@ def update_profile(user_id):
         findUser = list(findUsers_cursor)
 
         if len(findUser) > 1:
-            print('F')
             return 'el usuario ya existe'
 
         if not check_password_hash((findUser[-1])['password'], password_confirm):
@@ -382,13 +462,15 @@ def update_profile(user_id):
                 flash('error mimetype')
                 return redirect('/register')
 
-        mongo.db.projects.update_many({'users_id': session.get('user_id')}, { '$set': { 'author': newInfo['username'] }})
+        mongo.db.projects.update_many({'users_id': ObjectId(user_info['user_id'])}, { '$set': { 'author': newInfo['username'] }})
         user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
             '$set': newInfo
         })
-        session['username'] = newInfo['username']
+
         data = dumps(user,default=json_util.default)
-        return data
+        resp = make_response(data)
+        resp.set_cookie('USER_TOKEN', login_token(newInfo['username'], user['email'], user['_id'].__str__()))
+        return resp
     else:
         flash('No puedes cambiar la info de otro usuario >:v')
 
@@ -396,24 +478,36 @@ def update_profile(user_id):
 
 @app.route('/add-project', methods=['GET', 'POST'])
 def addProject():
+    user_payload = isLogged('USER_TOKEN')
+    user_info = user_payload.get('info')
+
+    if not user_payload['success']:
+        return redirect('/login')
+
     if request.method == 'POST':
-        if session.get('user_id') != None:
+        if user_payload['success'] and user_info['user_id']:
             if 'files' not in request.files:
                 flash('No file')
-                return redirect('/add-project')
+                return jsonify({'success': False, 'message': 'No file'})
 
-            modo = request.form.get('modo')
+            modo = request.form.get('project_mode')
             if not (modo != 'text_mode' or modo != 'graphic_mode'):
-                flash('Ahh sos retroll')
-                return redirect('/add-project')
+                return jsonify({'success': False, 'message': 'El modo no existe'})
                 
             files = request.files.getlist('files')
-            title = request.form.get('title')
+            project_name = request.form.get('projectName')
             description = request.form.get('description')
-            image = request.files['image'].read()
+            github_url = request.form.get('github_url')
+            isPublic = request.form.get('isPublic')
+            if(isPublic == 'on'):
+                isPublic = True
+            else:
+                isPublic = False
+
+            image = request.files['image']
             file_names = []
-            print(session.get('user_id'))
-            directory = path_join('project', session.get('user_id'), modo, title)
+            # print(session.get('user_id'))
+            directory = path_join('project', user_info.get('user_id'), modo, project_name)
 
             # Valida si el proyecto ya existe
             if not bucket.blob(directory).exists():
@@ -421,8 +515,7 @@ def addProject():
                 blob.upload_from_string('', content_type='application/x-www-form-urlencoded;charset=UTF-8')
 
             else:
-                flash('project already exist')
-                return redirect('/add-project')
+                return jsonify({'success': False, 'message': 'El proyecto ya existe'})
 
             for file in files:
                 if file and allowed_file(file.filename):
@@ -435,13 +528,40 @@ def addProject():
                     blob.upload_from_string(data, content_type = file.content_type)
                     file_names.append(filename)
 
-            mongo.db.projects.insert({ "project_name": title, 'author': session.get('username'), "description": description, 'modo': modo, "users_id": session.get('user_id'), "path": directory, **timestamp(), "image": encodebytes(image)})
-            return redirect('/profile')
+            project_id = ObjectId()
+            print(image.name)
+            print(image.name.split('.')[-1])
+            image_url = 'project_image/' + project_id.__str__() + '.' + image.name.split('.')[-1]
+
+            upload_image = bucket.blob(image_url)
+            upload_image.upload_from_string(image.read(), content_type=image.content_type)
+            upload_image.make_public()
+
+            mongo.db.projects.insert({"_id": project_id, "project_name": project_name, 'author': user_info.get('username'), "public": isPublic, "description": description, 'modo': modo, "users_id": ObjectId(user_info.get('user_id')), "path": directory, **timestamp(), "image": upload_image.public_url, "files": file_names, "github": github_url})
+            
+            return jsonify({'success': True, 'message': 'Proyecto creado'})
         else:
-            flash('You are not logged in')
-            return redirect('/login')
+            return jsonify({'success': False, 'message': 'No tienes permisos'})
 
     return render_template('user/addCode.html')
+
+
+@app.route('/make-public/<project_id>')
+def make_public(project_id):
+    user = isLogged('USER_TOKEN')
+    if user['success']:
+        user_info = user['info']
+        is_owner = user_info['user_id'] == mongo.db.projects.find_one({'_id': ObjectId(project_id)})['users_id']
+        if is_owner:
+            project = mongo.db.projects.find_one_and_update({'_id': ObjectId(project_id)}, {'$set': {'public': True}})
+            print(project)
+            return redirect('/profile')
+        else:
+            return 'no tienes permisos'
+    else:
+        flash('You are not logged in')
+        return redirect('/login')
+
 
 @app.route('/download-project/<project_id>', methods=['GET'])
 def download_project(project_id):
@@ -455,7 +575,7 @@ def download_project(project_id):
 @app.route('/download-static_project/<project_id>', methods=['GET'])
 def download_static_project(project_id):
     project = mongo.db.static_projects.find_one({ '_id': ObjectId(project_id)})
-    print(project)
+    # print(project)
     project_title = project['program_title']
     memory_file = create_zip(project['path'], 3)
 
@@ -471,15 +591,17 @@ def download_examples(example_id):
 
 @app.route('/delete-project', methods=['DELETE'])
 def delete_project():
-    if session.get('user_id'):
+    user_payload = isLogged('USER_TOKEN')
+    user_info = user_payload.get('info')
+    if user_info.get('user_id'):
         project_id = ObjectId(request.form.get('id'))
-        project = mongo.db.projects.find_one_and_delete({ 'users_id': ObjectId(session.get('user_id')), '_id': project_id}, {'_id': False, 'image': False, 'users_id': False})
+        project = mongo.db.projects.find_one_and_delete({ 'users_id': ObjectId(user_info.get('user_id')), '_id': project_id}, {'_id': False, 'image': False, 'users_id': False})
 
         if project is None:
             flash('El proyecto no existe')
             return redirect('/profile')
         delete_project_storage(project['path'])
-        data_cursor = mongo.db.projects.find({ 'users_id': ObjectId(session.get('user_id'))})
+        data_cursor = mongo.db.projects.find({ 'users_id': ObjectId(user_info.get('user_id'))})
         data_list = [doc for doc in data_cursor]
         data = dumps(data_list,default=json_util.default)
 
@@ -527,7 +649,7 @@ def show_project_graphic(project_name):
     directory = list_dir(route=project_path)
     download_URI = f'/download-static_project/{db_project["_id"]}'
 
-    return render_template('show_static_project/index.html', directory=directory, name=project_name, download_URI=download_URI, type="graphic mode")
+    return render_template('show_static_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI, type="graphic mode")
 
 @app.route('/static_projects/<project_name>/', methods=['GET', 'POST'])
 
@@ -554,7 +676,7 @@ def show_static_project(project_name):
     directory = list_dir(route=project_path)
     download_URI = f'/download-static_project/{db_project["_id"]}'
     
-    return render_template('show_static_project/index.html', directory=directory, name=project_name, download_URI=download_URI, type="text mode")
+    return render_template('show_static_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI, type="text mode")
   
 #para la parte de documentacion
 @app.route('/examples/basicos')
@@ -562,7 +684,7 @@ def documentacion():
     db_documentation = mongo.db.documentation.find({'type':'document'})
     return render_template("pdf/documentacion.html",db_documentation=db_documentation)
 # Ruta para ver ejemplos
-@app.route('/examples/<ejemplo_name>/', methods=['GET', 'POST'])
+@app.route('/example/<ejemplo_name>/', methods=['GET', 'POST'])
 def show_ejemplo(ejemplo_name):
 
     # Trae el ejemplo correspondiente al nombre de la db
@@ -585,8 +707,7 @@ def show_ejemplo(ejemplo_name):
     directory = list_dir(route=example_path)
     download_URI = f'/download-example/{db_example["_id"]}'
 
-    print(directory)
-    return render_template('show_ejemplo/index.html', directory=directory, name=ejemplo_name, download_URI=download_URI, type="text mode")
+    return render_template('show_ejemplo/index.html', example_info=db_example, directory=directory, name=ejemplo_name, download_URI=download_URI, type="text mode")
 
 
 @app.route('/tools')
@@ -601,29 +722,32 @@ def about():
 
 @app.route('/examples/intro')
 def text_mode():
-    """user = {}
-    if session.get('user_id'):
-        user_id = ObjectId(session.get('user_id'))
-        user = get_user_and_project(user_id)"""
 
     db_project = mongo.db.static_projects.find({'mode': 'text_mode'})
+    db_project_user = mongo.db.projects.find({"modo": "text_mode", 'public': True})
 
     if db_project is None:
         return render_template('404.html'), 404
 
-    return render_template("text_mode/text.html", db_project=db_project)
+    return render_template("text_mode/text.html", db_project=db_project, db_project_user=db_project_user)
 
 #Cuando se consulte en el modo grafico
 @app.route('/examples/node')
 def graphic_mode():
     db_project = mongo.db.static_projects.find({'mode': 'graphic_mode'})
-    return render_template("graphic_mode/graphic.html", db_project=db_project)
+    db_project_user = mongo.db.projects.find({"modo": "graphic_mode", 'public': True})
+
+    return render_template("graphic_mode/graphic.html", db_project=db_project, db_project_user=db_project_user)
 
 @app.route('/logout')
 def logout():
-    session.clear()
-    flash("Session closed")
-    return redirect('/')
+    resp = make_response(redirect('/login'))
+    resp.set_cookie('USER_TOKEN', expires=0)
+    resp.set_cookie('username', expires=0)
+    resp.set_cookie('email', expires=0)
+    resp.set_cookie('user_id', expires=0)
+    flash("Session closed") 
+    return resp
 
 @app.route('/admin', methods=['GET'])
 def admin_panel():
@@ -675,7 +799,6 @@ def update_user(user_id):
         ]})
         findUser = list(findUsers_cursor)
 
-        print(len(findUser))
         if len(findUser) > 1:
             return 'el usuario ya existe'
 
@@ -688,7 +811,7 @@ def update_user(user_id):
         if len(password) > 4:
             newInfo['password'] = generate_password_hash(password, method="sha256", salt_length=10)
         newInfo['updated_at'] = datetime.datetime.now()
-        print(newInfo)
+
         file = request.files['perfil']
         if file.filename != '':
             if file.mimetype in IMAGE_MIMETYPE:
@@ -705,7 +828,7 @@ def update_user(user_id):
         })
 
         data = dumps(user,default=json_util.default)
-        print(data)
+        
         return data
     else:
         flash('Acceso denegado :/')
@@ -788,6 +911,13 @@ def download_google():
     # bucket.copy_blob(folder, bucket, '/copia/')
 
     # return send_file(BytesIO(gcs_file.download_as_string()), mimetype='image/jpg')
+@app.route("/publicProject/<projectID>")
+def publicProjects(projectID): 
+    update = mongo.db.projects.update_one({"_id":ObjectId(projectID)},{"$set":{
+        "public": True
+    }})
+    return jsonify({"success":True})
+
 
 @app.errorhandler(404)
 def page_not_found(_):
@@ -799,6 +929,7 @@ if __name__ == '__main__':
         app.run(debug=True)
     else:
         app.run(debug=False)
+
 
 # https://stackoverflow.com/questions/37074977/how-to-get-list-of-folders-in-a-given-bucket-using-google-cloud-api :0
 # https://stackoverflow.com/questions/583791/is-it-possible-to-generate-and-return-a-zip-file-with-app-engine creara el zip

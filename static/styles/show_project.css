@@ -4,10 +4,7 @@
     --background-header-ide: rgb(17, 24, 32);
     background-color: var(--background-color);
     display: grid;
-    grid-template-columns: 30% 70%;
-    grid-template-rows: 40px 1fr;
-    flex-shrink: 1;
-    justify-content: space-between;
+    grid-template-columns: min-content minmax(0, min-content) auto;
     height: 100vh;
     max-height: 100vh;
     overflow: hidden;
@@ -33,12 +30,12 @@
 }
 
 .header_code {
-    grid-column: 2 / 3;
     display: flex;
     align-items: stretch;
     white-space: nowrap;
     border: 1px solid gray;
     background-color: var(--background-header-ide);
+    overflow: auto hidden;
 }
 
 .group-tab {
@@ -102,43 +99,16 @@
     margin-bottom: 0;
 }
 
-.code_container {
-    overflow-y: auto;
-    grid-row: 2 /3;
-    grid-column: 2 / 3;
-    width: 100%;
-    padding: 0;
-    background-color: var(--background-code);
-    position: relative;
-}
-
-.code_container::-webkit-scrollbar {
-    width: 0;
-}
-
-.copy-code {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    left: unset;
-    cursor: pointer;
-}
-
-#show_code {
-    padding: 10px;
-}
-
 .sidenav-editor {
-    grid-column: 1 / 2;
-    grid-row: 1 / 3;
-    width: 100%;
+    width: min-content;
     font-family: Nunito;
     font-size: 16px;
     font-weight: bold;
-    display: inline-flex;
     background-color: rgba(8, 11, 15);
     overflow: hidden;
     overflow-y: auto;
+    display: grid;
+    grid-template-columns: auto auto;
 }
 
 .sidenav-editor::-webkit-scrollbar {
@@ -160,6 +130,7 @@
     font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
+    height: 53px;
 }
 
 .btn.open-option-menu svg {
@@ -179,8 +150,9 @@
     fill: #eee;
 }
 .menu-options {
-    width: 100%;
-    overflow: hidden;
+    /* width: auto; */
+    overflow: hidden auto;
+    background-color: rgba(8, 11, 15);
 }
 
 .explorer-option-container,
@@ -189,6 +161,7 @@
 .settings-option-container,
 .github-option-container {
     display: none;
+    width: 300px;
 }
 
 .title-menu-option {
@@ -343,6 +316,7 @@ details > summary:hover {
     white-space: nowrap;
     display: flex;
     align-items: center;
+    user-select: none;
 }
 
 .file:active {
@@ -390,4 +364,98 @@ details > summary:hover {
 .file.jpeg::before {
     width: 1.6rem;
     content: url("/static/icons/image-icon.svg");
+}
+
+.code_container {
+    width: 100%;
+    flex: 1;
+    padding: 0;
+    background-color: var(--background-code);
+    position: relative;
+    display: grid;
+    grid-template-rows: min-content min-content;
+    overflow-y: auto;
+}
+
+.code_container::-webkit-scrollbar {
+    width: 0;
+}
+
+.copy-code {
+    position: absolute;
+    right: 10px;
+    top: 56px;
+    left: unset;
+    cursor: pointer;
+}
+
+#show_code {
+    overflow: auto;
+    padding: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    
+    .explorer-option-container, .info-option-container, .download-option-container, .settings-option-container, .github-option-container {
+        width: 250px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .ide-container {
+        position: relative;
+        grid-auto-flow: dense;
+        grid-template-columns: 100%;
+        grid-template-rows: 15% 85%;
+        width: 100%;
+    }
+
+    .sidenav-editor {
+        /* grid-column: 1 / 2;
+        grid-row: 2 / 3; */
+        display: block;
+        position: relative;
+        z-index: 16;
+        width: 100%;
+    }
+
+    .menu {
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+    
+    /* .code_container {
+        grid-row: 1 / 2;
+        grid-column: 1 / 2;
+    } */
+
+    .menu-option {
+        width: 100%;
+    }
+    
+    .menu-options {
+        position: absolute;
+        width: 100%;
+        top: 15vh;
+        transform: translate(0, calc(-15vh - 350px));
+        z-index: 14;
+        transition: all .5s ease-in-out;
+        max-height: 0px;
+    }
+    
+    .menu-options.is-active {
+        max-height: 350px;
+        transform: translate(0, 0);
+    }
+
 }

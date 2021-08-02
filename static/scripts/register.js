@@ -9,12 +9,14 @@ $form.addEventListener('submit', async event => {
         method: 'POST',
         body: formData
     })
-    if(response.redirected) {
-        window.location.href = response.url
+    const data = await response.json()
+    console.log(
+        data
+    )
+    if (data.success) {
+        window.location.href = '/profile'
     }
-  
-    
-        modal({ message: 'Dimesiones incorrectas, seleccione una image simetrica' })
+        // modal({ message: 'Dimesiones incorrectas, seleccione una image simetrica' })
     
 })
 
