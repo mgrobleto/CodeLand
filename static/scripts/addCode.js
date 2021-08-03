@@ -82,11 +82,3 @@ $inputImage.addEventListener('change', (event) => {
     }
     reader.readAsDataURL(file)
 })
-
-$btnSend.addEventListener('click', (event) => {
-    const $projectInfo2 = document.querySelector('.project-info-2')
-    const $projectInfo3 = document.querySelector('.project-info-3')
-
-    $projectInfo2.classList.add('translate')
-    $projectInfo3.classList.add('no-translate')
-})
