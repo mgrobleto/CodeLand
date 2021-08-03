@@ -1,8 +1,13 @@
+.main-container{
+    min-height : 100vh;
+    background-color: #252836;
+}
+
+
 .custom-container {
     width: 100%;
-    background-color: #252836;
-    padding-block-end: 12%;
-    padding-top: 2%;
+    /*padding-block-end: 12%;
+    padding-top: 2%;*/
     /*margin: 0 auto;*/
    
 }
@@ -27,7 +32,28 @@ h1,h2,h3,h4,h5,p,small{
     margin: 20px 0;
     width:50%;
 }
-
+@media screen and (max-width:700px)  {
+    .hero_profile{
+        text-align:center;
+        justify-content: center;
+        width: 100%;
+    }
+    .user-image img {
+        width: 80%;
+        margin-left: 55%;
+    }
+    .user-projects{
+        text-align:center;
+        justify-content: center;
+        width: 100%;
+    }
+    .card{
+        text-align:center !important;
+        justify-content: center !important;
+        width: 60% !important;
+        margin-left: 20%;
+    }
+}
 
 @media screen and (min-width: 996px) {
     .custom-container {
@@ -42,6 +68,10 @@ h1,h2,h3,h4,h5,p,small{
 
 }
 
+.project-main-container{
+    align-items: center !important;
+    justify-content: center !important;
+}
 .custom-modal {
     background-color: #252836;
     position: fixed;
@@ -60,11 +90,11 @@ h1,h2,h3,h4,h5,p,small{
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    z-index: 12;
     opacity: 0;
 }
 
 .custom-modal.active {
+    z-index: 12;
     transition: transform .6s ease-in-out, opacity .2s;
     opacity: 1;
     transform: translateY(-50%) translateX(-50%);

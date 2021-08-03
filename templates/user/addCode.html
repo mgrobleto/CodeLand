@@ -15,58 +15,84 @@
 		<h2>Comparte tu proyecto con los demas estudiantes!</h2>
 		<img class="ilustracion" src="/static/images/share.svg" alt="Comparte tu código con los demas">
 	</section>
-	<div class="form-project">	
-		<div class="project-basic-info">
-			<div class="title-project">
-				<label for="inputName" class="col-sm-2 col-form-label">Nombre del proyecto</label>
-				<div class="col-sm-10">
-					<input type="text" name="projectName" class="form-control" id="inputName" required>
+	<div class="form-project">
+		<div class="project-info-1 no-translate">
+			<div class="project-basic-info">
+				<div class="title-project">
+					<label for="inputName" class="col-sm-2 col-form-label">Nombre del proyecto</label>
+					<div class="col-sm-10">
+						<input type="text" name="projectName" class="form-control" id="inputName" required>
+					</div>
+				</div>
+				<div class="select-option">
+					<h3>Modo del proyecto</h3>
+					<div class="option">
+						<label>
+						<input type="radio" name="project_mode" value="text_mode" required>
+						<span>Modo texto</span>
+						</label>
+						<label>
+						<input type="radio" name="project_mode" value="graphic_mode" required>
+						<span>Modo gráfico</span>
+						</label>
+					</div>
 				</div>
 			</div>
-			<div class="select-option">
-				<h3>Modo del proyecto</h3>
-				<div class="option">
-					<label>
-					<input type="radio" name="project_mode" value="text_mode" required>
-					<span>Modo texto</span>
-					</label>
-					<label>
-					<input type="radio" name="project_mode" value="graphic_mode" required>
-					<span>Modo gráfico</span>
-					</label>
+			<div class="description-project">
+				<label for="inputDescription" class="col-form-label">Descripción</label>
+				<div class="">
+					<input type="text" name="description" class="form-control" id="inputDescription">
+				</div>
+				<label for="inputGitHub" class="col-form-label">Link a github (opcional)</label>
+				<div class="">
+					<input type="url" name="github_url" class="form-control" id="inputGitHub">
+				</div>
+			</div>
+			<div class="next">
+				<div class="next-container" align="center">
+					<button type="button" class="btn btn-primary next-option" id="next-option">Siguiente</button>
 				</div>
 			</div>
 		</div>
-		<div class="description-project">
-			<label for="inputDescription" class="col-form-label">Descripción</label>
-			<div class="">
-				<input type="text" name="description" class="form-control" id="inputDescription">
-			</div>
-			<label for="inputGitHub" class="col-form-label">Link a github (opcional)</label>
-			<div class="">
-				<input type="url" name="github_url" class="form-control" id="inputGitHub">
+		<div class="project-info-2">
+			<fieldset class="assets-project">
+				<div class="list-file">
+					<div class="file-project files">
+						<img src="/static/icons/file-btn-icon.svg" alt="archivo">
+						<span>Archivos por defecto</span>
+						<input class="input-file-project" id="files" title="Agrega archivos por defecto y luego añade más" name="files" multiple type="file" required>
+					</div>
+					<div class="project-file-list">
+						<div class="sidebar-files"></div>
+						<div id="list-files">
+						</div>
+					</div>
+				</div>
+				<div class="image-file">
+					<div class="file-project image">
+						<img src="/static/icons/image-btn-icon.svg" alt="archivo">
+						<span>Imagen del proyecto</span>
+						<input class="input-file-project" title="Agrega una imagen para que todos conozcan de que trata" type="file" name="image" id="input-image" required>
+					</div>
+					<div class="preview-image" id="preview-image">
+					</div>
+				</div>
+			</fieldset>
+			<div class="back-option">
+				<button type="button" id="btn-back" class="btn btn-back">Regresar</button>
+				<button type="submit" id="btn-send" class="btn btn-send">Enviar</button>
 			</div>
 		</div>
-		<fieldset class="assets-project">
-			<div class="file-project">
-				<span>Archivos por defecto</span>
-				<input class="input-file-project" title="Agrega archivos por defecto y luego añade más" name="files" multiple type="file" id="formFile" required>
-			</div>
-			<div class="file-project">
-				<span>Imagen del proyecto</span>
-				<input class="input-file-project" title="Agrega una imagen para que todos conozcan de que trata" type="file" name="image" id="image" required>
-			</div>
-		</fieldset>
-		<div class="submit">
-			<div class="submit-container">
-				<label class="title-submit" title="Con esto, tu proyecto aparecera en la sección explorer">
-					<input type="checkbox" name="isPublic">
-					Quieres que sea publico?
-				</label>
-				<button type="submit" class="btn btn-primar submit-project">Subir projecto</button>
-			</div>
+		<div class="project-info-3">
+			<p>Enviando</p>
+			<div class="bar-progress" id="bar-progress"></div>
 		</div>
 	</div>
+		<!-- <div class="submit">
+			<div class="submit-container">
+				<button type="submit" class="btn btn-primar submit-project">Subir projecto</button>
+			</div>
+		</div> -->
 </form>
 {% endblock %}
 {% block scripts %}

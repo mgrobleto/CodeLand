@@ -117,7 +117,7 @@ def get_user_and_project(user_id):
         },
         { "$match": { "_id": ObjectId(user_id) } }
     ])
-    print(user_cursor)
+
     return list(user_cursor)[0]
 
 # Es una herramienta sorpresa que nos ayudara más tarde
@@ -406,7 +406,7 @@ def profile():
     if session_exist['success']:
         user_id = (session_exist['info'])['user_id']
         find_user = mongo.db.users.find({'_id':ObjectId(user_id)}) 
-        print(user_id)
+
         if find_user:
             user = get_user_and_project(user_id)
         else:
@@ -486,6 +486,7 @@ def addProject():
 
     if request.method == 'POST':
         if user_payload['success'] and user_info['user_id']:
+            print(request.files)
             if 'files' not in request.files:
                 flash('No file')
                 return jsonify({'success': False, 'message': 'No file'})
@@ -498,11 +499,6 @@ def addProject():
             project_name = request.form.get('projectName')
             description = request.form.get('description')
             github_url = request.form.get('github_url')
-            isPublic = request.form.get('isPublic')
-            if(isPublic == 'on'):
-                isPublic = True
-            else:
-                isPublic = False
 
             image = request.files['image']
             file_names = []
@@ -529,15 +525,14 @@ def addProject():
                     file_names.append(filename)
 
             project_id = ObjectId()
-            print(image.name)
-            print(image.name.split('.')[-1])
+
             image_url = 'project_image/' + project_id.__str__() + '.' + image.name.split('.')[-1]
 
             upload_image = bucket.blob(image_url)
             upload_image.upload_from_string(image.read(), content_type=image.content_type)
             upload_image.make_public()
 
-            mongo.db.projects.insert({"_id": project_id, "project_name": project_name, 'author': user_info.get('username'), "public": isPublic, "description": description, 'modo': modo, "users_id": ObjectId(user_info.get('user_id')), "path": directory, **timestamp(), "image": upload_image.public_url, "files": file_names, "github": github_url})
+            mongo.db.projects.insert({"_id": project_id, "project_name": project_name, 'author': user_info.get('username'), "description": description, 'modo': modo, "users_id": ObjectId(user_info.get('user_id')), "path": directory, **timestamp(), "image": upload_image.public_url, "files": file_names, "github": github_url})
             
             return jsonify({'success': True, 'message': 'Proyecto creado'})
         else:
@@ -554,7 +549,7 @@ def make_public(project_id):
         is_owner = user_info['user_id'] == mongo.db.projects.find_one({'_id': ObjectId(project_id)})['users_id']
         if is_owner:
             project = mongo.db.projects.find_one_and_update({'_id': ObjectId(project_id)}, {'$set': {'public': True}})
-            print(project)
+
             return redirect('/profile')
         else:
             return 'no tienes permisos'
@@ -595,20 +590,39 @@ def delete_project():
     user_info = user_payload.get('info')
     if user_info.get('user_id'):
         project_id = ObjectId(request.form.get('id'))
-        project = mongo.db.projects.find_one_and_delete({ 'users_id': ObjectId(user_info.get('user_id')), '_id': project_id}, {'_id': False, 'image': False, 'users_id': False})
+        find_project = mongo.db.projects.find_one({'_id': project_id})
+
+        if find_project['users_id'] == ObjectId(user_info.get('user_id')):
+            project = mongo.db.projects.find_one_and_delete({ 'users_id': ObjectId(user_info.get('user_id')), '_id': project_id}, {'_id': False, 'image': False, 'users_id': False})
+        else:
+            return jsonify({'success': False, 'message': 'No tienes permisos', "error": 403})
 
         if project is None:
-            flash('El proyecto no existe')
-            return redirect('/profile')
+            return jsonify({'success': False, 'message': 'No existe el proyecto', "error": 404})
+
         delete_project_storage(project['path'])
         data_cursor = mongo.db.projects.find({ 'users_id': ObjectId(user_info.get('user_id'))})
-        data_list = [doc for doc in data_cursor]
-        data = dumps(data_list,default=json_util.default)
+        data_list = []
+        for doc in data_cursor:
+            current_project_id = doc['_id'].__str__()
+            user_id = doc['users_id'].__str__()
+            data_list.append({
+                '_id': current_project_id,
+                'user_id': user_id,
+                'project_name': doc['project_name'],
+                'author': doc['author'],
+                'description': doc['description'],
+                'modo': doc['modo'],
+                'public': doc['public'],
+                'image': doc['image'],
+                'files': doc['files'],
+                'github': doc['github']
+            })
+        # data = dumps(data_list,default=json_util.default, ensure_ascii=False).encode('utf-8')
 
-        return { 'data': data, 'delete_info': project }
+        return jsonify({ 'data': data_list, 'delete_info': project }), 200
     else:
-        flash('You are not logged in')
-        return redirect('login')
+        return jsonify({'success': False, 'message': 'No tienes permisos', "error": 403})
 
 # Ruta para ver los proyectos en modo texto
 @app.route('/project/<username>/<project_name>/', methods=['GET', 'POST'])
@@ -746,7 +760,7 @@ def logout():
     resp.set_cookie('username', expires=0)
     resp.set_cookie('email', expires=0)
     resp.set_cookie('user_id', expires=0)
-    flash("Session closed") 
+    flash(f'Session closed') 
     return resp
 
 @app.route('/admin', methods=['GET'])
