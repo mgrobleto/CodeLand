@@ -6,21 +6,20 @@ const $project = document.querySelector('#projects')
 const $overlayModal = document.querySelector('#overlay-modal')
 const $editmodal = document.querySelector('#custom-modal')
 const $showModal = document.querySelector('#btn-modal-editar')
-const $makePublic = document.querySelector('#make-public')
 
 function renderTemplate(project) {
     return `
     <div class='col col-lg-4'>
     <div class='card' style='width: 18rem;'>
-        <img src="data:image/${project.contentType};base64,${atob(project.image.$binary)}" alt="${project.title}">
+        <img src="${project.image}" alt="${project.project_name}">
         <div class='card-body'>
-            <h5 class='card-title'>${project.title}</h5>
+            <h5 class='card-title'>${project.project_name}</h5>
             <p class='card-text'>
                 ${project.description}
             </p>
-            <a href='/project/${project.author}/${project.title}' class='btn btn-primary'>Ver y editar</a>
+            <a href='/project/${project.author}/${project.project_name}' class='btn btn-primary'>Ver y editar</a>
             <form id="delete-project">
-                <input type="hidden" name="id" value="${project._id.$oid}">
+                <input type="hidden" name="id" value="${project._id}">
                 <button class='btn btn-danger'>Borrar proyecto</button>
             </form>
         </div>
@@ -50,12 +49,15 @@ $formDelete.forEach(function ($form) {
             method: 'DELETE',
             body: formData
         })
+
+        // if(!response.ok) {
+        //     window.location.href = '/'
+        // }
         const { data, delete_info} = await response.json()
         let code = ''
         $project.innerHTML = ''
-        console.log(JSON.parse(data))
-        console.log(delete_info)
-        for(const project of JSON.parse(data)) {
+
+        for(const project of data) {
             code += renderTemplate(project)
         }
         $project.innerHTML = code
@@ -70,14 +72,4 @@ $showModal.addEventListener('click', () => {
 $overlayModal.addEventListener('click', () => {
     $editmodal.classList.remove('active')
     $overlayModal.classList.remove('active')
-})
-
-$makePublic.addEventListener('click', async () => {
-    const response = await fetch(`/make-public/${$makePublic.value}`)
-    const data = await response.json()
-    if(data.success) {
-        alert('Proyecto publicado')
-    } else {
-        alert('F')
-    }
 })

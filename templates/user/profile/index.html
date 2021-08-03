@@ -51,17 +51,9 @@
                            <div class="col">
                             <form id="delete-project">
                                 <input type="hidden" name="id" value="{{project._id}}">
-                                <i class=" btn bi bi-trash-fill"></i>
+                                <button class="btn bi bi-trash-fill btn-delete"></button>
                             </form>
                            </div>
-                           {% if not project.public%}
-                           <div class="col">
-                            <form id="formPublic">
-                                <input type="hidden" value="{{project._id}}" name="publicProject">
-                                <i class="btn bi bi-share-fill" id="make-public"></i>
-                                </form>
-                           </div>
-                           {% endif %}
                            <div class="col">
                             <a class='btn bi bi-file-arrow-down-fill' href="/download-project/{{project._id}}" download></a>
                            </div>
