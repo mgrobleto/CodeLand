@@ -486,6 +486,7 @@ def addProject():
 
     if request.method == 'POST':
         if user_payload['success'] and user_info['user_id']:
+            print(request.files)
             if 'files' not in request.files:
                 flash('No file')
                 return jsonify({'success': False, 'message': 'No file'})
@@ -498,11 +499,6 @@ def addProject():
             project_name = request.form.get('projectName')
             description = request.form.get('description')
             github_url = request.form.get('github_url')
-            isPublic = request.form.get('isPublic')
-            if(isPublic == 'on'):
-                isPublic = True
-            else:
-                isPublic = False
 
             image = request.files['image']
             file_names = []
@@ -536,7 +532,7 @@ def addProject():
             upload_image.upload_from_string(image.read(), content_type=image.content_type)
             upload_image.make_public()
 
-            mongo.db.projects.insert({"_id": project_id, "project_name": project_name, 'author': user_info.get('username'), "public": isPublic, "description": description, 'modo': modo, "users_id": ObjectId(user_info.get('user_id')), "path": directory, **timestamp(), "image": upload_image.public_url, "files": file_names, "github": github_url})
+            mongo.db.projects.insert({"_id": project_id, "project_name": project_name, 'author': user_info.get('username'), "description": description, 'modo': modo, "users_id": ObjectId(user_info.get('user_id')), "path": directory, **timestamp(), "image": upload_image.public_url, "files": file_names, "github": github_url})
             
             return jsonify({'success': True, 'message': 'Proyecto creado'})
         else:
@@ -614,6 +610,7 @@ def delete_project():
                 '_id': current_project_id,
                 'user_id': user_id,
                 'project_name': doc['project_name'],
+                'author': doc['author'],
                 'description': doc['description'],
                 'modo': doc['modo'],
                 'public': doc['public'],

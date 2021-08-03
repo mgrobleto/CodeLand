@@ -11,13 +11,13 @@ function renderTemplate(project) {
     return `
     <div class='col col-lg-4'>
     <div class='card' style='width: 18rem;'>
-        <img src="${project.image}" alt="${project.title}">
+        <img src="${project.image}" alt="${project.project_name}">
         <div class='card-body'>
-            <h5 class='card-title'>${project.title}</h5>
+            <h5 class='card-title'>${project.project_name}</h5>
             <p class='card-text'>
                 ${project.description}
             </p>
-            <a href='/project/${project.author}/${project.title}' class='btn btn-primary'>Ver y editar</a>
+            <a href='/project/${project.author}/${project.project_name}' class='btn btn-primary'>Ver y editar</a>
             <form id="delete-project">
                 <input type="hidden" name="id" value="${project._id}">
                 <button class='btn btn-danger'>Borrar proyecto</button>
