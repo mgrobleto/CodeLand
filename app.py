@@ -376,7 +376,7 @@ def register():
             image = open('./static/images/user_default_logo.png', 'rb').read()
             mimetype = 'image/png'
             extension_image = 'png'
-            image_data = encodebytes(image)
+            image_data = image
 
         user_id = ObjectId()
         image_url = 'user_image/' + user_id.__str__() + f'.{extension_image}'
@@ -455,9 +455,11 @@ def update_profile(user_id):
         if file.filename != '':
             if file.mimetype in IMAGE_MIMETYPE:
                 mimetype = file.mimetype
-                image = encodebytes(file.read())
-                newInfo['perfil'] = image
-                newInfo['contentType'] = mimetype
+                ext = file.filename.split('.')[-1]
+                image = file.read()
+                blob = bucket.blob(f'user_image/{user_id}.{ext}')
+                blob.upload_from_string(image, content_type=mimetype)
+                
             else:
                 flash('error mimetype')
                 return redirect('/register')
@@ -738,7 +740,7 @@ def about():
 def text_mode():
 
     db_project = mongo.db.static_projects.find({'mode': 'text_mode'})
-    db_project_user = mongo.db.projects.find({"modo": "text_mode", 'public': True})
+    db_project_user = mongo.db.projects.find({"modo": "text_mode"})
 
     if db_project is None:
         return render_template('404.html'), 404
@@ -749,7 +751,7 @@ def text_mode():
 @app.route('/examples/node')
 def graphic_mode():
     db_project = mongo.db.static_projects.find({'mode': 'graphic_mode'})
-    db_project_user = mongo.db.projects.find({"modo": "graphic_mode", 'public': True})
+    db_project_user = mongo.db.projects.find({"modo": "graphic_mode"})
 
     return render_template("graphic_mode/graphic.html", db_project=db_project, db_project_user=db_project_user)
 
