@@ -376,7 +376,7 @@ def register():
             image = open('./static/images/user_default_logo.png', 'rb').read()
             mimetype = 'image/png'
             extension_image = 'png'
-            image_data = encodebytes(image)
+            image_data = image
 
         user_id = ObjectId()
         image_url = 'user_image/' + user_id.__str__() + f'.{extension_image}'
@@ -455,13 +455,19 @@ def update_profile(user_id):
         if file.filename != '':
             if file.mimetype in IMAGE_MIMETYPE:
                 mimetype = file.mimetype
-                image = encodebytes(file.read())
-                newInfo['perfil'] = image
-                newInfo['contentType'] = mimetype
+                ext = file.filename.split('.')[-1]
+                image = file.read()
+                blob = bucket.blob(f'user_image/{user_id}.{ext}')
+                blob.upload_from_string(image, content_type=mimetype)
+                blob.make_public()
+                newInfo['cover'] = blob.public_url
             else:
                 flash('error mimetype')
                 return redirect('/register')
 
+        deleteBeforeImage = bucket.blob(request.cookies.get('user_image').split('/', 4)[-1])
+        deleteBeforeImage.delete()
+        
         mongo.db.projects.update_many({'users_id': ObjectId(user_info['user_id'])}, { '$set': { 'author': newInfo['username'] }})
         user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
             '$set': newInfo
@@ -470,6 +476,10 @@ def update_profile(user_id):
         data = dumps(user,default=json_util.default)
         resp = make_response(data)
         resp.set_cookie('USER_TOKEN', login_token(newInfo['username'], user['email'], user['_id'].__str__()))
+        resp.set_cookie('username', newInfo['username'])
+        resp.set_cookie('email', user['email'])
+        resp.set_cookie('user_id', user.__str__())
+        resp.set_cookie('user_image', blob.public_url)
         return resp
     else:
         flash('No puedes cambiar la info de otro usuario >:v')
@@ -738,7 +748,7 @@ def about():
 def text_mode():
 
     db_project = mongo.db.static_projects.find({'mode': 'text_mode'})
-    db_project_user = mongo.db.projects.find({"modo": "text_mode", 'public': True})
+    db_project_user = mongo.db.projects.find({"modo": "text_mode"})
 
     if db_project is None:
         return render_template('404.html'), 404
@@ -749,7 +759,7 @@ def text_mode():
 @app.route('/examples/node')
 def graphic_mode():
     db_project = mongo.db.static_projects.find({'mode': 'graphic_mode'})
-    db_project_user = mongo.db.projects.find({"modo": "graphic_mode", 'public': True})
+    db_project_user = mongo.db.projects.find({"modo": "graphic_mode"})
 
     return render_template("graphic_mode/graphic.html", db_project=db_project, db_project_user=db_project_user)
 

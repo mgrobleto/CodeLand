@@ -39,6 +39,7 @@ $formUpdate.addEventListener('submit', async (event) => {
     console.log(data)
     const { username, email, image } = data
     console.log(username, email, image)
+    window.location.reload()
 })
 
 $formDelete.forEach(function ($form) {
