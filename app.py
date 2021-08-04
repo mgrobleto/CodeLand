@@ -459,11 +459,15 @@ def update_profile(user_id):
                 image = file.read()
                 blob = bucket.blob(f'user_image/{user_id}.{ext}')
                 blob.upload_from_string(image, content_type=mimetype)
-                
+                blob.make_public()
+                newInfo['cover'] = blob.public_url
             else:
                 flash('error mimetype')
                 return redirect('/register')
 
+        deleteBeforeImage = bucket.blob(request.cookies.get('user_image').split('/', 4)[-1])
+        deleteBeforeImage.delete()
+        
         mongo.db.projects.update_many({'users_id': ObjectId(user_info['user_id'])}, { '$set': { 'author': newInfo['username'] }})
         user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
             '$set': newInfo
@@ -472,6 +476,10 @@ def update_profile(user_id):
         data = dumps(user,default=json_util.default)
         resp = make_response(data)
         resp.set_cookie('USER_TOKEN', login_token(newInfo['username'], user['email'], user['_id'].__str__()))
+        resp.set_cookie('username', newInfo['username'])
+        resp.set_cookie('email', user['email'])
+        resp.set_cookie('user_id', user.__str__())
+        resp.set_cookie('user_image', blob.public_url)
         return resp
     else:
         flash('No puedes cambiar la info de otro usuario >:v')
