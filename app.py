@@ -13,7 +13,7 @@ from tempfile import mkdtemp
 from os import path, environ
 
 # manipular información 
-from base64 import encodebytes, b64decode
+from base64 import encodebytes
 from bson.objectid import ObjectId
 from bson import json_util
 from json import dumps
