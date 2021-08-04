@@ -3,7 +3,7 @@ import { ListDirTemplate } from "../listDirUI/templates.js";
 class ListDir extends ListDirTemplate {
     data = [];
     
-    constructor(data, projectName, depth) {
+    constructor(data, projectName, depth, isOwner) {
         super();
         this.data = data;
         this.projectName = projectName;
@@ -14,7 +14,6 @@ class ListDir extends ListDirTemplate {
         if(ListDir._instance) {
             return ListDir._instance
         }
-        console.log('xD')
         ListDir._instance = this;
     }
 

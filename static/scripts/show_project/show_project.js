@@ -1,4 +1,5 @@
 "use strict";
+import { getCookie } from "../libs/cookies.js";
 import ListDir from "./listDirUI/listDir.js";
 import storage from './utils/storage.js'
 import reducer from "./reducer/index.js";
@@ -14,8 +15,13 @@ delete window.__DIR_DEPTH__;
 
 storage.createStore(reducer, [], projectName)
 
-document.addEventListener("DOMContentLoaded", () => {
-    const listDir = new ListDir(data, projectName, depthDir);
+document.addEventListener("DOMContentLoaded", async () => {
+    const project_id = getCookie('project_id')
+    const response = await fetch(`/is-owner/${project_id}`);
+    
+    const isOwner = await response.json()
+
+    const listDir = new ListDir(data, projectName, depthDir, isOwner.success);
     listDir.renderList();
     tabUI.render(storage.getStore());
 });

@@ -1,4 +1,5 @@
 'use strict'
+import { getCookie } from './libs/cookies.js'
 const $form = document.querySelector('#form')
 const $nextOption = document.querySelector('#next-option')
 const $btnBack = document.querySelector('#btn-back')
@@ -32,12 +33,6 @@ $form.addEventListener('submit', async (e) => {
     }
     
 })
-
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
 
 $nextOption.addEventListener('click', (event) => {
     // agregarle la clase .translate y borrar .no-translate a el elemento con clase .form-info-2

@@ -551,6 +551,21 @@ def addProject():
     return render_template('user/addCode.html')
 
 
+@app.route('/is-owner/<project_id>')
+def isOwner(project_id):
+    # GET project_id and verify if the user is the owner in mongodb
+    user_payload = isLogged('USER_TOKEN')
+    if not user_payload['success']:
+        return jsonify({'success': False, 'message': 'No tienes permisos'})
+
+    user_info = user_payload.get('info')
+    project = mongo.db.projects.find_one({'_id': ObjectId(project_id)})
+    if project and project.get('users_id') == ObjectId(user_info.get('user_id')):
+        return jsonify({'success': True, 'message': 'Es tu proyecto'})
+    else:
+        return jsonify({'success': False, 'message': 'No es tu proyecto'})
+
+
 @app.route('/make-public/<project_id>')
 def make_public(project_id):
     user = isLogged('USER_TOKEN')
@@ -652,8 +667,11 @@ def show_project(username, project_name):
 
     directory = list_dir(route=project_path)
     download_URI = f'/download-project/{db_project["_id"]}'
+    resp = make_response(render_template('show_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI))
+    resp.set_cookie('project_id', db_project["_id"].__str__())
+    resp.set_cookie('project_path', project_path)
 
-    return render_template('show_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI)
+    return resp
 # Ruta para ver los proyectos en modo grafico
 @app.route('/static_projects/graphic_mode/<project_name>/', methods=['GET', 'POST'])
 def show_project_graphic(project_name):
