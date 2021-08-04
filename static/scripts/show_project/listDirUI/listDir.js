@@ -67,6 +67,7 @@ class ListDir extends ListDirTemplate {
 
         return this.containerFilesDOM(
             relPath[relPath.length - 1],
+            data.path,
             fragment,
             false
         );

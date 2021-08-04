@@ -166,6 +166,9 @@ def list_dir(route):
 
     for blob in list_:
         data_arr.insert(-1, blob)
+
+    for dirs in data_arr:
+        print(dirs)
     for dirs in data_arr:
         routes = dirs.name.split('/')
         filename = routes.pop(-1) # Si no termina con / quiere decir que no es una carpeta
@@ -180,7 +183,7 @@ def list_dir(route):
             continue
 
         if(filename == '' or info['path'] != path_dir):
-            if info['path'] != path_dir and info['path'] != None and len(info['files']) > 0:
+            if info['path'] != path_dir and info['path'] != None:
                 data.append(info.copy())
                 info['files'] = []
 
