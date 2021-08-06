@@ -230,6 +230,30 @@
     margin-bottom: 0;
 }
 
+.folder-container {
+    position: relative;
+}
+
+.add-folder-or-file {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.input-add-file {
+    width: 0;
+}
+
+.btn.btn-add {
+    padding: 0;
+    vertical-align: baseline;
+}
+
+.btn.btn-add:hover svg path {
+    stroke: #eee;
+}
+
+
 .github-option-container.is-active {
     display: block;
 }

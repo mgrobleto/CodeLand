@@ -10,6 +10,7 @@ class ListDir extends ListDirTemplate {
         this.depth = depth;
         this.listDir = [];
         this.menu = document.querySelector("#explorer-editor");
+        this.isOwner = isOwner;
 
         if(ListDir._instance) {
             return ListDir._instance
@@ -37,7 +38,7 @@ class ListDir extends ListDirTemplate {
             value.path.endsWith(`${this.projectName}/`)
         );
         if(mainFiles) {
-            fragment.append(...dirs, this.listOfFileDOM(mainFiles.files, mainFiles.path));
+            fragment.append(...dirs, this.listOfFileDOM(mainFiles.files, mainFiles.path, this.isOwner));
         } else {
             fragment.append(...dirs);
         }
@@ -63,13 +64,14 @@ class ListDir extends ListDirTemplate {
         }
     
         data.isListed = true;
-        fragment.append(..._subDirs, this.listOfFileDOM(data.files, data.path));
+        fragment.append(..._subDirs, this.listOfFileDOM(data.files, data.path, this.isOwner));
 
         return this.containerFilesDOM(
             relPath[relPath.length - 1],
             data.path,
             fragment,
-            false
+            false,
+            this.isOwner
         );
     }
 }

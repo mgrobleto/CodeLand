@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch(`/is-owner/${project_id}`);
     
     const isOwner = await response.json()
+    console.log(isOwner)
 
     const listDir = new ListDir(data, projectName, depthDir, isOwner.success);
     listDir.renderList();
