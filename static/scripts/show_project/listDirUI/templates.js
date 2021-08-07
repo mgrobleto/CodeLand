@@ -217,10 +217,11 @@ class ListDirTemplate {
                 li.innerHTML = data.filename;
                 li.addEventListener(
                     "click",
-                    handleClick(data.filename, path)
+                    handleClick.bind(this, data.filename, path)
                 );
                 const insertFile = document.querySelector(`[data-location="${path}"]`).parentNode
                 insertFile.appendChild(li)
+                li.click()
                 // listOfFileOrListOfDir.querySelector('.files').append(li);
                 
             })
