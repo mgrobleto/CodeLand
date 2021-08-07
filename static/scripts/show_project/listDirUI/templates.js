@@ -4,70 +4,71 @@ import storage from "../utils/storage.js";
 import { setTab } from "../action/index.js";
 import { getCookie } from "../../libs/cookies.js";
 
+/**
+ * @param {Array} elements
+ * Nombres de los archivos del directorio
+ * @param {Array} paths
+ * La dirección del archivo en firebase
+ * @returns { String }
+ */
+async function handleClick(filename, path) {
+    const $showCode = document.querySelector("#show_code");
+    const CURRENT_PATH = location.pathname;
+
+    const file = {
+        filename,
+        path,
+    };
+
+    const response = await fetch(CURRENT_PATH, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(file),
+    });
+    const responseJson = await response.json();
+
+    if (responseJson.type == "code") {
+        const store = storage.getStore();
+        const key = path + filename;
+
+        if (store) {
+            if (store.find((tab) => tab.key === key)) {
+                tabUI.render(storage.getStore(), key)
+            } else {
+                storage.dispatch(
+                    setTab({
+                        ...file,
+                        key,
+                        code: {
+                            html: responseJson.code.html,
+                            css: responseJson.code.css,
+                        },
+                        isActive: true,
+                    })
+                );
+                tabUI.render(storage.getStore());
+            }
+        }
+    } else {
+        // let parse_binary = new Uint8Array(responseJson.file);
+        let binaryInfo = JSON.parse(responseJson.image);
+        const ext = responseJson.info.file_ext;
+        const type = responseJson.info.type;
+
+        $showCode.innerHTML = `
+            <img loading="lazy" src="data:${type}/${ext};base64,${atob(
+            binaryInfo.$binary
+        )}" alt="${ext}" />
+        `.trim();
+    }
+}
+
 class ListDirTemplate {
     constructor() {
         this.listDir = [];
-        this.$showCode = document.querySelector("#show_code");
-        this.CURRENT_PATH = location.pathname;
         this.$nodeStyle = null;
-    }
-
-    /**
-     * @param {Array} elements
-     * Nombres de los archivos del directorio
-     * @param {Array} paths
-     * La dirección del archivo en firebase
-     * @returns { String }
-     */
-    async handleClick(filename, path) {
-        const file = {
-            filename,
-            path,
-        };
-
-        const response = await fetch(this.CURRENT_PATH, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(file),
-        });
-        const responseJson = await response.json();
-
-        if (responseJson.type == "code") {
-            const store = storage.getStore();
-            const key = path + filename;
-
-            if (store) {
-                if (store.find((tab) => tab.key === key)) {
-                    tabUI.render(storage.getStore(), key)
-                } else {
-                    storage.dispatch(
-                        setTab({
-                            ...file,
-                            key,
-                            code: {
-                                html: responseJson.code.html,
-                                css: responseJson.code.css,
-                            },
-                            isActive: true,
-                        })
-                    );
-                    tabUI.render(storage.getStore());
-                }
-            }
-        } else {
-            // let parse_binary = new Uint8Array(responseJson.file);
-            let binaryInfo = JSON.parse(responseJson.image);
-            const ext = responseJson.info.file_ext;
-            const type = responseJson.info.type;
-
-            this.$showCode.innerHTML = `
-                <img loading="lazy" src="data:${type}/${ext};base64,${atob(
-                binaryInfo.$binary
-            )}" alt="${ext}" />
-            `.trim();
-        }
     }
 
     template(filesAndDirs) {
@@ -119,7 +120,7 @@ class ListDirTemplate {
             li.innerHTML = filename;
             li.addEventListener(
                 "click",
-                this.handleClick.bind(this, filename, path)
+                handleClick.bind(this, filename, path)
             );
 
             list.push(li);
@@ -168,7 +169,7 @@ class ListDirTemplate {
             ? details.setAttribute("open", true)
             : null;
 
-        summary.dataset.path = path;
+        // summary.dataset.path = path;
         summary.appendChild(name)
         details.append(summary, listOfFileOrListOfDir);
 
@@ -185,8 +186,9 @@ class ListDirTemplate {
                 const $input = event.currentTarget.previousElementSibling;
                 $input.click();
             })
-            const $input = template.content.querySelector('.input-add-file')
+            const $input = template.content.querySelector(`[data-path-file="${path}"] .input-add-file`)
 
+            console.log(isOwner)
             $input.addEventListener('change', async function() {
                 const formData = new FormData()
                 if($input.files) {
@@ -202,9 +204,24 @@ class ListDirTemplate {
                     body: formData
                 })
                 const data = await response.json()
+                console.log(data)
                 if(!data.success) {
                     console.log(data.message)
                 }
+                const ext = data.filename.toLowerCase().split(".");
+                const li = document.createElement("li");
+                li.id = "file";
+                li.className = `file ${ext[ext.length - 1]}`;
+                li.dataset.filename = data.filename;
+                li.dataset.location = path;
+                li.innerHTML = data.filename;
+                li.addEventListener(
+                    "click",
+                    handleClick(data.filename, path)
+                );
+                const insertFile = document.querySelector(`[data-location="${path}"]`).parentNode
+                insertFile.appendChild(li)
+                // listOfFileOrListOfDir.querySelector('.files').append(li);
                 
             })
         }

@@ -714,7 +714,8 @@ def addFileOrFolder(project_id):
             if blob.exists():
                 return jsonify({'success': False, 'message': 'Ya existe un archivo con este nombre', "error": 403})
             else:
-                blob.upload_from_file(file, content_type=file.content_type)
+                if file and allowed_file(file.filename):
+                    blob.upload_from_file(file, content_type=file.content_type)
 
             return jsonify({"success": True, "message": "Se ha subido el archivo", "path": path, "filename": file.filename})
     else:

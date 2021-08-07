@@ -21,7 +21,7 @@ class ListDir extends ListDirTemplate {
     // Get list of files and folders
     renderList() {
         var dirs = [];
-        const fragment = document.createDocumentFragment();
+        const fragment = new DocumentFragment();
         let dirsLength = this.data.length;
 
         for (let i = 0; i < dirsLength; i++) {
@@ -48,7 +48,7 @@ class ListDir extends ListDirTemplate {
 
     subDirs(data, index = 1) {
         var _subDirs = [];
-        const fragment = document.createDocumentFragment();
+        const fragment = new DocumentFragment();
         let dirsLength = this.data.length;
         // debugger
         let relPath = data.path.split("/").slice(this.depth).filter(Boolean);
