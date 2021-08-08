@@ -1,7 +1,7 @@
 "use strict";
 import tabUI from "../tabUI/tab.js";
 import storage from "../utils/storage.js";
-import { setTab } from "../action/index.js";
+import { setTab, deleteTab } from "../action/index.js";
 import { getCookie } from "../../libs/cookies.js";
 
 /**
@@ -53,14 +53,9 @@ async function handleClick(filename, path) {
         }
     } else {
         // let parse_binary = new Uint8Array(responseJson.file);
-        let binaryInfo = JSON.parse(responseJson.image);
-        const ext = responseJson.info.file_ext;
-        const type = responseJson.info.type;
-
+        console.log(responseJson)
         $showCode.innerHTML = `
-            <img loading="lazy" src="data:${type}/${ext};base64,${atob(
-            binaryInfo.$binary
-        )}" alt="${ext}" />
+            <img loading="lazy" src="${responseJson.image}" alt="${filename}" />
         `.trim();
     }
 }
@@ -102,7 +97,7 @@ class ListDirTemplate {
         return template.content;
     }
 
-    listOfFileDOM(elements, path) {
+    listOfFileDOM(elements, path, isOwner) {
         const list = [];
         const container = document.createElement("div");
         const ol = document.createElement("ol");
@@ -113,15 +108,41 @@ class ListDirTemplate {
         elements.forEach((filename) => {
             const ext = filename.toLowerCase().split(".");
             const li = document.createElement("li");
-            li.id = "file";
+            const project_id = getCookie('project_id')
+            // li.id = "file";
             li.className = `file ${ext[ext.length - 1]}`;
             li.dataset.filename = filename;
             li.dataset.location = path;
-            li.innerHTML = filename;
+            li.innerHTML = filename
+            if(isOwner) {
+                const $buttonDelete = document.createElement("button");
+                $buttonDelete.className = "btn btn-delete-file";
+                $buttonDelete.innerHTML = `<img src="/static/icons/trash-icon.svg" alt="Borrar ${filename}" />`;
+                li.appendChild($buttonDelete)
+                $buttonDelete.addEventListener("click", async function() {
+                    const formData = new FormData();
+                    formData.append('filename', path + filename)
+                    const response = await fetch(`/project/${project_id}`, {
+                        method: "DELETE",
+                        body: formData,
+                    })
+                    const responseJson = await response.json();
+                    console.log(responseJson)
+                    if(responseJson.success == true) {
+                        console.log(responseJson)
+                        this.parentNode.remove()
+                        storage.dispatch(
+                            deleteTab(path + filename)
+                        )
+                        const tabRef = document.querySelector(`[data-ref="${path + filename}"]`)
+                        tabRef.children[1].innerHTML += 'ELIMINADO :C'
+                    }
+                })
+            }
             li.addEventListener(
                 "click",
                 handleClick.bind(this, filename, path)
-            );
+                );
 
             list.push(li);
         });
@@ -222,7 +243,6 @@ class ListDirTemplate {
                 const insertFile = document.querySelector(`[data-location="${path}"]`).parentNode
                 insertFile.appendChild(li)
                 li.click()
-                // listOfFileOrListOfDir.querySelector('.files').append(li);
                 
             })
         }

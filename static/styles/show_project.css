@@ -344,6 +344,22 @@ details > summary:hover {
     display: flex;
     align-items: center;
     user-select: none;
+    position: relative;
+}
+
+.file-filename {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-delete-file {
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 12;
 }
 
 .file:active {
@@ -400,7 +416,7 @@ details > summary:hover {
     background-color: var(--background-code);
     position: relative;
     display: grid;
-    grid-template-rows: min-content min-content;
+    /* grid-template-rows: min-content min-content; */
     overflow-y: auto;
 }
 
@@ -461,10 +477,9 @@ details > summary:hover {
         align-items: center;
     }
     
-    /* .code_container {
-        grid-row: 1 / 2;
-        grid-column: 1 / 2;
-    } */
+    .code_container {
+        grid-template-rows: unset;
+    }
 
     .menu-option {
         width: 100%;

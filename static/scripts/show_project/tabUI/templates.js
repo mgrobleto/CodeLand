@@ -30,6 +30,7 @@ class TabTemplates {
         const p = document.createElement("p");
 
         container.className = "tab" + (isActive ? " active" : "");
+        container.dataset.ref = key;
         closeTab.className = "close-tab";
         filenameContainer.className = "filename";
         

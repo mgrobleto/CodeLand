@@ -212,15 +212,15 @@ def get_file_data(path_file, file, file_ext):
             'type': 'code'
         }
     else:
-        code = bucket.blob(f'{path_file}{file}').download_as_string()
-        image = encodebytes(code)
+        code = bucket.blob(f'{path_file}{file}')
+        image = code.public_url
         info = {
             'file_ext': file_ext,
             'type': 'image'
         }
         return {
             'code': None,
-            'image': dumps(image, default=json_util.default),
+            'image': image,
             'info': info,
         }
 
@@ -699,7 +699,7 @@ def show_project(username, project_name):
 
     return resp
 
-@app.route('/project/<project_id>', methods=['POST'])
+@app.route('/project/<project_id>', methods=['POST', 'DELETE'])
 def addFileOrFolder(project_id):
     user_payload = isLogged('USER_TOKEN')
     if user_payload.get('success'):
@@ -708,16 +708,26 @@ def addFileOrFolder(project_id):
         if project is None:
             return jsonify({'success': False, 'message': 'No existe el proyecto', "error": 404})
         else:
-            file = request.files['file']
-            path = request.form.get('path') + file.filename
-            blob = bucket.blob(path)
-            if blob.exists():
-                return jsonify({'success': False, 'message': 'Ya existe un archivo con este nombre', "error": 403})
-            else:
-                if file and allowed_file(file.filename):
-                    blob.upload_from_file(file, content_type=file.content_type)
+            if request.method == 'POST':
+                file = request.files['file']
+                path = request.form.get('path') + file.filename
+                blob = bucket.blob(path)
+                if blob.exists():
+                    return jsonify({'success': False, 'message': 'Ya existe un archivo con este nombre', "error": 403})
+                else:
+                    if file and allowed_file(file.filename):
+                        blob.upload_from_file(file, content_type=file.content_type)
 
-            return jsonify({"success": True, "message": "Se ha subido el archivo", "path": path, "filename": file.filename})
+                return jsonify({"success": True, "message": "Se ha subido el archivo", "path": path, "filename": file.filename})
+
+            if request.method == 'DELETE':
+                path = request.form.get('filename')
+                blob = bucket.blob(path)
+                if blob.exists():
+                    blob.delete()
+                    return jsonify({'success': True, 'message': 'Se ha borrado el archivo', "path": path})
+                else:
+                    return jsonify({'success': False, 'message': 'No existe el archivo', "error": 404})
     else:
         return jsonify({'success': False, 'message': 'No tienes permisos', "error": 403})
 

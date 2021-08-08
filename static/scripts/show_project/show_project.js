@@ -15,7 +15,7 @@ delete window.__DIR_DEPTH__;
 
 storage.createStore(reducer, [], projectName)
 
-document.addEventListener("DOMContentLoaded", async () => {
+window.addEventListener("load", async () => {
     const project_id = getCookie('project_id')
     const response = await fetch(`/is-owner/${project_id}`);
     
