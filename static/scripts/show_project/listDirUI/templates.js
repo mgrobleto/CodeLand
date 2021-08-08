@@ -60,6 +60,41 @@ async function handleClick(filename, path) {
     }
 }
 
+function deleteFile(div, path, filename) {
+    const project_id = getCookie('project_id')
+
+    const $buttonDelete = document.createElement("button");
+    $buttonDelete.className = "btn btn-delete-file";
+    $buttonDelete.innerHTML = `
+    <svg width="16" height="16" alt="Borrar ${filename}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19 7L18.1327 19.1425C18.0579 20.1891 17.187 21 16.1378 21H7.86224C6.81296 21 5.94208 20.1891 5.86732 19.1425L5 7M10 11V17M14 11V17M15 7V4C15 3.44772 14.5523 3 14 3H10C9.44772 3 9 3.44772 9 4V7M4 7H20" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    `;
+
+    div.appendChild($buttonDelete)
+    
+    $buttonDelete.addEventListener("click", async function() {
+        const formData = new FormData();
+        formData.append('filename', path + filename)
+        const response = await fetch(`/project/${project_id}`, {
+            method: "DELETE",
+            body: formData,
+        })
+        const responseJson = await response.json();
+        console.log(responseJson)
+
+        if(responseJson.success == true) {
+            console.log(responseJson)
+            div.remove()
+            storage.dispatch(
+                deleteTab(path + filename)
+            )
+            const tabRef = document.querySelector(`[data-ref="${path + filename}"]`)
+            tabRef.children[1].innerHTML += ' ELIMINADO :C'
+        }
+    })
+}
+
 class ListDirTemplate {
     constructor() {
         this.listDir = [];
@@ -100,54 +135,35 @@ class ListDirTemplate {
     listOfFileDOM(elements, path, isOwner) {
         const list = [];
         const container = document.createElement("div");
-        const ol = document.createElement("ol");
+        const listFile = document.createElement("div");
 
         container.className = "content";
-        ol.className = "files";
+        listFile.className = "files";
 
         elements.forEach((filename) => {
             const ext = filename.toLowerCase().split(".");
-            const li = document.createElement("li");
-            const project_id = getCookie('project_id')
+            const div = document.createElement("div");
+            const fileContainer = document.createElement("div");
+            
             // li.id = "file";
-            li.className = `file ${ext[ext.length - 1]}`;
-            li.dataset.filename = filename;
-            li.dataset.location = path;
-            li.innerHTML = filename
+            div.className = "container-file";
+            fileContainer.className = `file ${ext[ext.length - 1]}`;
+            fileContainer.dataset.filename = filename;
+            fileContainer.dataset.location = path;
+            fileContainer.innerHTML = filename
             if(isOwner) {
-                const $buttonDelete = document.createElement("button");
-                $buttonDelete.className = "btn btn-delete-file";
-                $buttonDelete.innerHTML = `<img src="/static/icons/trash-icon.svg" alt="Borrar ${filename}" />`;
-                li.appendChild($buttonDelete)
-                $buttonDelete.addEventListener("click", async function() {
-                    const formData = new FormData();
-                    formData.append('filename', path + filename)
-                    const response = await fetch(`/project/${project_id}`, {
-                        method: "DELETE",
-                        body: formData,
-                    })
-                    const responseJson = await response.json();
-                    console.log(responseJson)
-                    if(responseJson.success == true) {
-                        console.log(responseJson)
-                        this.parentNode.remove()
-                        storage.dispatch(
-                            deleteTab(path + filename)
-                        )
-                        const tabRef = document.querySelector(`[data-ref="${path + filename}"]`)
-                        tabRef.children[1].innerHTML += 'ELIMINADO :C'
-                    }
-                })
+                deleteFile(div, path, filename)
             }
-            li.addEventListener(
+            fileContainer.addEventListener(
                 "click",
                 handleClick.bind(this, filename, path)
                 );
+            div.appendChild(fileContainer);
 
-            list.push(li);
+            list.push(div);
         });
-        ol.append(...list);
-        container.appendChild(ol);
+        listFile.append(...list);
+        container.appendChild(listFile);
 
         return container;
     }
@@ -229,20 +245,28 @@ class ListDirTemplate {
                 if(!data.success) {
                     console.log(data.message)
                 }
+                
+                // Agrega una lista como la del método anterioe
                 const ext = data.filename.toLowerCase().split(".");
-                const li = document.createElement("li");
-                li.id = "file";
-                li.className = `file ${ext[ext.length - 1]}`;
-                li.dataset.filename = data.filename;
-                li.dataset.location = path;
-                li.innerHTML = data.filename;
-                li.addEventListener(
+                const div = document.createElement('div')
+                const fileContainer = document.createElement("li");
+
+                div.className = "file-container"
+                // fileContainer.id = "file";
+                fileContainer.className = `file ${ext[ext.length - 1]}`;
+                fileContainer.dataset.filename = data.filename;
+                fileContainer.dataset.location = path;
+                fileContainer.innerHTML = data.filename;
+                fileContainer.addEventListener(
                     "click",
                     handleClick.bind(this, data.filename, path)
                 );
-                const insertFile = document.querySelector(`[data-location="${path}"]`).parentNode
-                insertFile.appendChild(li)
-                li.click()
+                if(isOwner) {
+                    deleteFile(div, path, data.filename)
+                }
+                const insertFile = document.querySelector(`[data-location="${path}"]`).parentNode.parentNode
+                insertFile.appendChild(fileContainer)
+                fileContainer.click()
                 
             })
         }

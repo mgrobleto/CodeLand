@@ -38,7 +38,7 @@ class TabTemplates {
         closeTab.addEventListener("click", async function () {
             const store = storage.getStore();
             const tabContainer = this.parentNode;
-            
+            console.log('D:')
 
             if (tabContainer.classList.contains("active")) {
                 const $containerTab = document.getElementById("editor-group");

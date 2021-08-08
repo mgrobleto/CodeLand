@@ -325,12 +325,16 @@ details > summary:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.content ol {
+.content .files {
     padding-left: 16px;
     list-style: none;
     cursor: pointer;
     color: #eee;
     margin-bottom: 5px;
+}
+
+.container-file {
+    position: relative;
 }
 
 .file {
@@ -344,7 +348,6 @@ details > summary:hover {
     display: flex;
     align-items: center;
     user-select: none;
-    position: relative;
 }
 
 .file-filename {
@@ -360,6 +363,10 @@ details > summary:hover {
     right: 0;
     top: 0;
     z-index: 12;
+}
+
+.btn-delete-file:hover svg path {
+    stroke: #eee;
 }
 
 .file:active {
@@ -416,7 +423,7 @@ details > summary:hover {
     background-color: var(--background-code);
     position: relative;
     display: grid;
-    /* grid-template-rows: min-content min-content; */
+    grid-template-rows: min-content auto;
     overflow-y: auto;
 }
 
