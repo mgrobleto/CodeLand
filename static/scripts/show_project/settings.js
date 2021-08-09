@@ -22,7 +22,6 @@ function copyToClipboard(element) {
             console.error(e);
         })
     }
-    console.log('xD')
 }
 
 $backItem.addEventListener("click", () => {
@@ -48,7 +47,6 @@ function optionsAnimate(currentOpenOption) {
     const options = [...document.querySelectorAll(".open-option-menu")];
     if(options.length > 0) {
         const isActive = options.find(option => option.classList.contains('is-active'));
-        console.log(currentOpenOption === isActive )
 
         if(!isActive) {
             menuOptions.classList.remove("is-active");
@@ -96,3 +94,4 @@ openDownload.addEventListener("click", function () {
     changeOptionMenu.bind(downloadEditor)(".menu-option");
     optionsAnimate(this)
 });
+

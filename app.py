@@ -13,7 +13,7 @@ from tempfile import mkdtemp
 from os import path, environ
 
 # manipular información 
-from base64 import encodebytes, b64decode
+from base64 import encodebytes
 from bson.objectid import ObjectId
 from bson import json_util
 from json import dumps
@@ -166,6 +166,7 @@ def list_dir(route):
 
     for blob in list_:
         data_arr.insert(-1, blob)
+
     for dirs in data_arr:
         routes = dirs.name.split('/')
         filename = routes.pop(-1) # Si no termina con / quiere decir que no es una carpeta
@@ -180,7 +181,7 @@ def list_dir(route):
             continue
 
         if(filename == '' or info['path'] != path_dir):
-            if info['path'] != path_dir and info['path'] != None and len(info['files']) > 0:
+            if info['path'] != path_dir and info['path'] != None:
                 data.append(info.copy())
                 info['files'] = []
 
@@ -211,15 +212,15 @@ def get_file_data(path_file, file, file_ext):
             'type': 'code'
         }
     else:
-        code = bucket.blob(f'{path_file}{file}').download_as_string()
-        image = encodebytes(code)
+        code = bucket.blob(f'{path_file}{file}')
+        image = code.public_url
         info = {
             'file_ext': file_ext,
             'type': 'image'
         }
         return {
             'code': None,
-            'image': dumps(image, default=json_util.default),
+            'image': image,
             'info': info,
         }
 
@@ -251,6 +252,38 @@ def delete_project_storage(path):
     for blob in blobs:
         blob.delete()
 
+def destroyCookie(resp):
+    resp.set_cookie('USER_TOKEN', expires=0)
+    resp.set_cookie('username', expires=0)
+    resp.set_cookie('email', expires=0)
+    resp.set_cookie('user_id', expires=0)
+    resp.set_cookie('user_image', expires=0)
+    return resp
+
+def findCookie(name):
+    return request.cookies.get(name)
+
+def compareValues(resp, data):
+    if(not (findCookie('username') == data.get('username'))):
+        return destroyCookie(resp)
+
+    if(not (findCookie('user_id') == data.get('user_id'))):
+        return destroyCookie(resp)
+    
+    if(not (findCookie('email') == data.get('email'))):
+        return destroyCookie(resp)
+    
+def checkCookies():
+    username = findCookie('username')
+    user_id = findCookie('user_id')
+    email = findCookie('email')
+    user_image = findCookie('user_image')
+    return {
+        'username': username,
+        'user_id': user_id,
+        'email': email,
+        'user_image': user_image
+    }
 
 @app.before_request
 def before_request():
@@ -259,23 +292,14 @@ def before_request():
         @after_this_request
         def request_after(resp):
             token = request.cookies.get('USER_TOKEN')
-            if not token is None:
-                try:
-                    get_info = jwt.decode(token, environ['KEY_JWT'], algorithms=['HS256'])
-                except jwt.ExpiredSignatureError:
-                    resp.set_cookie('USER_TOKEN', expires=0)
-                    resp.set_cookie('username', expires=0)
-                    resp.set_cookie('email', expires=0)
-                    resp.set_cookie('user_id', expires=0)
-                    resp.set_cookie('user_image', expires=0)
-                    return resp
-                except jwt.InvalidTokenError:
-                    resp.set_cookie('USER_TOKEN', expires=0)
-                    resp.set_cookie('username', expires=0)
-                    resp.set_cookie('email', expires=0)
-                    resp.set_cookie('user_id', expires=0)
-                    resp.set_cookie('user_image', expires=0)
-                    return resp
+            get_info = isLogged(token)
+            if get_info.get('success'):
+                print(get_info)
+                data = get_info.get('info')
+
+                if(get_info.get('success')):
+                    return compareValues(resp, data)
+
             return resp
 
 
@@ -320,11 +344,11 @@ def login():
             return jsonify({'success': False,'error': 'Correo o contraseña incorrecta'})
 
         resp = make_response(jsonify({"success": True, 'token': 'valid'}))
-        resp.set_cookie('USER_TOKEN', login_token(user['username'], email, user['_id'].__str__()))
-        resp.set_cookie('username', user['username'])
-        resp.set_cookie('email', email)
-        resp.set_cookie('user_id', user['_id'].__str__())
-        resp.set_cookie('user_image', user['cover'])
+        resp.set_cookie('USER_TOKEN', login_token(user['username'], email, user['_id'].__str__()), httponly=True)
+        resp.set_cookie('username', user['username'], httponly=True)
+        resp.set_cookie('email', email, httponly=True)
+        resp.set_cookie('user_id', user['_id'].__str__(), httponly=True)
+        resp.set_cookie('user_image', user['cover'], httponly=True)
 
         return resp
 
@@ -390,11 +414,12 @@ def register():
 
         resp = make_response(jsonify({"success": True, 'message': 'Usuario creado con éxito'}))
 
-        resp.set_cookie('USER_TOKEN', login_token(username, email, user.__str__()))
-        resp.set_cookie('username', username)
-        resp.set_cookie('email', email)
-        resp.set_cookie('user_id', user.__str__())
-        resp.set_cookie('user_image', blob.public_url)
+        # set httpOnly cookies
+        resp.set_cookie('USER_TOKEN', login_token(username, email, user.__str__()), httponly=True)
+        resp.set_cookie('username', username, httponly=True)
+        resp.set_cookie('email', email, httponly=True)
+        resp.set_cookie('user_id', user.__str__(), httponly=True)
+        resp.set_cookie('user_image', blob.public_url, httponly=True)
 
         return resp
 
@@ -413,8 +438,9 @@ def profile():
             return redirect('/logout')
         return render_template('user/profile/index.html', user=user)
     else:
+        resp = make_response(redirect('/login'))
         flash("You are not logged in. Please log in to see the profile.")
-        return redirect('/login')
+        return destroyCookie(resp)
 
 
 @app.route('/update-account/<user_id>', methods=['PUT'])
@@ -475,11 +501,11 @@ def update_profile(user_id):
 
         data = dumps(user,default=json_util.default)
         resp = make_response(data)
-        resp.set_cookie('USER_TOKEN', login_token(newInfo['username'], user['email'], user['_id'].__str__()))
-        resp.set_cookie('username', newInfo['username'])
-        resp.set_cookie('email', user['email'])
-        resp.set_cookie('user_id', user.__str__())
-        resp.set_cookie('user_image', blob.public_url)
+        resp.set_cookie('USER_TOKEN', login_token(newInfo['username'], user['email'], user['_id'].__str__()), httponly=True)
+        resp.set_cookie('username', newInfo['username'], httponly=True)
+        resp.set_cookie('email', user['email'], httponly=True)
+        resp.set_cookie('user_id', user.__str__(), httponly=True)
+        resp.set_cookie('user_image', blob.public_url, httponly=True)
         return resp
     else:
         flash('No puedes cambiar la info de otro usuario >:v')
@@ -549,6 +575,21 @@ def addProject():
             return jsonify({'success': False, 'message': 'No tienes permisos'})
 
     return render_template('user/addCode.html')
+
+
+@app.route('/is-owner/<project_id>')
+def isOwner(project_id):
+    # GET project_id and verify if the user is the owner in mongodb
+    user_payload = isLogged('USER_TOKEN')
+    if not user_payload['success']:
+        return jsonify({'success': False, 'message': 'No tienes permisos'})
+
+    user_info = user_payload.get('info')
+    project = mongo.db.projects.find_one({'_id': ObjectId(project_id)})
+    if project and project.get('users_id') == ObjectId(user_info.get('user_id')):
+        return jsonify({'success': True, 'message': 'Es tu proyecto'})
+    else:
+        return jsonify({'success': False, 'message': 'No es tu proyecto'})
 
 
 @app.route('/make-public/<project_id>')
@@ -652,8 +693,45 @@ def show_project(username, project_name):
 
     directory = list_dir(route=project_path)
     download_URI = f'/download-project/{db_project["_id"]}'
+    resp = make_response(render_template('show_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI))
+    resp.set_cookie('project_id', db_project["_id"].__str__())
+    resp.set_cookie('project_path', project_path)
 
-    return render_template('show_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI)
+    return resp
+
+@app.route('/project/<project_id>', methods=['POST', 'DELETE'])
+def addFileOrFolder(project_id):
+    user_payload = isLogged('USER_TOKEN')
+    if user_payload.get('success'):
+        project_id = ObjectId(project_id)
+        project = mongo.db.projects.find_one({ '_id': project_id })
+        if project is None:
+            return jsonify({'success': False, 'message': 'No existe el proyecto', "error": 404})
+        else:
+            if request.method == 'POST':
+                file = request.files['file']
+                path = request.form.get('path') + file.filename
+                blob = bucket.blob(path)
+                if blob.exists():
+                    return jsonify({'success': False, 'message': 'Ya existe un archivo con este nombre', "error": 403})
+                else:
+                    if file and allowed_file(file.filename):
+                        blob.upload_from_file(file, content_type=file.content_type)
+
+                return jsonify({"success": True, "message": "Se ha subido el archivo", "path": path, "filename": file.filename})
+
+            if request.method == 'DELETE':
+                path = request.form.get('filename')
+                blob = bucket.blob(path)
+                if blob.exists():
+                    blob.delete()
+                    return jsonify({'success': True, 'message': 'Se ha borrado el archivo', "path": path})
+                else:
+                    return jsonify({'success': False, 'message': 'No existe el archivo', "error": 404})
+    else:
+        return jsonify({'success': False, 'message': 'No tienes permisos', "error": 403})
+
+
 # Ruta para ver los proyectos en modo grafico
 @app.route('/static_projects/graphic_mode/<project_name>/', methods=['GET', 'POST'])
 def show_project_graphic(project_name):
@@ -674,6 +752,7 @@ def show_project_graphic(project_name):
     download_URI = f'/download-static_project/{db_project["_id"]}'
 
     return render_template('show_static_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI, type="graphic mode")
+
 
 @app.route('/static_projects/<project_name>/', methods=['GET', 'POST'])
 
@@ -770,6 +849,8 @@ def logout():
     resp.set_cookie('username', expires=0)
     resp.set_cookie('email', expires=0)
     resp.set_cookie('user_id', expires=0)
+    resp.set_cookie('user_image', expires=0)
+    resp.set_cookie('project_path', expires=0)
     flash(f'Session closed') 
     return resp
 
@@ -815,7 +896,6 @@ def update_user(user_id):
         email = request.form.get('email')
         password = request.form.get('password')
 
-        print(username, email, password)
         findUsers_cursor = mongo.db.users.find({
             '$or': [
                 { "email": email },

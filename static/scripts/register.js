@@ -1,10 +1,11 @@
 const $form = document.querySelector('#form')
-
+const $registerBtn = document.getElementById('register-btn')
 
 $form.addEventListener('submit', async event => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
 
+    $registerBtn.setAttribute('disabled', false)
     const response = await fetch('/register', {
         method: 'POST',
         body: formData

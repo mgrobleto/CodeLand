@@ -3,25 +3,25 @@ import { ListDirTemplate } from "../listDirUI/templates.js";
 class ListDir extends ListDirTemplate {
     data = [];
     
-    constructor(data, projectName, depth) {
+    constructor(data, projectName, depth, isOwner) {
         super();
         this.data = data;
         this.projectName = projectName;
         this.depth = depth;
         this.listDir = [];
         this.menu = document.querySelector("#explorer-editor");
+        this.isOwner = isOwner;
 
         if(ListDir._instance) {
             return ListDir._instance
         }
-        console.log('xD')
         ListDir._instance = this;
     }
 
     // Get list of files and folders
     renderList() {
         var dirs = [];
-        const fragment = document.createDocumentFragment();
+        const fragment = new DocumentFragment();
         let dirsLength = this.data.length;
 
         for (let i = 0; i < dirsLength; i++) {
@@ -38,7 +38,7 @@ class ListDir extends ListDirTemplate {
             value.path.endsWith(`${this.projectName}/`)
         );
         if(mainFiles) {
-            fragment.append(...dirs, this.listOfFileDOM(mainFiles.files, mainFiles.path));
+            fragment.append(...dirs, this.listOfFileDOM(mainFiles.files, mainFiles.path, this.isOwner));
         } else {
             fragment.append(...dirs);
         }
@@ -48,7 +48,7 @@ class ListDir extends ListDirTemplate {
 
     subDirs(data, index = 1) {
         var _subDirs = [];
-        const fragment = document.createDocumentFragment();
+        const fragment = new DocumentFragment();
         let dirsLength = this.data.length;
         // debugger
         let relPath = data.path.split("/").slice(this.depth).filter(Boolean);
@@ -64,12 +64,14 @@ class ListDir extends ListDirTemplate {
         }
     
         data.isListed = true;
-        fragment.append(..._subDirs, this.listOfFileDOM(data.files, data.path));
+        fragment.append(..._subDirs, this.listOfFileDOM(data.files, data.path, this.isOwner));
 
         return this.containerFilesDOM(
             relPath[relPath.length - 1],
+            data.path,
             fragment,
-            false
+            false,
+            this.isOwner
         );
     }
 }
