@@ -351,10 +351,10 @@ details > summary:hover {
 }
 
 .file-filename {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
+    flex-basis: 150px;
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .btn-delete-file {

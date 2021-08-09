@@ -94,3 +94,4 @@ openDownload.addEventListener("click", function () {
     changeOptionMenu.bind(downloadEditor)(".menu-option");
     optionsAnimate(this)
 });
+

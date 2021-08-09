@@ -1,7 +1,7 @@
 "use strict";
 import tabUI from "../tabUI/tab.js";
 import storage from "../utils/storage.js";
-import { setTab, deleteTab } from "../action/index.js";
+import { setTab, deleteTab, activeTab } from "../action/index.js";
 import { getCookie } from "../../libs/cookies.js";
 
 /**
@@ -74,15 +74,18 @@ function deleteFile(div, path, filename) {
     div.appendChild($buttonDelete)
     
     $buttonDelete.addEventListener("click", async function() {
+        const getStore = storage.getStore();
         const formData = new FormData();
+        
         formData.append('filename', path + filename)
+
         const response = await fetch(`/project/${project_id}`, {
             method: "DELETE",
             body: formData,
         })
         const responseJson = await response.json();
+        
         console.log(responseJson)
-
         if(responseJson.success == true) {
             console.log(responseJson)
             div.remove()
@@ -90,7 +93,8 @@ function deleteFile(div, path, filename) {
                 deleteTab(path + filename)
             )
             const tabRef = document.querySelector(`[data-ref="${path + filename}"]`)
-            tabRef.children[1].innerHTML += ' ELIMINADO :C'
+            tabRef.remove()
+            tabUI.render(storage.getStore())
         }
     })
 }
@@ -144,13 +148,16 @@ class ListDirTemplate {
             const ext = filename.toLowerCase().split(".");
             const div = document.createElement("div");
             const fileContainer = document.createElement("div");
+            const span = document.createElement("span");
             
             // li.id = "file";
             div.className = "container-file";
             fileContainer.className = `file ${ext[ext.length - 1]}`;
+            span.className = 'file-filename';
             fileContainer.dataset.filename = filename;
             fileContainer.dataset.location = path;
-            fileContainer.innerHTML = filename
+            span.innerHTML = filename
+
             if(isOwner) {
                 deleteFile(div, path, filename)
             }
@@ -158,6 +165,7 @@ class ListDirTemplate {
                 "click",
                 handleClick.bind(this, filename, path)
                 );
+            fileContainer.appendChild(span);
             div.appendChild(fileContainer);
 
             list.push(div);
