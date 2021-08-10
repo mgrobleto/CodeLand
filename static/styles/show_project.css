@@ -220,12 +220,40 @@
     border-bottom: 1px solid rgba(255, 255, 255, .1);
     cursor: pointer;
     padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
 }
 
 .project-name h1 {
     font-size: 16px;
     margin-bottom: 0;
 }
+
+.folder-container {
+    position: relative;
+}
+
+.add-folder-or-file {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.input-add-file {
+    width: 0;
+}
+
+.btn.btn-add {
+    padding: 0;
+    vertical-align: baseline;
+}
+
+.btn.btn-add:hover svg path {
+    stroke: #eee;
+}
+
 
 .github-option-container.is-active {
     display: block;
@@ -298,12 +326,16 @@ details > summary:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.content ol {
+.content .files {
     padding-left: 16px;
     list-style: none;
     cursor: pointer;
     color: #eee;
     margin-bottom: 5px;
+}
+
+.container-file {
+    position: relative;
 }
 
 .file {
@@ -317,6 +349,25 @@ details > summary:hover {
     display: flex;
     align-items: center;
     user-select: none;
+}
+
+.file-filename {
+    flex-basis: 150px;
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-delete-file {
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 12;
+}
+
+.btn-delete-file:hover svg path {
+    stroke: #eee;
 }
 
 .file:active {
@@ -373,7 +424,7 @@ details > summary:hover {
     background-color: var(--background-code);
     position: relative;
     display: grid;
-    grid-template-rows: min-content min-content;
+    grid-template-rows: min-content auto;
     overflow-y: auto;
 }
 
@@ -434,10 +485,9 @@ details > summary:hover {
         align-items: center;
     }
     
-    /* .code_container {
-        grid-row: 1 / 2;
-        grid-column: 1 / 2;
-    } */
+    .code_container {
+        grid-template-rows: unset;
+    }
 
     .menu-option {
         width: 100%;

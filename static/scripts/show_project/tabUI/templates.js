@@ -30,6 +30,7 @@ class TabTemplates {
         const p = document.createElement("p");
 
         container.className = "tab" + (isActive ? " active" : "");
+        container.dataset.ref = key;
         closeTab.className = "close-tab";
         filenameContainer.className = "filename";
         
@@ -37,7 +38,7 @@ class TabTemplates {
         closeTab.addEventListener("click", async function () {
             const store = storage.getStore();
             const tabContainer = this.parentNode;
-            
+            console.log('D:')
 
             if (tabContainer.classList.contains("active")) {
                 const $containerTab = document.getElementById("editor-group");
