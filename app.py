@@ -665,7 +665,6 @@ def delete_project():
                 'author': doc['author'],
                 'description': doc['description'],
                 'modo': doc['modo'],
-                'public': doc['public'],
                 'image': doc['image'],
                 'files': doc['files'],
                 'github': doc['github']

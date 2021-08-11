@@ -30,7 +30,7 @@ $form.addEventListener('submit', async (e) => {
 
     console.log(data)
     if (data.success) {
-        window.location.href = `/project/${username}/${projectName}`
+        window.location.pathname = '/profile'
     }
     
 })
