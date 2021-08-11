@@ -699,7 +699,7 @@ def show_project(username, project_name):
 
     return resp
 
-@app.route('/project/<project_id>', methods=['POST', 'DELETE'])
+@app.route('/project/<project_id>', methods=['POST', 'PUT', 'DELETE'])
 def addFileOrFolder(project_id):
     user_payload = isLogged('USER_TOKEN')
     if user_payload.get('success'):
@@ -708,6 +708,16 @@ def addFileOrFolder(project_id):
         if project is None:
             return jsonify({'success': False, 'message': 'No existe el proyecto', "error": 404})
         else:
+            if request.method == 'PUT':
+                print(request.form.get('folder-path'))
+                print(request.form.get('folder-name'))
+                path = request.form.get('folder-path') + request.form.get('folder-name') + '/'
+                blob = bucket.blob(path)
+                blob.upload_from_string('', content_type='application/x-www-form-urlencoded;charset=UTF-8')
+                
+                return jsonify({'success': True, 'message': 'Todo Bien c:'})
+
+
             if request.method == 'POST':
                 file = request.files['file']
                 path = request.form.get('path') + file.filename

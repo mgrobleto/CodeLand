@@ -4,6 +4,7 @@ import storage from "../utils/storage.js";
 import { setTab, deleteTab, activeTab } from "../action/index.js";
 import { getCookie } from "../../libs/cookies.js";
 
+
 /**
  * @param {Array} elements
  * Nombres de los archivos del directorio
@@ -99,6 +100,172 @@ function deleteFile(div, path, filename) {
     })
 }
 
+function addFolderContainer(isOwner, folderName, files = null, path) {
+    const template = new DocumentFragment();
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    const content = document.createElement("div");
+    const contentFiles = document.createElement("div");
+    const $files = document.createElement("div");
+
+    summary.innerHTML = folderName;
+    content.className = 'content'
+    contentFiles.className = 'files'
+    $files.className = 'files'
+
+    content.appendChild(contentFiles)
+    details.append(summary, content);
+    if(files) {
+        $files.appendChild(files)
+        contentFiles.appendChild($files)
+    }
+
+    if(isOwner) {
+        const folderContainer = document.createElement("div");
+
+        let actionFolder = 
+        `
+        <div class="add-folder-or-file" data-path-file="${path}">
+            <input type="file" class="input-add-file" />
+            <button class="btn btn-add add-file">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 13H15M12 10L12 16M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="btn btn-add add-folder">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 13H15M12 10V16M3 17V7C3 5.89543 3.89543 5 5 5H11L13 7H19C20.1046 7 21 7.89543 21 9V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17Z" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>                    
+            </button>
+        </div>
+        `
+        actionFolder = new DOMParser().parseFromString(actionFolder, "text/html").querySelector('.add-folder-or-file');
+
+        folderContainer.className = 'folder-container'
+        
+        folderContainer.append(details, actionFolder);
+        
+        template.appendChild(folderContainer);
+
+        // eventos para agregar archivos
+        console.log(actionFolder)
+        actionFolder.querySelector(`[data-path-file="${path}"] .add-file`).addEventListener('click', (event) => {
+            event.stopPropagation()
+            const $input = event.currentTarget.previousElementSibling;
+            $input.click();
+            // cuando le de click va a activar el input para seleccionar un archivo
+        })
+
+        const $input = actionFolder.querySelector(`[data-path-file="${path}"] .input-add-file`)
+        
+        $input.addEventListener('change', async function() {
+            const formData = new FormData()
+            if($input.files) {
+                formData.append('file', $input.files[0], $input.files[0].name)
+                console.log($input.files[0].name)
+            }
+            const path = this.parentNode.dataset.pathFile
+            const project_id = getCookie('project_id')
+
+            formData.append('path', path)
+            const response = await fetch(`/project/${project_id}`, {
+                method: 'POST',
+                body: formData
+            })
+            const data = await response.json()
+            console.log(data)
+            if(!data.success) {
+                console.log(data.message)
+            }
+            
+            // Agrega una lista como la del método anterioe
+            const ext = data.filename.toLowerCase().split(".");
+            const div = document.createElement('div')
+            const fileContainer = document.createElement("li");
+
+            div.className = "container-file"
+            // fileContainer.id = "file";
+            fileContainer.className = `file ${ext[ext.length - 1]}`;
+            fileContainer.dataset.filename = data.filename;
+            fileContainer.dataset.location = path;
+            fileContainer.innerHTML = data.filename;
+            fileContainer.addEventListener(
+                "click",
+                handleClick.bind(this, data.filename, path)
+            );
+            if(isOwner) {
+                deleteFile(div, path, data.filename)
+            }
+
+            div.appendChild(fileContainer);
+
+            contentFiles.appendChild(div)
+            fileContainer.click()
+            
+        })
+    } else {
+        template.appendChild(details);
+    }
+
+    return template;
+}
+
+function addFolder(isOwner, path, template) {
+    const $input = document.createElement("input");
+    const $form = document.createElement("form");
+    const $closeBtn = document.createElement("button");
+    const btn = template.content.querySelector(`[data-path-file="${path}"] .add-folder`)
+
+    $closeBtn.innerHTML = 'X'
+    
+    $form.className = 'form-add-folder'
+    $closeBtn.type = "button"
+    
+    $input.name = 'folder-name'
+    $input.type = 'text'
+    $form.append($input, $closeBtn);
+    
+    $form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        
+        const project_id = getCookie('project_id')
+        const formData = new FormData()
+        
+        
+        formData.append('folder-name', $input.value)
+        formData.append('folder-path', path)
+
+        const response = await fetch(`/project/${project_id}`, {
+            method: 'PUT',
+            body: formData
+        })
+
+        const data = await response.json()
+        console.log(data)
+        if(data.success == true) {
+            console.log('true')
+        }
+
+        const html = addFolderContainer(isOwner, formData.get('folder-name'), null, path + $input.value + '/')
+        const previousFolder = btn.parentNode.parentNode.querySelector('summary').nextSibling
+        if(previousFolder) {
+            btn.parentNode.parentNode.querySelector('details').insertBefore(html, previousFolder)
+        } else {
+            btn.parentNode.parentNode.querySelector('details').appendChild(html)
+        }
+        $form.remove()
+    })
+
+    $closeBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        $form.remove()
+    })
+    btn.addEventListener("click", async function() {
+        this.parentNode.parentNode.appendChild($form)
+        $input.focus()
+    })
+}
+
 class ListDirTemplate {
     constructor() {
         this.listDir = [];
@@ -124,7 +291,7 @@ class ListDirTemplate {
             divContainer.className = "add-folder-or-file";
             divContainer.dataset.pathFolder = path;
 
-            const addFolder =
+            const addFolderOrFile =
             `
                 <input type="file" class="input-add-file" />
                 <button class="btn add-file">
@@ -138,7 +305,7 @@ class ListDirTemplate {
                     </svg>                    
                 </button>
             `
-            divContainer.innerHTML = addFolder;
+            divContainer.innerHTML = addFolderOrFile;
             
             template.content.querySelector('.project-name').appendChild(divContainer)
             template.content.querySelector(`[data-path-folder="${path}"] .add-file`).addEventListener('click', (event) => {
@@ -149,7 +316,6 @@ class ListDirTemplate {
             })
             const $input = template.content.querySelector(`[data-path-folder="${path}"] .input-add-file`)
 
-            console.log(isOwner)
             $input.addEventListener('change', async function() {
                 const formData = new FormData()
                 if($input.files) {
@@ -177,7 +343,7 @@ class ListDirTemplate {
                 // const co
                 const fileContainer = document.createElement("li");
                 
-                div.className = "file-container"
+                div.className = "container-file"
                 containerList.className = 'files'
                 // fileContainer.id = "file";
                 fileContainer.className = `file ${ext[ext.length - 1]}`;
@@ -191,8 +357,9 @@ class ListDirTemplate {
                 if(isOwner) {
                     deleteFile(div, path, data.filename)
                 }
+                div.appendChild(fileContainer)
                 const insertFile = document.querySelector('#mainFiles')
-                insertFile.appendChild(fileContainer)
+                insertFile.appendChild(div)
                 fileContainer.click()
                 
             })
@@ -268,7 +435,7 @@ class ListDirTemplate {
                                 <path d="M9 13H15M12 10L12 16M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </button>
-                        <button class="btn btn-add">
+                        <button class="btn btn-add add-folder">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M9 13H15M12 10V16M3 17V7C3 5.89543 3.89543 5 5 5H11L13 7H19C20.1046 7 21 7.89543 21 9V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17Z" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>                    
@@ -293,6 +460,8 @@ class ListDirTemplate {
         }
 
         if(isOwner) {
+            addFolder(isOwner, path, template);
+
             template.content.querySelector(`[data-path-file="${path}"] .add-file`).addEventListener('click', (event) => {
                 event.stopPropagation()
                 // get before sibling 
@@ -301,7 +470,6 @@ class ListDirTemplate {
             })
             const $input = template.content.querySelector(`[data-path-file="${path}"] .input-add-file`)
 
-            console.log(isOwner)
             $input.addEventListener('change', async function() {
                 const formData = new FormData()
                 if($input.files) {
@@ -327,7 +495,7 @@ class ListDirTemplate {
                 const div = document.createElement('div')
                 const fileContainer = document.createElement("li");
 
-                div.className = "file-container"
+                div.className = "container-file"
                 // fileContainer.id = "file";
                 fileContainer.className = `file ${ext[ext.length - 1]}`;
                 fileContainer.dataset.filename = data.filename;
@@ -340,8 +508,11 @@ class ListDirTemplate {
                 if(isOwner) {
                     deleteFile(div, path, data.filename)
                 }
-                const insertFile = document.querySelector(`[data-location="${path}"]`).parentNode.parentNode
-                insertFile.appendChild(fileContainer)
+
+                div.appendChild(fileContainer);
+                // const insertFile = document.querySelector(`[data-location="${path}"]`).parentNode.parentNode
+                
+                details.children[1].firstChild.appendChild(div)
                 fileContainer.click()
                 
             })
