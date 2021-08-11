@@ -226,6 +226,10 @@
     position: relative;
 }
 
+.form-add-folder {
+    padding-left: 18px;
+}
+
 .project-name h1 {
     font-size: 16px;
     margin-bottom: 0;
