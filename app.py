@@ -345,7 +345,7 @@ def login():
 
         resp = make_response(jsonify({"success": True, 'token': 'valid'}))
         resp.set_cookie('USER_TOKEN', login_token(user['username'], email, user['_id'].__str__()), httponly=True)
-        resp.set_cookie('username', user['username'], httponly=True)
+        resp.set_cookie('username', user['username'])
         resp.set_cookie('email', email, httponly=True)
         resp.set_cookie('user_id', user['_id'].__str__(), httponly=True)
         resp.set_cookie('user_image', user['cover'], httponly=True)
@@ -416,7 +416,7 @@ def register():
 
         # set httpOnly cookies
         resp.set_cookie('USER_TOKEN', login_token(username, email, user.__str__()), httponly=True)
-        resp.set_cookie('username', username, httponly=True)
+        resp.set_cookie('username', username)
         resp.set_cookie('email', email, httponly=True)
         resp.set_cookie('user_id', user.__str__(), httponly=True)
         resp.set_cookie('user_image', blob.public_url, httponly=True)
@@ -502,7 +502,7 @@ def update_profile(user_id):
         data = dumps(user,default=json_util.default)
         resp = make_response(data)
         resp.set_cookie('USER_TOKEN', login_token(newInfo['username'], user['email'], user['_id'].__str__()), httponly=True)
-        resp.set_cookie('username', newInfo['username'], httponly=True)
+        resp.set_cookie('username', newInfo['username'])
         resp.set_cookie('email', user['email'], httponly=True)
         resp.set_cookie('user_id', user.__str__(), httponly=True)
         resp.set_cookie('user_image', blob.public_url, httponly=True)

@@ -25,7 +25,7 @@ $form.addEventListener('submit', async (e) => {
     const data = await response.json()
     barProgress.classList.remove('sending')
     barProgress.classList.add('sent')
-    const username = getCookie('username').replaceAll("\"", "")
+    const username = getCookie('username')
 
     console.log(data)
     if (data.success) {
