@@ -186,6 +186,7 @@ def list_dir(route):
                 info['files'] = []
 
             info['path'] = path_dir
+            print(routes)
         if(filename):
             (info['files']).append(filename)
 

@@ -13,6 +13,7 @@ $form.addEventListener('submit', async (e) => {
     e.preventDefault()
 
     const formData = new FormData(e.currentTarget)
+    formData.set('projectName', formData.get('projectName').normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
     const projectName = formData.get('projectName')
     console.log(formData.get('project_mode'))
 
