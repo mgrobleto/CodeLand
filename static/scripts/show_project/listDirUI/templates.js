@@ -236,7 +236,7 @@ function addFolder(isOwner, path, template, files = null) {
         const formData = new FormData()
         
         
-        formData.append('folder-name', $input.value)
+        formData.append('folder-name', $input.value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\\/:"*?<>|]/g, ''))
         formData.append('folder-path', path)
 
         const response = await fetch(`/project/${project_id}`, {
@@ -335,7 +335,7 @@ class ListDirTemplate {
                     formData.append('file', $input.files[0], $input.files[0].name)
                     console.log($input.files[0].name)
                 }
-                const path = this.parentNode.dataset.pathFolder
+                const path = this.parentNode.dataset.pathFile
                 const project_id = getCookie('project_id')
 
                 formData.append('path', path)
@@ -472,14 +472,14 @@ class ListDirTemplate {
             template.appendChild(folderContainer);
     
             // eventos para agregar archivos
-            actionFolder.querySelector(`[data-path-file="${path}"] .add-file`).addEventListener('click', (event) => {
+            actionFolder.querySelector(`.add-file`).addEventListener('click', (event) => {
                 event.stopPropagation()
                 const $input = event.currentTarget.previousElementSibling;
                 $input.click();
                 // cuando le de click va a activar el input para seleccionar un archivo
             })
     
-            const $input = actionFolder.querySelector(`[data-path-file="${path}"] .input-add-file`)
+            const $input = actionFolder.querySelector(`.input-add-file`)
             
             $input.addEventListener('change', async function() {
                 const formData = new FormData()
