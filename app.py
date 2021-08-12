@@ -373,6 +373,7 @@ def register():
             "password"), method="sha256", salt_length=10 # se encripta con sha256 10 veces
         )
 
+        print(username)
         validation = registerSchema(email, username, password)
 
         if not validation['success']:
@@ -413,6 +414,7 @@ def register():
         user = mongo.db.users.insert( # inserta un usuario
             {"_id": user_id, "username": username, "password": password, "email": email, "cover": blob.public_url, **timestamp()})
 
+        print('created')
         resp = make_response(jsonify({"success": True, 'message': 'Usuario creado con éxito'}))
 
         # set httpOnly cookies
