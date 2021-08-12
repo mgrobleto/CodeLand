@@ -722,6 +722,8 @@ def addFileOrFolder(project_id):
                 file = request.files['file']
                 path = request.form.get('path') + file.filename
                 blob = bucket.blob(path)
+                print(path)
+                print(blob)
                 if blob.exists():
                     return jsonify({'success': False, 'message': 'Ya existe un archivo con este nombre', "error": 403})
                 else:
