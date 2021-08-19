@@ -186,6 +186,7 @@ def list_dir(route):
                 info['files'] = []
 
             info['path'] = path_dir
+            print(routes)
         if(filename):
             (info['files']).append(filename)
 
@@ -345,7 +346,7 @@ def login():
 
         resp = make_response(jsonify({"success": True, 'token': 'valid'}))
         resp.set_cookie('USER_TOKEN', login_token(user['username'], email, user['_id'].__str__()), httponly=True)
-        resp.set_cookie('username', user['username'], httponly=True)
+        resp.set_cookie('username', user['username'])
         resp.set_cookie('email', email, httponly=True)
         resp.set_cookie('user_id', user['_id'].__str__(), httponly=True)
         resp.set_cookie('user_image', user['cover'], httponly=True)
@@ -372,6 +373,7 @@ def register():
             "password"), method="sha256", salt_length=10 # se encripta con sha256 10 veces
         )
 
+        print(username)
         validation = registerSchema(email, username, password)
 
         if not validation['success']:
@@ -412,11 +414,12 @@ def register():
         user = mongo.db.users.insert( # inserta un usuario
             {"_id": user_id, "username": username, "password": password, "email": email, "cover": blob.public_url, **timestamp()})
 
+        print('created')
         resp = make_response(jsonify({"success": True, 'message': 'Usuario creado con éxito'}))
 
         # set httpOnly cookies
         resp.set_cookie('USER_TOKEN', login_token(username, email, user.__str__()), httponly=True)
-        resp.set_cookie('username', username, httponly=True)
+        resp.set_cookie('username', username)
         resp.set_cookie('email', email, httponly=True)
         resp.set_cookie('user_id', user.__str__(), httponly=True)
         resp.set_cookie('user_image', blob.public_url, httponly=True)
@@ -478,6 +481,7 @@ def update_profile(user_id):
         newInfo['updated_at'] = datetime.datetime.now()
 
         file = request.files['perfil']
+        newImage = ''
         if file.filename != '':
             if file.mimetype in IMAGE_MIMETYPE:
                 mimetype = file.mimetype
@@ -487,12 +491,13 @@ def update_profile(user_id):
                 blob.upload_from_string(image, content_type=mimetype)
                 blob.make_public()
                 newInfo['cover'] = blob.public_url
+                deleteBeforeImage = bucket.blob(request.cookies.get('user_image').split('/', 4)[-1])
+                deleteBeforeImage.delete()
+                newImage = blob.public_url
             else:
                 flash('error mimetype')
                 return redirect('/register')
 
-        deleteBeforeImage = bucket.blob(request.cookies.get('user_image').split('/', 4)[-1])
-        deleteBeforeImage.delete()
         
         mongo.db.projects.update_many({'users_id': ObjectId(user_info['user_id'])}, { '$set': { 'author': newInfo['username'] }})
         user = mongo.db.users.find_one_and_update( { '_id': ObjectId(user_id) }, {
@@ -502,10 +507,11 @@ def update_profile(user_id):
         data = dumps(user,default=json_util.default)
         resp = make_response(data)
         resp.set_cookie('USER_TOKEN', login_token(newInfo['username'], user['email'], user['_id'].__str__()), httponly=True)
-        resp.set_cookie('username', newInfo['username'], httponly=True)
-        resp.set_cookie('email', user['email'], httponly=True)
         resp.set_cookie('user_id', user.__str__(), httponly=True)
-        resp.set_cookie('user_image', blob.public_url, httponly=True)
+        resp.set_cookie('username', newInfo['username'])
+        resp.set_cookie('email', user['email'], httponly=True)
+        if newImage:
+            resp.set_cookie('user_image', blob.public_url, httponly=True)
         return resp
     else:
         flash('No puedes cambiar la info de otro usuario >:v')
@@ -664,7 +670,6 @@ def delete_project():
                 'author': doc['author'],
                 'description': doc['description'],
                 'modo': doc['modo'],
-                'public': doc['public'],
                 'image': doc['image'],
                 'files': doc['files'],
                 'github': doc['github']
@@ -699,7 +704,7 @@ def show_project(username, project_name):
 
     return resp
 
-@app.route('/project/<project_id>', methods=['POST', 'DELETE'])
+@app.route('/project/<project_id>', methods=['POST', 'PUT', 'DELETE'])
 def addFileOrFolder(project_id):
     user_payload = isLogged('USER_TOKEN')
     if user_payload.get('success'):
@@ -708,10 +713,22 @@ def addFileOrFolder(project_id):
         if project is None:
             return jsonify({'success': False, 'message': 'No existe el proyecto', "error": 404})
         else:
+            if request.method == 'PUT':
+                print(request.form.get('folder-path'))
+                print(request.form.get('folder-name'))
+                path = request.form.get('folder-path') + request.form.get('folder-name') + '/'
+                blob = bucket.blob(path)
+                blob.upload_from_string('', content_type='application/x-www-form-urlencoded;charset=UTF-8')
+                
+                return jsonify({'success': True, 'message': 'Todo Bien c:'})
+
+
             if request.method == 'POST':
                 file = request.files['file']
                 path = request.form.get('path') + file.filename
                 blob = bucket.blob(path)
+                print(path)
+                print(blob)
                 if blob.exists():
                     return jsonify({'success': False, 'message': 'Ya existe un archivo con este nombre', "error": 403})
                 else:

@@ -13,7 +13,8 @@ $form.addEventListener('submit', async (e) => {
     e.preventDefault()
 
     const formData = new FormData(e.currentTarget)
-    const projectName = formData.get('projectName')
+    formData.set('projectName', formData.get('projectName').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\\/:"*?<>|]/g, ''))
+    
     console.log(formData.get('project_mode'))
 
     const barProgress = document.querySelector('#bar-progress')
@@ -25,11 +26,11 @@ $form.addEventListener('submit', async (e) => {
     const data = await response.json()
     barProgress.classList.remove('sending')
     barProgress.classList.add('sent')
-    const username = getCookie('username').replaceAll("\"", "")
+    // const username = getCookie('username')
 
     console.log(data)
     if (data.success) {
-        window.location.href = `/project/${username}/${projectName}`
+        window.location.pathname = '/profile'
     }
     
 })
@@ -80,8 +81,8 @@ $inputImage.addEventListener('change', (event) => {
 
 $btnSend.addEventListener('click', (event) => {
     const $projectInfo2 = document.querySelector('.project-info-2')
-    const $projectInfo3 = document.querySelector('.project-info-3')
+    // const $projectInfo3 = document.querySelector('.project-info-3')
 
     $projectInfo2.classList.add('translate')
-    $projectInfo3.classList.add('no-translate')
+    // $projectInfo3.classList.add('no-translate')
 })

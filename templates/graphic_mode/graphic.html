@@ -23,8 +23,8 @@
                 <!---<h2>Proyectos de estudiantes</h2> -->
                 {% for project in db_project_user %}
                 <div class="project">
-                    <img src="/static/icons/background.webp" id="conteinerImg">
-                    <h5>{{project['program_title']}}</h5>
+                    <img src="{{project['image']}}" id="conteinerImg">
+                    <h5>{{project['project_name']}}</h5>
                     <a class="btn btn-primary" href="/project/{{project['author']}}/{{project['project_name']}}" role="button">Ver código</a>
                 </div>
                 {% endfor %}

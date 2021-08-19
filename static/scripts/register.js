@@ -4,6 +4,7 @@ const $registerBtn = document.getElementById('register-btn')
 $form.addEventListener('submit', async event => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
+    formData.set('username', formData.get('username').normalize('NFD').replace(/[\\/:"*?<>|]/g, ''))
 
     $registerBtn.setAttribute('disabled', false)
     const response = await fetch('/register', {
@@ -11,9 +12,7 @@ $form.addEventListener('submit', async event => {
         body: formData
     })
     const data = await response.json()
-    console.log(
-        data
-    )
+    
     if (data.success) {
         window.location.href = '/profile'
     }

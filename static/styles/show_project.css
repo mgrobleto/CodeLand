@@ -155,6 +155,11 @@
     background-color: rgba(8, 11, 15);
 }
 
+.menu-options::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
 .explorer-option-container,
 .info-option-container,
 .download-option-container,
@@ -224,6 +229,10 @@
     justify-content: space-between;
     align-items: center;
     position: relative;
+}
+
+.form-add-folder {
+    padding-left: 18px;
 }
 
 .project-name h1 {

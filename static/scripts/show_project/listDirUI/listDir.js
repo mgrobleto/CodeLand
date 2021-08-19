@@ -38,12 +38,12 @@ class ListDir extends ListDirTemplate {
             value.path.endsWith(`${this.projectName}/`)
         );
         if(mainFiles) {
-            fragment.append(...dirs, this.listOfFileDOM(mainFiles.files, mainFiles.path, this.isOwner));
+            fragment.append(...dirs, this.listOfFileDOM(mainFiles.files, mainFiles.path, this.isOwner, 'mainFiles'));
         } else {
             fragment.append(...dirs);
         }
 
-        this.menu.appendChild(this.template(fragment))
+        this.menu.appendChild(this.template(fragment, this.isOwner))
     }
 
     subDirs(data, index = 1) {
