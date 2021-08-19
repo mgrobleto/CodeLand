@@ -3,32 +3,34 @@
     background-color: rgba(8, 11, 15);
     background-position: center;
     background-size: cover;
-}
-
-.projects-container {
-    /*display: flex;
-    flex-wrap: wrap;*/
     padding: 2%;
 }
+
+/*.projects-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 2%;
+}*/
 
 .projects-section {
     display: grid;
     grid-template-columns: repeat(3, minmax(300px, 1fr));
-    grid-gap: 5px;
+    grid-gap: 15px;
 }
 
 .project {
     /*width: 90%;*/
-    margin-top: 2%;
-    margin-left: 5px;
-    margin-right: 5px;
+    /*margin-top: 2%;*/
+    /*margin-left: 5px;
+    margin-right: 5px;*/
     margin-block-end: 10px;
-    padding: 0;
+    /*padding: 0;*/
 }
 
 .project img {
     width: 100%;
-    max-width: 400px;
+    /*max-width: 600px;*/
     height: 300px;
 }
 
