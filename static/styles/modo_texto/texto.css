@@ -1,28 +1,20 @@
-body {
+.projects {
+    width: 100%;
     background-color: rgba(8, 11, 15);
     background-position: center;
     background-size: cover;
 }
 
-.container {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
-.project img {
-    width: 100%;
-    max-width: 400px;
-    height: 300px;
+.projects-container {
+    /*display: flex;
+    flex-wrap: wrap;*/
+    padding: 2%;
 }
 
 .projects-section {
-    /*display: flex;
-    flex-wrap: wrap;*/
     display: grid;
-    grid-template-columns: repeat(3, minmax(450px, 1fr));
+    grid-template-columns: repeat(3, minmax(300px, 1fr));
     grid-gap: 5px;
-    padding: 2%;
 }
 
 .project {
@@ -32,6 +24,12 @@ body {
     margin-right: 5px;
     margin-block-end: 10px;
     padding: 0;
+}
+
+.project img {
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
 }
 
 #conteinerImg:hover {
@@ -54,9 +52,9 @@ h5 {
 
 @media screen and (max-width:992px) {
 
-    .container {
+    /*.container {
         margin: auto;
-    }
+    }*/
     
     .projects-section {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
