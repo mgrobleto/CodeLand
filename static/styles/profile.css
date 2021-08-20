@@ -57,13 +57,17 @@ h1,h2,h3,h4,h5,p,small{
 
 @media screen and (min-width: 996px) {
     .custom-container {
-       /* width: ;*/
+        margin-left: 40px;
     }
 
     .hero_profile {
         display: flex;
         justify-content: space-evenly;
         flex-direction: row-reverse;
+    }
+    
+    .row {
+        margin-top: 15px;
     }
 
 }
