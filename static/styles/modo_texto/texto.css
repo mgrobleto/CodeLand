@@ -123,16 +123,31 @@ h5 {
     }*/
     
     .projects-section {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-template-columns: 1fr;
     }
 
     .project {
+        width: 90%;
         margin-top: 5%;
         margin-left: auto;
         margin-right: auto;
     }
 
-    .project img {
-        height: unset;
+}
+
+@media screen and (max-width: 764px) {
+    .sidenav-explorer-title {
+        display: none;
     }
+    
+    .explorer-container {
+        display: block;
+    }
+
+    .options-explorer {
+        display: flex;
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+
 }
