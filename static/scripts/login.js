@@ -1,5 +1,6 @@
 const loginForm = document.querySelector('#login-form');
 const $loginBtn = document.querySelector('#login-btn');
+import { alertError } from './libs/alerts.js'
 
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault()
@@ -11,9 +12,16 @@ loginForm.addEventListener('submit', async (e) => {
         method: 'POST',
         body: formData
     })
+    $loginBtn.innerHTML = 'Logging in...';
+
     const data = await response.json();
+    console.log(data)
     
     if (data.success) {
         window.location.href = '/profile'
+    } else {
+        $loginBtn.removeAttribute('disabled');
+        $loginBtn.innerHTML = 'Ingresar';
+        alertError('Datos incorrectos')
     }
 })

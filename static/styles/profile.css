@@ -3,6 +3,9 @@
     background-color: #252836;
 }
 
+label {
+    color: #eee;
+}
 
 .custom-container {
     width: 100%;
@@ -89,7 +92,7 @@ h1,h2,h3,h4,h5,p,small{
     margin: 0 auto;
     overflow: auto;
     transition: transform .6s ease-in-out;
-    transform: translateY(-1000px) translateX(-50%);
+    transform: translateY(-150vh) translateX(-50%);
     display: flex;
     justify-content: center;
     flex-direction: column;

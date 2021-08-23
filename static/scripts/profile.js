@@ -1,4 +1,5 @@
 'use strict'
+import { alertError, alertSuccess } from './libs/alerts.js'
 
 const $formDelete = document.querySelectorAll('#delete-project')
 const $formUpdate = document.querySelector('#edit-info')
@@ -6,6 +7,7 @@ const $project = document.querySelector('#projects')
 const $overlayModal = document.querySelector('#overlay-modal')
 const $editmodal = document.querySelector('#custom-modal')
 const $showModal = document.querySelector('#btn-modal-editar')
+const $btnUpdate = document.querySelector('#btn-update')
 
 function renderTemplate(project) {
     return `
@@ -31,15 +33,27 @@ function renderTemplate(project) {
 $formUpdate.addEventListener('submit', async (event) => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
+    $btnUpdate.innerHTML = 'Cargando...'
+    $btnUpdate.disabled = true
+    
     const response = await fetch(`/update-account/${formData.get('id')}`, {
         method: 'PUT',
         body: formData
     })
     const data = await response.json()
     console.log(data)
-    const { username, email, image } = data
-    console.log(username, email, image)
-    window.location.reload()
+    if(data.success) {
+        const { username, email, image } = data
+        console.log(username, email, image)
+        alertSuccess('Datos actualizados, las fotos de perfil tardan un tiempo en actualizarse')
+        setTimeout(() => {
+            window.location.reload()
+        }, 1500)
+    } else {
+        $btnUpdate.innerHTML = 'Actualizar'
+        $btnUpdate.disabled = false
+        alertError(data.message)
+    }
 })
 
 $formDelete.forEach(function ($form) {
@@ -51,9 +65,6 @@ $formDelete.forEach(function ($form) {
             body: formData
         })
 
-        // if(!response.ok) {
-        //     window.location.href = '/'
-        // }
         const { data, delete_info} = await response.json()
         let code = ''
         $project.innerHTML = ''

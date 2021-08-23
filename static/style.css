@@ -24,12 +24,68 @@ body {
 .btn.btn-menu {
     padding: 0;
 }
+
 .alert{
     z-index: 1 !important;
 }
-.alert alert-primary{
+
+.alert .alert-primary{
     padding: 0% !important;
 }
+
+.alert-message {
+    position: fixed;
+    z-index: 1000;
+    align-items: center;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    padding: 12px;
+    gap: 0 12px;
+    border-radius: 4px;
+    transform: translateX(-500px);
+}
+
+.alert-message.active {
+    transition: transform .3s ease;
+    transform: translateX(0);
+}
+
+.alert-message.error-alert {
+    background: #f96179;
+}
+
+.alert-message.error-alert .message-icon {
+    background: #fb889a;
+}
+
+.alert-message.success-alert {
+    background: #789dff;
+}
+
+.alert-message.success-alert .message-icon {
+    background: #98b4ff;
+}
+
+.message {
+    color: #eee;
+}
+
+.message p {
+    font-size: 14px;
+    margin: 0;
+}
+
+.message-icon {
+    border-radius: 50%;
+    padding: 0px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 @media screen and (max-width:700px)  {
     .row{
         flex-direction: column;

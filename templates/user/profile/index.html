@@ -48,15 +48,15 @@
                                 <div class="col">
                                     <a href='/project/{{user.username}}/{{project.project_name}}' class='btn bi bi-pencil-fill'></a>
                                 </div>
-                            <div class="col">
-                                <form id="delete-project">
-                                    <input type="hidden" name="id" value="{{project._id}}">
-                                    <button class="btn bi bi-trash-fill btn-delete"></button>
-                                </form>
-                            </div>
-                            <div class="col">
-                                <a class='btn bi bi-file-arrow-down-fill' href="/download-project/{{project._id}}" download></a>
-                            </div>
+                                <div class="col">
+                                    <form id="delete-project">
+                                        <input type="hidden" name="id" value="{{project._id}}">
+                                        <button class="btn bi bi-trash-fill btn-delete"></button>
+                                    </form>
+                                </div>
+                                <div class="col">
+                                    <a class='btn bi bi-file-arrow-down-fill' href="/download-project/{{project._id}}" download></a>
+                                </div>
                             </div>
                             
                         </div>
@@ -93,10 +93,10 @@
             <input class="form-control my-3" id="perfil" name="perfil" type="file">
         </div>
         <div class="input-container">
-            <label for="password_confirm">Confirmar contraseña</label>
+            <label for="password_confirm">Confirmar cambios (Escribe la contraseña)</label>
             <input class="form-control my-3" id="password_confirm" name="password_confirm" type="password">
         </div>
-        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <button type="submit" class="btn btn-primary" id="btn-update">Actualizar</button>
     </form>
  </div>
  <div class="overlay-modal" id="overlay-modal"></div>
@@ -104,5 +104,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/scripts/profile.js"></script>
+<script src="/static/scripts/profile.js" type="module"></script>
 {% endblock %}

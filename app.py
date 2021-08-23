@@ -382,11 +382,10 @@ def register():
         find_user = mongo.db.users.find_one({
             '$or': [
                 { "email": email },
-                { "username": username }
             ]
         }) # busca un usuario donde uno de esos dos campos tenga ese valor
         if find_user != None:
-            return jsonify({"success": True, 'message': f'{username} ya existe'})
+            return jsonify({"success": False, 'message': f'{email} ya existe'})
 
         file = request.files['image']
         if file.filename != '':
@@ -460,15 +459,19 @@ def update_profile(user_id):
         findUsers_cursor = mongo.db.users.find({
             '$or': [
                 { "email": email },
-                { "username": username }
         ]})
         findUser = list(findUsers_cursor)
+        print(findUser)
 
-        if len(findUser) > 1:
-            return 'el usuario ya existe'
+        if len(findUser) >= 1 and (findUser[0]['_id'] != ObjectId(user_info['user_id'])):
+            return jsonify({"success": False, 'message': 'Ya existe un usuario con ese nombre o email'})
 
-        if not check_password_hash((findUser[-1])['password'], password_confirm):
-            return redirect('/profile')
+        user_db = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+        if user_db == None:
+            return jsonify({"success": False, 'message': 'Usuario no encontrado'})
+
+        if not check_password_hash(user_db['password'], password_confirm):
+            return jsonify({"success": False, 'message': 'Las contraseñas no coinciden'})
         #se validan las entradas
         newInfo = {}
         if len(username) > 0:
@@ -487,16 +490,21 @@ def update_profile(user_id):
                 mimetype = file.mimetype
                 ext = file.filename.split('.')[-1]
                 image = file.read()
-                blob = bucket.blob(f'user_image/{user_id}.{ext}')
+
+                blob = bucket.blob(request.cookies.get('user_image').split('/', 4)[-1])
+                bucket.rename_blob(blob, f'user_image/{user_id}.{ext}')
+
+                # blob = bucket.blob(f'user_image/{user_id}.{ext}')
+                blob.metadata = {'Content-Type': mimetype, 'max-age': '0', 'Cache-Control': 'public'}
                 blob.upload_from_string(image, content_type=mimetype)
-                blob.make_public()
+                # edit metadata blob
+                
+                # blob.make_public()
                 newInfo['cover'] = blob.public_url
-                deleteBeforeImage = bucket.blob(request.cookies.get('user_image').split('/', 4)[-1])
-                deleteBeforeImage.delete()
                 newImage = blob.public_url
+                print('Hi')
             else:
-                flash('error mimetype')
-                return redirect('/register')
+                return jsonify({"success": False, 'message': 'error mimetype'})
 
         
         mongo.db.projects.update_many({'users_id': ObjectId(user_info['user_id'])}, { '$set': { 'author': newInfo['username'] }})
@@ -504,17 +512,22 @@ def update_profile(user_id):
             '$set': newInfo
         })
 
-        data = dumps(user,default=json_util.default)
+        data = jsonify({
+            'user': user.get('username'),
+            'image': user.get('cover'),
+            'email': user.get('email'),
+            'success': True,
+        })
         resp = make_response(data)
         resp.set_cookie('USER_TOKEN', login_token(newInfo['username'], user['email'], user['_id'].__str__()), httponly=True)
-        resp.set_cookie('user_id', user.__str__(), httponly=True)
+        resp.set_cookie('user_id', user['_id'].__str__(), httponly=True)
         resp.set_cookie('username', newInfo['username'])
-        resp.set_cookie('email', user['email'], httponly=True)
+        resp.set_cookie('email', newInfo['email'], httponly=True)
         if newImage:
             resp.set_cookie('user_image', blob.public_url, httponly=True)
         return resp
     else:
-        flash('No puedes cambiar la info de otro usuario >:v')
+        return jsonify({'success': False, 'message': 'Usuario no autorizado'})
 
     return {}
 
@@ -574,7 +587,7 @@ def addProject():
             upload_image.upload_from_string(image.read(), content_type=image.content_type)
             upload_image.make_public()
 
-            mongo.db.projects.insert({"_id": project_id, "project_name": project_name, 'author': user_info.get('username'), "description": description, 'modo': modo, "users_id": ObjectId(user_info.get('user_id')), "path": directory, **timestamp(), "image": upload_image.public_url, "files": file_names, "github": github_url})
+            mongo.db.projects.insert({"_id": project_id, "project_name": project_name, 'author': user_info.get('username'), "description": description, 'mode': modo, "users_id": ObjectId(user_info.get('user_id')), "path": directory, **timestamp(), "image": upload_image.public_url, "files": file_names, "github": github_url})
             
             return jsonify({'success': True, 'message': 'Proyecto creado'})
         else:
@@ -669,7 +682,7 @@ def delete_project():
                 'project_name': doc['project_name'],
                 'author': doc['author'],
                 'description': doc['description'],
-                'modo': doc['modo'],
+                'mode': doc['mode'],
                 'image': doc['image'],
                 'files': doc['files'],
                 'github': doc['github']
@@ -748,6 +761,64 @@ def addFileOrFolder(project_id):
     else:
         return jsonify({'success': False, 'message': 'No tienes permisos', "error": 403})
 
+
+@app.route('/projects/<mode>/<filter>')
+def filterProjects(mode, filter):
+    if(filter == 'user'):
+        data_list = []
+        projects = mongo.db.projects.find({
+            'mode': mode
+        })
+        for doc in projects:
+            data_list.append({
+                'project_name': doc['project_name'],
+                'author': doc['author'],
+                'description': doc['description'],
+                'mode': doc['mode'],
+                'image': doc['image'],
+            })
+    if(filter == 'default'):
+        data_list = []
+        static_projects = mongo.db.static_projects.find({
+            'mode': mode
+        })
+        projects = mongo.db.projects.find({
+            'mode': mode
+        })
+
+        for doc in static_projects:
+            data_list.append({
+                'program_title': doc['program_title'],
+                'mode': doc['mode'],
+                'image': doc['image_route'],
+            })
+
+    if(filter == 'all'):
+        data_list = {
+            'default': [],
+            'user': []
+        }
+        static_projects = mongo.db.static_projects.find({
+            'mode': mode
+        })
+        projects = mongo.db.projects.find({
+            'mode': mode
+        })
+        for doc in projects:
+            data_list['user'].append({
+                'project_name': doc['project_name'],
+                'mode': doc['mode'],
+                'image': doc['image'],
+                'author': doc['author'],
+            })
+        for doc in static_projects:
+            data_list['default'].append({
+                'program_title': doc['program_title'],
+                'mode': doc['mode'],
+                'image': doc['image_route'],
+            })
+
+    return jsonify({'success': True, 'message': 'Todo Bien c:', 'data': data_list})
 
 # Ruta para ver los proyectos en modo grafico
 @app.route('/static_projects/graphic_mode/<project_name>/', methods=['GET', 'POST'])
@@ -844,7 +915,7 @@ def about():
 def text_mode():
 
     db_project = mongo.db.static_projects.find({'mode': 'text_mode'})
-    db_project_user = mongo.db.projects.find({"modo": "text_mode"})
+    db_project_user = mongo.db.projects.find({"mode": "text_mode"})
 
     if db_project is None:
         return render_template('404.html'), 404
@@ -855,7 +926,7 @@ def text_mode():
 @app.route('/examples/node')
 def graphic_mode():
     db_project = mongo.db.static_projects.find({'mode': 'graphic_mode'})
-    db_project_user = mongo.db.projects.find({"modo": "graphic_mode"})
+    db_project_user = mongo.db.projects.find({"mode": "graphic_mode"})
 
     return render_template("graphic_mode/graphic.html", db_project=db_project, db_project_user=db_project_user)
 
