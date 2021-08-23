@@ -11,6 +11,8 @@ loginForm.addEventListener('submit', async (e) => {
         method: 'POST',
         body: formData
     })
+    $loginBtn.innerHTML = 'Logging in...';
+
     const data = await response.json();
     console.log(data)
     

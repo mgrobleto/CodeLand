@@ -487,13 +487,19 @@ def update_profile(user_id):
                 mimetype = file.mimetype
                 ext = file.filename.split('.')[-1]
                 image = file.read()
-                blob = bucket.blob(f'user_image/{user_id}.{ext}')
+
+                blob = bucket.blob(request.cookies.get('user_image').split('/', 4)[-1])
+                bucket.rename_blob(blob, f'user_image/{user_id}.{ext}')
+
+                # blob = bucket.blob(f'user_image/{user_id}.{ext}')
+                blob.metadata = {'Content-Type': mimetype, 'max-age': '0', 'Cache-Control': 'public'}
                 blob.upload_from_string(image, content_type=mimetype)
-                blob.make_public()
+                # edit metadata blob
+                
+                # blob.make_public()
                 newInfo['cover'] = blob.public_url
-                deleteBeforeImage = bucket.blob(request.cookies.get('user_image').split('/', 4)[-1])
-                deleteBeforeImage.delete()
                 newImage = blob.public_url
+                print('Hi')
             else:
                 flash('error mimetype')
                 return redirect('/register')
@@ -507,7 +513,7 @@ def update_profile(user_id):
         data = dumps(user,default=json_util.default)
         resp = make_response(data)
         resp.set_cookie('USER_TOKEN', login_token(newInfo['username'], user['email'], user['_id'].__str__()), httponly=True)
-        resp.set_cookie('user_id', user.__str__(), httponly=True)
+        resp.set_cookie('user_id', user['_id'].__str__(), httponly=True)
         resp.set_cookie('username', newInfo['username'])
         resp.set_cookie('email', user['email'], httponly=True)
         if newImage:

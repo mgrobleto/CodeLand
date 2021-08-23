@@ -9,27 +9,82 @@
 {% endblock %}
 
 {% block body %}
-<body>
-    <section class="projects">
-        <div class="projects-container">
+    <div class="container explorer-container">
+        <div class="sidenav-explorer">
+            <div class="sidenav-explorer-title">
+                <h3>CodeLand</h3>
+            </div>
+            <div class="sidenav-explorer-menu">
+                <div class="title-sidenav-explorer-menu">
+                    <p>Menu</p>
+                </div>
+                <div class="options-explorer" title="Todos los proyectos, incluyendo los que estan por defecto">
+                    <div class="option-explorer active">
+                        <div class="icon-option">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 6C4 4.89543 4.89543 4 6 4H8C9.10457 4 10 4.89543 10 6V8C10 9.10457 9.10457 10 8 10H6C4.89543 10 4 9.10457 4 8V6Z" stroke="#999999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14 6C14 4.89543 14.8954 4 16 4H18C19.1046 4 20 4.89543 20 6V8C20 9.10457 19.1046 10 18 10H16C14.8954 10 14 9.10457 14 8V6Z" stroke="#999999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M4 16C4 14.8954 4.89543 14 6 14H8C9.10457 14 10 14.8954 10 16V18C10 19.1046 9.10457 20 8 20H6C4.89543 20 4 19.1046 4 18V16Z" stroke="#999999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14 16C14 14.8954 14.8954 14 16 14H18C19.1046 14 20 14.8954 20 16V18C20 19.1046 19.1046 20 18 20H16C14.8954 20 14 19.1046 14 18V16Z" stroke="#999999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <span>Todos</span>
+                    </div>
+                    <div class="option-explorer" title="Los proyectos que estan por defecto en CodeLand">
+                        <div class="icon-option">
+                            <svg width="24" height="24" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M48 90.6667L64 74.9867C61.92 74.7733 60.3733 74.6667 58.6667 74.6667C44.4267 74.6667 16 81.8133 16 96V106.667H64L48 90.6667ZM58.6667 64C70.4533 64 80 54.4533 80 42.6667C80 30.88 70.4533 21.3333 58.6667 21.3333C46.88 21.3333 37.3333 30.88 37.3333 42.6667C37.3333 54.4533 46.88 64 58.6667 64Z" fill="#999999"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M82.5067 109.333L64 90.6667L71.4667 83.1467L82.5067 94.24L109.867 66.6667L117.333 74.1867L82.5067 109.333Z" fill="#999999"/>
+                            </svg>
+                        </div>
+                        <span>Proyectos por defecto</span>
+                    </div>
+                    <div class="option-explorer" title="Los proyectos de los estudiantes">
+                        <div class="icon-option">
+                            <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 6C9 7.65685 7.65685 9 6 9C4.34315 9 3 7.65685 3 6C3 4.34315 4.34315 3 6 3C7.65685 3 9 4.34315 9 6Z" fill="#999999"/>
+                                <path d="M17 6C17 7.65685 15.6569 9 14 9C12.3431 9 11 7.65685 11 6C11 4.34315 12.3431 3 14 3C15.6569 3 17 4.34315 17 6Z" fill="#999999"/>
+                                <path d="M12.9291 17C12.9758 16.6734 13 16.3395 13 16C13 14.3648 12.4393 12.8606 11.4998 11.6691C12.2352 11.2435 13.0892 11 14 11C16.7614 11 19 13.2386 19 16V17H12.9291Z" fill="#999999"/>
+                                <path d="M6 11C8.76142 11 11 13.2386 11 16V17H1V16C1 13.2386 3.23858 11 6 11Z" fill="#999999"/>
+                            </svg>
+                        </div>
+                        <span>Proyectos de estudiantes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="explorer">
+            <div class="explorer-title">
+                <h3>Explorador (Todos los proyectos)</h3>
+            </div>
             <div class="projects-section">
                 {% for project in db_project %}
                 <div class="project">
                     <img src="{{project['image_route']}}" id="conteinerImg">
-                    <h5>{{project['program_title']}}</h5>
-                    <a class="btn btn-primary" href="/static_projects/text_mode/{{project['program_title']}}" role="button">Ver código</a>
+                    <div class="project-info">
+                        <h5>{{project['program_title']}}</h5>
+                        <a class="btn btn-primary" href="/static_projects/text_mode/{{project['program_title']}}" role="button">Ver código</a>
+                    </div>
                 </div>
                 {% endfor %}
                 <!---<h2>Proyectos de estudiantes</h2> -->
                 {% for project in db_project_user %}
                 <div class="project">
                     <img src="{{project['image']}}" id="conteinerImg">
-                    <h5>{{project['project_name']}}</h5>
-                    <a class="btn btn-primary" href="/project/{{project['author']}}/{{project['project_name']}}" role="button">Ver código</a>
+                    <div class="project-info">
+                        <h5>{{project['project_name']}}</h5>
+                        <p style="color: #aaa;">{{project['author']}}</p>
+                        <a class="btn btn-primary" href="/project/{{project['author']}}/{{project['project_name']}}" role="button">Ver código</a>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
-    </section>
-</body>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.scrollTo(0, 70);
+</script>
 {% endblock %}

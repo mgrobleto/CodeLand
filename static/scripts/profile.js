@@ -6,6 +6,7 @@ const $project = document.querySelector('#projects')
 const $overlayModal = document.querySelector('#overlay-modal')
 const $editmodal = document.querySelector('#custom-modal')
 const $showModal = document.querySelector('#btn-modal-editar')
+const $btnUpdate = document.querySelector('#btn-update')
 
 function renderTemplate(project) {
     return `
@@ -31,6 +32,9 @@ function renderTemplate(project) {
 $formUpdate.addEventListener('submit', async (event) => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
+    $btnUpdate.innerHTML = 'Cargando...'
+    $btnUpdate.disabled = true
+
     const response = await fetch(`/update-account/${formData.get('id')}`, {
         method: 'PUT',
         body: formData
