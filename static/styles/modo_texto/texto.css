@@ -8,19 +8,78 @@ body {
     margin: 0;
     padding: 0;
     width: 100%;
+    max-width: unset;
+    color: #fff;
+}
+
+.explorer-container {
+    display: grid;
+    grid-template-columns: 25% auto;
+}
+
+.sidenav-explorer {
+    padding: 18px;
+}
+
+.title-sidenav-explorer-menu {
+    color: #aaa;
+}
+
+.option-explorer {
+    display: flex;
+    padding: 8px;
+    cursor: pointer;
+    align-items: center;
+    gap: 0 5px;
+    color: #aaa;
+    transition: all ease-in-out 0.2s;
+}
+
+.icon-option {
+    background-color: #363342;
+    border-radius: 7px;
+    padding: 4px;
+}
+
+.option-explorer:hover {
+    color: #eee;
+}
+
+.option-explorer:hover .icon-option {
+    background-color: #0747f7;
+}
+
+.option-explorer:hover .icon-option svg path {
+    stroke: #fff;
+    fill: #fff;
+}
+
+.option-explorer.active {
+    color: #eee;
+}
+
+.option-explorer.active .icon-option {
+    background-color: #0747f7;
+}
+
+.option-explorer.active .icon-option svg path {
+    stroke: #fff;
+    fill: #fff;
+}
+
+.explorer {
+    padding: 18px;
 }
 
 .project img {
-    width: 100%;
-    max-width: 400px;
-    height: 300px;
+    width: auto;
+    height: 128px;
 }
 
 .projects-section {
     /*display: flex;
     flex-wrap: wrap;*/
     display: grid;
-    grid-template-columns: repeat(3, minmax(450px, 1fr));
     grid-gap: 5px;
     padding: 2%;
 }
@@ -31,7 +90,11 @@ body {
     margin-left: 5px;
     margin-right: 5px;
     margin-block-end: 10px;
-    padding: 0;
+    padding: 8px;
+    display: flex;
+    background-color: #262837;
+    overflow: hidden;
+    border-radius: 12px;
 }
 
 #conteinerImg:hover {
