@@ -3,6 +3,9 @@
     background-color: #252836;
 }
 
+label {
+    color: #eee;
+}
 
 .custom-container {
     width: 100%;
