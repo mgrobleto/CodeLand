@@ -19,7 +19,7 @@
                     <p>Menu</p>
                 </div>
                 <div class="options-explorer" title="Todos los proyectos, incluyendo los que estan por defecto">
-                    <div class="option-explorer active">
+                    <div class="option-explorer active" data-filter-projects="all">
                         <div class="icon-option">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M4 6C4 4.89543 4.89543 4 6 4H8C9.10457 4 10 4.89543 10 6V8C10 9.10457 9.10457 10 8 10H6C4.89543 10 4 9.10457 4 8V6Z" stroke="#999999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -30,7 +30,7 @@
                         </div>
                         <span>Todos</span>
                     </div>
-                    <div class="option-explorer" title="Los proyectos que estan por defecto en CodeLand">
+                    <div class="option-explorer" data-filter-projects="default" title="Los proyectos que estan por defecto en CodeLand">
                         <div class="icon-option">
                             <svg width="24" height="24" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M48 90.6667L64 74.9867C61.92 74.7733 60.3733 74.6667 58.6667 74.6667C44.4267 74.6667 16 81.8133 16 96V106.667H64L48 90.6667ZM58.6667 64C70.4533 64 80 54.4533 80 42.6667C80 30.88 70.4533 21.3333 58.6667 21.3333C46.88 21.3333 37.3333 30.88 37.3333 42.6667C37.3333 54.4533 46.88 64 58.6667 64Z" fill="#999999"/>
@@ -39,7 +39,7 @@
                         </div>
                         <span>Proyectos por defecto</span>
                     </div>
-                    <div class="option-explorer" title="Los proyectos de los estudiantes">
+                    <div class="option-explorer" data-filter-projects="user" title="Los proyectos de los estudiantes">
                         <div class="icon-option">
                             <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M9 6C9 7.65685 7.65685 9 6 9C4.34315 9 3 7.65685 3 6C3 4.34315 4.34315 3 6 3C7.65685 3 9 4.34315 9 6Z" fill="#999999"/>
@@ -57,7 +57,7 @@
             <div class="explorer-title">
                 <h3>Explorador (Todos los proyectos)</h3>
             </div>
-            <div class="projects-section">
+            <div class="projects-section" id="projects-section">
                 {% for project in db_project %}
                 <div class="project">
                     <img src="{{project['image_route']}}" id="conteinerImg">
@@ -84,7 +84,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-    window.scrollTo(0, 70);
-</script>
+<script src="/static/scripts/text_mode.js"></script>
 {% endblock %}

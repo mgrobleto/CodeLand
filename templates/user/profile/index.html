@@ -93,7 +93,7 @@
             <input class="form-control my-3" id="perfil" name="perfil" type="file">
         </div>
         <div class="input-container">
-            <label for="password_confirm">Confirmar contraseña</label>
+            <label for="password_confirm">Confirmar cambios (Escribe la contraseña)</label>
             <input class="form-control my-3" id="password_confirm" name="password_confirm" type="password">
         </div>
         <button type="submit" class="btn btn-primary" id="btn-update">Actualizar</button>
@@ -104,5 +104,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/scripts/profile.js"></script>
+<script src="/static/scripts/profile.js" type="module"></script>
 {% endblock %}
