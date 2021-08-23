@@ -139,6 +139,10 @@ h5 {
     .sidenav-explorer-title {
         display: none;
     }
+
+    .project {
+        display: block;
+    }
     
     .explorer-container {
         display: block;
