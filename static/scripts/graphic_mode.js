@@ -10,7 +10,7 @@ function templateProjectDefault(img, name) {
         <img src="${img}" id="conteinerImg">
         <div class="project-info">
             <h5>${name}</h5>
-            <a class="btn btn-primary" href="/static_projects/text_mode/${name}" role="button">Ver código</a>
+            <a class="btn btn-primary bezel-btn" href="/static_projects/text_mode/${name}" role="button">Ver código</a>
         </div>
     `)
 }
@@ -21,7 +21,7 @@ function templateProjectUser(img, author, projectName) {
             <div class="project-info">
                 <h5>${projectName}</h5>
                 <p style="color: #aaa;">${author}</p>
-                <a class="btn btn-primary" href="/project/${author}/${projectName}" role="button">Ver código</a>
+                <a class="btn btn-primary bezel-btn" href="/project/${author}/${projectName}" role="button">Ver código</a>
             </div>
     `)
 }
