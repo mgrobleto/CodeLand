@@ -63,7 +63,7 @@
                 <img src="{{project['image_route']}}" id="conteinerImg">
                 <div class="project-info">
                     <h5>{{project['program_title']}}</h5>
-                    <a class="btn btn-primary" href="/static_projects/text_mode/{{project['program_title']}}" role="button">Ver código</a>
+                    <a class="btn btn-primary bezel-btn" href="/static_projects/text_mode/{{project['program_title']}}" role="button">Ver código</a>
                 </div>
             </div>
             {% endfor %}
@@ -74,7 +74,7 @@
                 <div class="project-info">
                     <h5>{{project['project_name']}}</h5>
                     <p style="color: #aaa;">{{project['author']}}</p>
-                    <a class="btn btn-primary" href="/project/{{project['author']}}/{{project['project_name']}}" role="button">Ver código</a>
+                    <a class="btn btn-primary bezel-btn" href="/project/{{project['author']}}/{{project['project_name']}}" role="button">Ver código</a>
                 </div>
             </div>
             {% endfor %}
