@@ -1,6 +1,7 @@
 .main-container{
     background-image: linear-gradient(#551138 10%, #53114e 55%, #5b146f 100%);
 }
+
 #login-section {
     height: 100vh;
     width: 100%;
@@ -28,8 +29,6 @@
 }
 
 .form-section {
-    /*width: 90%;*/
-    /*max-width: 400px;*/
     margin: 40px 20px 20px;
 }
 
@@ -54,15 +53,15 @@
     max-width: 300px;
 }
 
-.container button {
+.login-desktop {
+    display: none;
+}
+
+.form-section button {
+    font-size: 18px;
     width: 100%;
     margin-top: 10px;
     max-width: 300px;
-}
-
-.btn {
-    font-size: 20px;
-    /*width: 100%;*/
 }
 
 .register-access {
@@ -92,10 +91,6 @@
         margin: auto;
     }
 
-    .btn {
-        font-size: 20px;
-    }
-
     .mx-2 {
         font-size: 20px;
     }
@@ -104,10 +99,6 @@
 @media (min-width:950px) {
 
     .form-container {
-        width: 80%;
-    }
-
-    .container .btn{
         width: 80%;
     }
 }

@@ -11,40 +11,42 @@
 {% block body %}
 <html>
   <body>
-    <div id="register-section">
-      <div class="register-container">
-        <div class="image-text-section">
-          <div class="register-img">
-            <img src="static\styles\register\img\coding.svg" role="img">
+    <section id="register-section">
+      <div class="container">
+        <div class="register-container">
+          <div class="image-text-section">
+            <div class="register-img">
+              <img src="static\styles\register\img\coding.svg" role="img">
+            </div>
+            <div class="text-section">
+              <h3> <b>Regístrate</b> </h3>
+              <p>Aprende, crea y comparte!</p>
+            </div>
           </div>
-          <div class="text-section">
-            <h3> <b>Regístrate</b> </h3>
-            <p>Aprende, crea y comparte!</p>
+          <div class="register-forms">
+            <form id="form" class="form-box">
+              <div class="mb-3">
+                <label for="username" class="form-label">Nombre de usuario</label>
+                <input type="text" name="username" class="form-control" id="username" placeholder="John Doe" aria-describedby="emailHelp">
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Correo electrónico</label>
+                <input type="email" name="email" class="form-control" id="email" placeholder="me@gmail.com" aria-describedby="emailHelp">
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" name="password" placeholder="Contraseña" class="form-control" id="password">
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Foto de perfil</label>
+                <input type="file" name="image" accept="image/png, image/jpeg" class="form-control" id="images">
+              </div>
+              <button type="submit" class="btn btn-primary">Registrarse</button>
+            </form>
           </div>
-        </div>
-        <div class="register-forms">
-          <form id="form">
-            <div class="mb-3">
-              <label for="username" class="form-label">Nombre de usuario</label>
-              <input type="text" name="username" class="form-control" id="username" placeholder="John Doe" aria-describedby="emailHelp">
-            </div>
-            <div class="mb-3">
-              <label for="email" class="form-label">Correo electrónico</label>
-              <input type="email" name="email" class="form-control" id="email" placeholder="me@gmail.com" aria-describedby="emailHelp">
-            </div>
-            <div class="mb-3">
-              <label for="password" class="form-label">Contraseña</label>
-              <input type="password" name="password" placeholder="Contraseña" class="form-control" id="password">
-            </div>
-            <div class="mb-3">
-              <label for="password" class="form-label">Foto de perfil</label>
-              <input type="file" name="image" accept="image/png, image/jpeg" class="form-control" id="images">
-            </div>
-            <button type="submit" id="register-btn" class="btn btn-primary">Registrarse</button>
-          </form>
         </div>
       </div>
-    </div>
+    </section>
   </body>
 </html>
 {% endblock %}
