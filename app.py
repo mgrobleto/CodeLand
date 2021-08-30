@@ -3,6 +3,7 @@ import json
 from utils.auth.login import login_token, isLogged
 from utils.schema.login import loginSchema
 from utils.schema.register import registerSchema
+import mimetypes
 
 # data transfer
 from io import BytesIO
@@ -78,6 +79,7 @@ config = {
 }
 STORAGE_BUCKET = config['storageBucket']
 
+mimetypes.add_type('application/javascript', '.js')
 app = Flask(__name__)
 
 app.secret_key = environ['SESSION_KEY']
@@ -1118,6 +1120,7 @@ def page_not_found(_):
 
 if __name__ == '__main__':
     if environ['FLASK_ENV'] == 'development':
+
         app.run(debug=True)
     else:
         app.run(debug=False)
