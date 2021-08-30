@@ -1,5 +1,4 @@
-import '/static/scripts/show_project/settings.js'
-import { getCookie } from "/static/scripts/show_project/libs/cookies.js";
+import { getCookie } from "/static/scripts/libs/cookies.js";
 import ListDir from "./listDirUI/listDir.js";
 import storage from './utils/storage.js'
 import reducer from "./reducer/index.js";
