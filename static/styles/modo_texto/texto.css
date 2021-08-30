@@ -177,6 +177,7 @@ h5 {
 
     .project img {
         max-width: unset;
+        width: auto;
         margin-left: auto;
         margin-right: auto;
     }
