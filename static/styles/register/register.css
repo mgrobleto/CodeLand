@@ -10,11 +10,12 @@
     font-family: Poppins;
 }
 
-.register-container {
+.container {
     width: 100%;
     padding-top: 10%;
-    /*padding-left: 5%;
-    padding-right: 10%;*/
+}
+
+.register-container {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -30,8 +31,6 @@
 }
 
 .register-img {
-    /*margin-top: 15%;*/
-    /*margin-left: auto;*/
     order: 2;
 }
 
@@ -57,57 +56,53 @@ p {
 
 .register-forms {
     font-size: 20px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 20px;
+    margin-right: 20px;
     /*margin-top: 6%;*/
-    display: flex;
-    flex-direction: column;
+    /*display: flex;
+    flex-direction: column;*/
 }
 
-#form {
+.form-box {
     color: #141414;
     font-weight: bold;
-    flex-basis: auto;
+    display: flex;
+    flex-direction: column;
     cursor: default;
-    position: relative;
     align-items: center;
-    padding: 2rem 1.80rem;
+    padding: 2rem;
     background-color: #fff;
     border-radius: 16px;
-    /*margin-top: 40px;*/
     box-shadow: 6px 13px 23px -5px rgba(0, 0, 0, 0.46);
 }
 
-.register-forms .mb-3 {
+.mb-3 {
     width: 100%;
     max-width: 300px;
 }
 
 .register-forms button {
+    font-size: 18px;
     width: 100%;
     max-width: 300px;
     margin-top: 10px;
 }
 
-.btn {
-    width: 100%;
-}
+@media (max-width: 992px) {
 
-@media (max-width: 768px) {
+    .container {
+        padding: 0;
+    }
 
     #register-section {
         height: 127vh;
     }
 
     .register-container {
-        /*display: initial;*/
         max-width: 400px;
         padding: 0;
-        /*padding-left: 0;
-        padding-right: 0;*/
         margin: auto;
         flex-direction: column;
-        justify-content: space-between;
     }
 
     .image-text-section {
@@ -141,22 +136,6 @@ p {
     }
 
     .register-forms {
-        width: 100%;
         max-width: 300px;
-        margin: auto;
-        margin-top: 5%;
-    }
-
-    #form {
-        margin: 0;
-    }
-
-    .mb-3 {
-        width: 80%;
-        /*max-width: 200px;*/
-    }
-
-    .btn {
-        width: 80%;
     }
 }
