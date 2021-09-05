@@ -1,9 +1,9 @@
 "use strict";
 import tabUI from "../tabUI/tab.js";
 import storage from "../utils/storage.js";
-import { setTab, deleteTab, activeTab } from "../action/index.js";
+import { setTab, deleteTab } from "../action/index.js";
 import { getCookie } from "../../libs/cookies.js";
-
+import { alertError } from '../../libs/alerts.js'
 
 /**
  * @param {Array} elements
@@ -98,6 +98,8 @@ function deleteFile(div, path, filename) {
                 tabRef.remove()
             }
             tabUI.render(storage.getStore())
+        } else {
+            alertError(responseJson.message)
         }
     })
 }
@@ -177,6 +179,7 @@ function addFolderContainer(isOwner, folderName, files = null, path) {
             const data = await response.json()
             console.log(data)
             if(!data.success) {
+                alertError(data.message)
                 console.log(data.message)
             }
             
@@ -347,6 +350,7 @@ class ListDirTemplate {
                 console.log(data)
                 if(!data.success) {
                     console.log(data.message)
+                    alertError(data.message)
                 }
                 
                 // Agrega una lista como la del método anterioe
@@ -499,6 +503,7 @@ class ListDirTemplate {
                 console.log(data)
                 if(!data.success) {
                     console.log(data.message)
+                    alertError(data.message)
                 }
                 
                 // Agrega una lista como la del método anterioe
