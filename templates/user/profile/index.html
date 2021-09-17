@@ -11,20 +11,44 @@
 <body class="main-container">
     <div class="custom-container">
         <section class="hero_profile">
-            <div class="my-5">
-                <h1>Hola, {{ user.username}}!</h1>
-                <small>{{ user['email'] }}</small>
-                <p>Se unió el {{ user.created_at.strftime('%d %b %Y') }}</p>
-                <div class="edit">
-                    <button id="btn-modal-editar" class="btn btn-primary">Editar</button>
+            <div class="profile">
+                <div class="user-image">
+                    {# <a href="/edit/{{user._id}}" class="btn btn-primary">Edit</a> #}
+                    <img src="{{user.cover}}" class="cover-image" alt="user profile" alt="">
+                </div>
+                <div class="user-profile-info">
+                    <h1>{{ user.username}}!</h1>
+                    <small>{{ user['email'] }}</small>
+                </div>
+                <!-- <p>Se unió el {{ user.created_at.strftime('%d %b %Y') }}</p> -->
+            </div>
+            <div class="progress-container">
+                <div class="progress-user">
+                    <span>Proyectos</span>
+                    <br>
+                    <div class="border-project">
+                        {{ user['projects_count'] }}
+                    </div>
+                </div>
+                <div class="progress-user">
+                    <span>Blogs</span>
+                    <br>
+                    <div class="border-project">
+                        {{ user['blogs_count'] }}
+                    </div>
+                </div>
+                <div class="progress-user">
+                    <span>Fragments</span>
+                    <br>
+                    <div class="border-project">
+                        {{ user['fragments_count'] }}
+                    </div>
                 </div>
             </div>
-            <div class="user-image">
-                {# <a href="/edit/{{user._id}}" class="btn btn-primary">Edit</a> #}
-                <img src="{{user.cover}}" alt="user profile" alt="">
+            <div class="edit">
+                <button id="btn-modal-editar" class="btn btn-primary">Editar</button>
             </div>
         </section>
-    
     
         <section class="user-projects">
             <h3>Agrega un proyecto</h3>

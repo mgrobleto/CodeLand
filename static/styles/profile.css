@@ -1,6 +1,6 @@
 .main-container{
     min-height : 100vh;
-    background-color: #252836;
+    background-color: #1f2937;
 }
 
 label {
@@ -8,54 +8,75 @@ label {
 }
 
 .custom-container {
-    width: 100%;
+    width: 90%;
+    margin: 0 auto;
     /*padding-block-end: 12%;
     padding-top: 2%;*/
     /*margin: 0 auto;*/
    
 }
-h1,h2,h3,h4,h5,p,small{
+h1,h2,h3,h4,h5,p{
     color: whitesmoke !important;
 }
 .card-title,.card-text{
     color: black !important;
 }
-.user-image img {
-    width: 20vw;
-    height: auto;
-    border-radius: 50%;
-    
-}
-.user-image{
-    width: 50%;
-    margin-right: 3%;
-}
 
 .hero_profile {
-    margin: 20px 0;
-    width:50%;
+    margin: 40px 0;
 }
-@media screen and (max-width:700px)  {
-    .hero_profile{
-        text-align:center;
-        justify-content: center;
-        width: 100%;
-    }
-    .user-image img {
-        width: 80%;
-        margin-left: 55%;
-    }
-    .user-projects{
-        text-align:center;
-        justify-content: center;
-        width: 100%;
-    }
-    .card{
-        text-align:center !important;
-        justify-content: center !important;
-        width: 60% !important;
-        margin-left: 20%;
-    }
+
+.profile {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0 20px;
+}
+
+.user-image {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.cover-image {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #eee;
+}
+
+.user-profile-info {
+    text-align: left;
+}
+
+.user-profile-info h1 {
+    font-weight: bold;
+}
+
+.user-profile-info small {
+    color: rgb(156,163,175);
+}
+
+.progress-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.progress-user {
+    color: #eee;
+    background-color: #2a3648;
+    padding: .75rem;
+    margin: 40px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 33.3%;
+}
+
+.border-project {
+    border-left: 4px solid rgb(29, 78, 216);
+    padding-left: .5rem;
 }
 
 @media screen and (min-width: 996px) {
@@ -66,7 +87,6 @@ h1,h2,h3,h4,h5,p,small{
     .hero_profile {
         display: flex;
         justify-content: space-evenly;
-        flex-direction: row-reverse;
     }
     
     .row {

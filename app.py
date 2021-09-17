@@ -189,7 +189,7 @@ def list_dir(route):
                 info['files'] = []
 
             info['path'] = path_dir
-            print(routes)
+            # print(routes)
         if(filename):
             (info['files']).append(filename)
 
@@ -298,7 +298,7 @@ def before_request():
             token = request.cookies.get('USER_TOKEN')
             get_info = isLogged(token)
             if get_info.get('success'):
-                print(get_info)
+                # print(get_info)
                 data = get_info.get('info')
 
                 if(get_info.get('success')):
@@ -318,7 +318,7 @@ def home():
 
     return render_template('index.html', user=user)
 
-auths(app, mongo)
+auths(app, mongo, bucket)
 # @app.route('/login', methods=['GET', 'POST'])
 # def login():
 #     admin_token = isLogged('ADMIN_TOKEN')
@@ -393,7 +393,7 @@ def update_profile(user_id):
                 { "email": email },
         ]})
         findUser = list(findUsers_cursor)
-        print(findUser)
+        # print(findUser)
 
         if len(findUser) >= 1 and (findUser[0]['_id'] != ObjectId(user_info['user_id'])):
             return jsonify({"success": False, 'message': 'Ya existe un usuario con ese nombre o email'})
@@ -434,7 +434,7 @@ def update_profile(user_id):
                 # blob.make_public()
                 newInfo['cover'] = blob.public_url
                 newImage = blob.public_url
-                print('Hi')
+                # print('Hi')
             else:
                 return jsonify({"success": False, 'message': 'error mimetype'})
 
@@ -473,7 +473,7 @@ def addProject():
 
     if request.method == 'POST':
         if user_payload['success'] and user_info['user_id']:
-            print(request.files)
+            # print(request.files)
             if 'files' not in request.files:
                 flash('No file')
                 return jsonify({'success': False, 'message': 'No file'})
@@ -513,13 +513,14 @@ def addProject():
 
             project_id = ObjectId()
 
-            image_url = 'project_image/' + project_id.__str__() + '.' + image.name.split('.')[-1]
+            image_url = 'project_image/' + project_id.__str__() + '.' + image.filename.split('.')[-1]
 
             upload_image = bucket.blob(image_url)
             upload_image.upload_from_string(image.read(), content_type=image.content_type)
             upload_image.make_public()
 
             mongo.db.projects.insert({"_id": project_id, "project_name": project_name, 'author': user_info.get('username'), "description": description, 'mode': modo, "users_id": ObjectId(user_info.get('user_id')), "path": directory, **timestamp(), "image": upload_image.public_url, "files": file_names, "github": github_url})
+            mongo.db.users.update_one({'_id': ObjectId(user_info.get('user_id'))}, {'$inc': {'projects_count': 1}})
             
             return jsonify({'success': True, 'message': 'Proyecto creado'})
         else:
@@ -595,7 +596,8 @@ def delete_project():
         find_project = mongo.db.projects.find_one({'_id': project_id})
 
         if find_project['users_id'] == ObjectId(user_info.get('user_id')):
-            project = mongo.db.projects.find_one_and_delete({ 'users_id': ObjectId(user_info.get('user_id')), '_id': project_id}, {'_id': False, 'image': False, 'users_id': False})
+            project = mongo.db.projects.find_one_and_delete({ 'users_id': ObjectId(user_info.get('user_id')), '_id': project_id})
+            mongo.db.users.update_one({'_id': ObjectId(user_info.get('user_id'))}, {'$inc': {'projects_count': -1}})
         else:
             return jsonify({'success': False, 'message': 'No tienes permisos', "error": 403})
 
@@ -603,6 +605,11 @@ def delete_project():
             return jsonify({'success': False, 'message': 'No existe el proyecto', "error": 404})
 
         delete_project_storage(project['path'])
+
+        # delete image in bucket
+        image_ext = project['image'].split('/')[-1].split('.')[-1]
+        bucket.blob(f'project_image/{project["_id"]}.{image_ext}').delete()
+
         data_cursor = mongo.db.projects.find({ 'users_id': ObjectId(user_info.get('user_id'))})
         data_list = []
         for doc in data_cursor:
@@ -620,8 +627,8 @@ def delete_project():
                 'github': doc['github']
             })
         # data = dumps(data_list,default=json_util.default, ensure_ascii=False).encode('utf-8')
-
-        return jsonify({ 'data': data_list, 'delete_info': project }), 200
+        keys = {'_id', 'image', 'users_id'}
+        return jsonify({ 'data': data_list, 'delete_info': {x: project[x] for x in project if x not in keys  } }), 200
     else:
         return jsonify({'success': False, 'message': 'No tienes permisos', "error": 403})
 
@@ -659,8 +666,8 @@ def addFileOrFolder(project_id):
             return jsonify({'success': False, 'message': 'No existe el proyecto', "error": 404})
         else:
             if request.method == 'PUT':
-                print(request.form.get('folder-path'))
-                print(request.form.get('folder-name'))
+                # print(request.form.get('folder-path'))
+                # print(request.form.get('folder-name'))
                 path = request.form.get('folder-path') + request.form.get('folder-name') + '/'
                 blob = bucket.blob(path)
                 blob.upload_from_string('', content_type='application/x-www-form-urlencoded;charset=UTF-8')
@@ -672,8 +679,8 @@ def addFileOrFolder(project_id):
                 file = request.files['file']
                 path = request.form.get('path') + file.filename
                 blob = bucket.blob(path)
-                print(path)
-                print(blob)
+                # print(path)
+                # print(blob)
                 if blob.exists():
                     return jsonify({'success': False, 'message': 'Ya existe un archivo con este nombre', "error": 403})
                 else:
