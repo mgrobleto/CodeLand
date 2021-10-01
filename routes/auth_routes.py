@@ -2,10 +2,15 @@ from utils.schema.register import registerSchema
 from utils.schema.login import loginSchema
 from flask import request, jsonify, make_response, redirect, render_template, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from utils.auth.login import login_token, isLogged
+from services.user.auth import login_token, isLogged
 from bson.objectid import ObjectId
 
-def auths(app, mongo, bucket):
+from services.user import find_user, add_user, add_user_image
+
+# Actualización del tiempo
+import datetime
+
+def auths(app):
     # Cada vez que se crea algo, se añade el tiempo en que se creo
     def timestamp():
         return {"created_at": datetime.datetime.now(datetime.timezone.utc), "updated_at": datetime.datetime.now(datetime.timezone.utc)}
@@ -30,7 +35,7 @@ def auths(app, mongo, bucket):
 
             if not validation['success']:
                 return jsonify(validation)
-            user = mongo.db.users.find_one({
+            user = find_user({
                 'email': email
             })
 
@@ -73,12 +78,8 @@ def auths(app, mongo, bucket):
             if not validation['success']:
                 return jsonify(validation)
 
-            find_user = mongo.db.users.find_one({
-                '$or': [
-                    { "email": email },
-                ]
-            }) # busca un usuario donde uno de esos dos campos tenga ese valor
-            if find_user != None:
+            findUser = find_user({ "email": email }) # busca un usuario donde uno de esos dos campos tenga ese valor
+            if findUser != None:
                 return jsonify({"success": False, 'message': f'{email} ya existe'})
 
             file = request.files['image']
@@ -100,12 +101,10 @@ def auths(app, mongo, bucket):
             user_id = ObjectId()
             image_url = 'user_image/' + user_id.__str__() + f'.{extension_image}'
 
-            blob = bucket.blob(image_url)
-            blob.upload_from_string(image_data, content_type=mimetype)
-            blob.make_public()
+            submit_image = add_user_image(image_url, image_data, mimetype)
 
-            user = mongo.db.users.insert( # inserta un usuario
-                {"_id": user_id, "username": username, "password": password, "email": email, "cover": blob.public_url, **timestamp()})
+            user = add_user( # inserta un usuario
+                {"_id": user_id, "username": username, "password": password, "email": email, "cover": submit_image, **timestamp()})
 
             print('created')
             resp = make_response(jsonify({"success": True, 'message': 'Usuario creado con éxito'}))
@@ -115,8 +114,21 @@ def auths(app, mongo, bucket):
             resp.set_cookie('username', username)
             resp.set_cookie('email', email, httponly=True)
             resp.set_cookie('user_id', user.__str__(), httponly=True)
-            resp.set_cookie('user_image', blob.public_url, httponly=True)
+            resp.set_cookie('user_image', submit_image, httponly=True)
 
             return resp
 
         return render_template('auth/register/index.html')
+    
+    @app.route('/logout')
+    def logout():
+        resp = make_response(redirect('/login'))
+        resp.set_cookie('USER_TOKEN', expires=0)
+        resp.set_cookie('username', expires=0)
+        resp.set_cookie('email', expires=0)
+        resp.set_cookie('user_id', expires=0)
+        resp.set_cookie('user_image', expires=0)
+        resp.set_cookie('project_path', expires=0)
+        flash(f'Session closed') 
+        return resp
+

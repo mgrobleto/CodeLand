@@ -10,7 +10,8 @@
 }
 
 .ilustracion {
-    width: 390px;
+    max-width: 390px;
+    width: 100%;
 }
 
 .form-project {
@@ -45,10 +46,8 @@
     transform: translate(-100%, 0);
 }
 
-.project-basic-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
+.select-option {
+    margin-top: 20px;
 }
 
 .title-project, .select-option {
@@ -306,4 +305,12 @@ input[type="file"]:hover {
 
 .bar-progress.sent {
     width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+    .project-basic-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;    
+    }
 }

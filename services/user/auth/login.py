@@ -3,31 +3,6 @@ from os import environ
 from flask import request
 import datetime
 
-# econded = jwt.encode({ "some": "payload" },'secret', algorithm='HS256')
-# print(econded)
-
-# decode = jwt.decode(econded, 'secret', algorithms=['HS256'])
-
-# print(decode)
-
-# create a function that will be called when the user is logged and validated with the JWT token
-
-# def login_required(f):
-#     @wraps(f)
-#     def decorator(*args, **kwargs):
-#         auth_token = request.headers.get('Authorization')
-#         if auth_token:
-#             try:
-#                 payload = jwt.decode(auth_token, environ['KEY_JWT'], algorithms=['HS256'])
-#             except jwt.ExpiredSignatureError:
-#                 return jsonify({'message': 'Token has expired, please log in again'}), 401
-#             except jwt.InvalidTokenError:
-#                 return jsonify({'message': 'Invalid token, please log in again'}), 401
-#             return f(*args, **kwargs)
-#         else:
-#             return jsonify({'message': 'You are not logged in'}), 401
-
-#     return decorator
 def login_token(username, email, user_id):
     payload = {
         'username': username,
