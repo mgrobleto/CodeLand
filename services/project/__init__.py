@@ -1,6 +1,5 @@
-from services.project.files_and_dirs import get_file_data, list_dir
-from services.project.find_project import find_project
-from services.project.delete_project import delete_project_storage
-from services.project.find_static_project import find_static_project
-from services.project.download_project import download_project
-from services.project.update_many_project import update_many_project
+from services.project.folder_action import add_folder, list_dir
+from services.project.files_action import delete_file, add_file, get_file_data
+from services.project.project_action import add_project, download_project, get_projects, update_many_project,\
+     update_project, delete_project_storage, delete_project, get_static_projects, find_project,\
+     find_static_project, download_static_project

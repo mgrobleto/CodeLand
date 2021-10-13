@@ -3,8 +3,7 @@ from services.project import list_dir, get_file_data
 
 from services.documentation import find_document
 from services.fragments import find_ejemplos
-from services.project import find_static_project, find_project
-
+from services.project import get_projects, get_static_projects
 
 def examples(app):
     #para la parte de documentacion
@@ -43,8 +42,8 @@ def examples(app):
     @app.route('/examples/intro')
     def text_mode():
 
-        db_project = find_static_project({'mode': 'text_mode'})
-        db_project_user = find_project({"mode": "text_mode"})
+        db_project = get_static_projects({'mode': 'text_mode'})
+        db_project_user = get_projects({"mode": "text_mode"})
 
         if db_project is None:
             return render_template('404.html'), 404
@@ -54,8 +53,8 @@ def examples(app):
     #Cuando se consulte en el modo grafico
     @app.route('/examples/node')
     def graphic_mode():
-        db_project = find_static_project({'mode': 'graphic_mode'})
-        db_project_user = find_project({"mode": "graphic_mode"})
+        db_project = get_static_projects({'mode': 'graphic_mode'})
+        db_project_user = get_projects({"mode": "graphic_mode"})
 
         return render_template("graphic_mode/graphic.html", db_project=db_project, db_project_user=db_project_user)
 

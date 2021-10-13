@@ -1,45 +1,17 @@
-# Manejo de markdown para colorear el code
-from markdown import markdown
-import markdown.extensions.fenced_code
-import markdown.extensions.codehilite
-from pygments.formatters import HtmlFormatter
-
 from libs.cloud_storage import Cloud_Storage
 
-def get_file_data(path_file, file, file_ext):
+def add_folder(path):
     bucket = Cloud_Storage().bucket
 
-    if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
-        code = bucket.blob(f'{path_file}{file}').download_as_string().decode('utf-8')
-        code_md = f'```{file_ext}\n{code}\n```'
+    blob = bucket.blob(path)
+    
+    if blob.exists():
+        return False
 
-        md_template_string = markdown.markdown(
-        code_md, extensions=["fenced_code", "codehilite"]
-        )
-        formatter = HtmlFormatter(style="monokai", full=True, cssclass="codehilite")
+    blob.upload_from_string('', content_type='application/x-www-form-urlencoded;charset=UTF-8')
 
-        css_string = formatter.get_style_defs()
+    return blob
 
-        return {
-            "code": {    
-                "html": f'{md_template_string}',
-                "css": f'{css_string}',
-            },
-            'file_ext': file_ext,
-            'type': 'code'
-        }
-    else:
-        code = bucket.blob(f'{path_file}{file}')
-        image = code.public_url
-        info = {
-            'file_ext': file_ext,
-            'type': 'image'
-        }
-        return {
-            'code': None,
-            'image': image,
-            'info': info,
-        }
 
 def list_dir(route):
     bucket = Cloud_Storage().bucket

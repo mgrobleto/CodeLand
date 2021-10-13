@@ -104,7 +104,11 @@ def auths(app):
             submit_image = add_user_image(image_url, image_data, mimetype)
 
             user = add_user( # inserta un usuario
-                {"_id": user_id, "username": username, "password": password, "email": email, "cover": submit_image, **timestamp()})
+                {
+                    "_id": user_id, "username": username, "password": password,
+                    "blogs_count": 0, "fragments_count": 0, "projects_count": 0,
+                    "email": email, "cover": submit_image, **timestamp()
+                })
 
             print('created')
             resp = make_response(jsonify({"success": True, 'message': 'Usuario creado con éxito'}))

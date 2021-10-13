@@ -18,9 +18,6 @@ label {
 h1,h2,h3,h4,h5,p{
     color: whitesmoke !important;
 }
-.card-title,.card-text{
-    color: black !important;
-}
 
 .hero_profile {
     margin: 40px 0;
@@ -77,6 +74,31 @@ h1,h2,h3,h4,h5,p{
 .border-project {
     border-left: 4px solid rgb(29, 78, 216);
     padding-left: .5rem;
+}
+
+.project-list {
+    display: flex;
+    gap: 0 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.card {
+    flex: 0 0 auto;
+}
+
+.card-title,.card-text{
+    color: black !important;
+}
+
+.card-body, .card-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.image-fragment {
+    background-color: #111;
 }
 
 @media screen and (min-width: 996px) {
