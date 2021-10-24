@@ -73,8 +73,16 @@ def update_user_image(name, new_name, image, mimetype):
 
 def update_user(filter, query):
     mongo = Mongodb().client
+    keys = list(query.keys())
+    query2 = {}
 
-    user = mongo.db.users.find_one_and_update(filter, {
-        '$set': query
-    })
+    for key in keys:
+        if key == 'inc' and query2.get('$inc') == None:
+            query2['$inc'] = query[key]
+        if key == 'set' and query2.get('$set') == None:
+            query2['$set'] = query[key]
+
+    user = mongo.db.users.find_one_and_update(filter, query2)
+
+    
     return user

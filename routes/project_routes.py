@@ -3,10 +3,11 @@ from bson.objectid import ObjectId
 from flask import request, flash, jsonify, render_template, make_response, redirect
 from werkzeug.utils import secure_filename
 
-from services.project import get_file_data, list_dir, delete_project_storage,\
-    find_project, get_projects, get_static_projects,\
-    add_project, update_project, delete_project,\
-    add_folder, add_file, delete_file
+from services.project import find_project, get_projects, get_static_projects,\
+    add_project, update_project, delete_project
+
+from services.storage import get_file_data, list_dir, delete_project_storage, add_folder,\
+     add_file, delete_file
 
 from services.user import update_user
 from services.user.auth import isLogged
@@ -156,7 +157,7 @@ def project(app):
 
             if _find_project['users_id'] == ObjectId(user_info.get('user_id')):
                 project = delete_project({ 'users_id': ObjectId(user_info.get('user_id')), '_id': project_id})
-                update_user({'_id': ObjectId(user_info.get('user_id'))}, {'$inc': {'projects_count': -1}})
+                update_user({'_id': ObjectId(user_info.get('user_id'))}, {'inc': {'projects_count': -1}})
             else:
                 return jsonify({'success': False, 'message': 'No tienes permisos', "error": 403})
 
@@ -204,7 +205,6 @@ def project(app):
             if user_payload['success'] and user_info['user_id']:
                 # print(request.files)
                 if 'files' not in request.files:
-                    flash('No file')
                     return jsonify({'success': False, 'message': 'No file'})
 
                 modo = request.form.get('project_mode')
@@ -216,8 +216,17 @@ def project(app):
                 description = request.form.get('description')
                 github_url = request.form.get('github_url')
 
-                image = request.files['image']
-                file_names = []
+                image = request.files.get('image')
+
+                if project_name is None or project_name == '':
+                    return jsonify({'success': False, 'message': 'El nombre del proyecto no puede estar vacio'})
+                
+                if description is None or description == '':
+                    return jsonify({'success': False, 'message': 'La descripcion del proyecto no puede estar vacia'})
+
+                if image is None:
+                    return jsonify({'success': False, 'message': 'No se ha seleccionado una imagen'})
+
                 # print(session.get('user_id'))
                 directory = path_join('project', user_info.get('user_id'), modo, project_name)
 
@@ -231,7 +240,6 @@ def project(app):
                     if file and allowed_file(file.filename):
                         filename = secure_filename(file.filename)
                         add_file(directory + filename, file, file.content_type)
-                        file_names.append(filename)
 
                 project_id = ObjectId()
 
@@ -240,8 +248,8 @@ def project(app):
                 upload_image = add_file(image_url, image, image.content_type)
                 upload_image.make_public()
 
-                add_project({"_id": project_id, "project_name": project_name, 'author': user_info.get('username'), "description": description, 'mode': modo, "users_id": ObjectId(user_info.get('user_id')), "path": directory, **timestamp(), "image": upload_image.public_url, "files": file_names, "github": github_url})
-                update_project({'_id': ObjectId(user_info.get('user_id'))}, {'$inc': {'projects_count': 1}})
+                add_project({"_id": project_id, "project_name": project_name, 'author': user_info.get('username'), "description": description, 'mode': modo, "users_id": ObjectId(user_info.get('user_id')), "path": directory, **timestamp(), "image": upload_image.public_url, "github": github_url})
+                update_user({'_id': ObjectId(user_info.get('user_id'))}, {'inc': {'projects_count': 1}})
                 
                 return jsonify({'success': True, 'message': 'Proyecto creado'})
             else:
@@ -249,8 +257,8 @@ def project(app):
 
         return render_template('user/addCode.html')
 
-    @app.route('/is-owner/<project_id>')
-    def isOwner(project_id):
+    @app.route('/is-owner/project/<project_id>')
+    def isOwnerProject(project_id):
         # GET project_id and verify if the user is the owner in mongodb
         user_payload = isLogged('USER_TOKEN')
         if not user_payload['success']:

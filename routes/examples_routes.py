@@ -1,5 +1,5 @@
 from flask import render_template, request, jsonify
-from services.project import list_dir, get_file_data
+from services.storage import list_dir, get_file_data
 
 from services.documentation import find_document
 from services.fragments import find_ejemplos

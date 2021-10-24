@@ -10,21 +10,21 @@
 
 {% block body %}
 
-<form class="form-project-container container-fluid" method="POST" id="form">
+<form class="form-fragment-container container-fluid" method="POST" id="form">
 	<section class="title">
 		<h2>Comparte tu proyecto con los demas estudiantes!</h2>
 		<img class="ilustracion" src="/static/images/share.svg" alt="Comparte tu código con los demas">
 	</section>
-	<div class="form-project">
-		<div class="project-info-1 no-translate">
-			<div class="project-basic-info">
-				<div class="title-project">
+	<div class="form-fragment">
+		<div class="fragment-info-1 no-translate">
+			<div class="fragment-basic-info">
+				<div class="title-fragment">
 					<label for="inputName" class="col-sm-2 col-form-label">Nombre del Fragment</label>
 					<div class="col-sm-10">
-						<input type="text" name="projectName" class="form-control" id="inputName" required>
+						<input type="text" name="fragmentName" class="form-control" id="inputName" required>
 					</div>
 				</div>
-				<div class="description-project">
+				<div class="description-fragment">
 					<label for="inputDescription" class="col-form-label">Descripción</label>
 					<div class="">
 						<input type="text" name="description" class="form-control" id="inputDescription">
@@ -33,12 +33,12 @@
 			</div>
 			<div class="select-option">
 				<div class="list-file">
-					<div class="file-project files">
+					<div class="file-fragment files">
 						<img src="/static/icons/file-btn-icon.svg" alt="archivo">
 						<span>Archivo por defecto</span>
-						<input class="input-file-project" id="files" title="Agrega archivos por defecto y luego añade más" name="files" multiple type="file" required>
+						<input class="input-file-fragment" id="files" title="Agrega archivos por defecto y luego añade más" name="files" multiple type="file" required>
 					</div>
-					<div class="project-file-list">
+					<div class="fragment-file-list">
 						<div class="sidebar-files"></div>
 						<div id="list-files">
 						</div>
@@ -50,7 +50,7 @@
 			</div>
 			<div class="next">
 				<div class="next-container" align="center">
-					<button type="button" class="btn btn-primary next-option" id="send-option">Enviar</button>
+					<button type="submit" class="btn btn-primary next-option" id="send-option">Enviar</button>
 				</div>
 			</div>
 		</div>

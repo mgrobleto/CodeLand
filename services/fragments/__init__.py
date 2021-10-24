@@ -1,3 +1,2 @@
-from services.fragments.find_ejemplo import find_ejemplos
-from services.fragments.find_fragment import find_fragment
-from services.fragments.download_example import download_examples
+from services.fragments.fragment_action import find_ejemplos, find_fragment, download_examples,\
+    add_fragment

@@ -6,7 +6,7 @@ import markdown.extensions.codehilite
 from pygments.formatters import HtmlFormatter
 
 def allowed_file(filename):
-    ALLOWED_EXTENSIONS = {'txt', 'c', 'js', 'py', 'html', 'h', 'png', 'jpg', 'jpeg', 'gif'}
+    ALLOWED_EXTENSIONS = {'txt', 'c', 'js', 'py', 'html', 'h', 'png', 'jpg', 'jpeg', 'gif', 'docx', 'doc'}
     return '.' in filename and \
            filename.rsplit('.', 1)[-1].lower() in ALLOWED_EXTENSIONS
 
@@ -15,7 +15,8 @@ def delete_file(path):
 
     blob = bucket.blob(path)
     if blob.exists():
-        return blob.delete()
+        blob.delete()
+        return True
 
     return None
 

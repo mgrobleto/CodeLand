@@ -1,30 +1,40 @@
 'use strict'
 import { alertError, alertSuccess } from './libs/alerts.js'
 
-const $formDelete = document.querySelectorAll('#delete-project')
+const $formDeleteProject = document.querySelectorAll('#delete-project')
 const $formUpdate = document.querySelector('#edit-info')
 const $project = document.querySelector('#projects')
 const $overlayModal = document.querySelector('#overlay-modal')
 const $editmodal = document.querySelector('#custom-modal')
 const $showModal = document.querySelector('#btn-modal-editar')
 const $btnUpdate = document.querySelector('#btn-update')
+const projectCount = document.querySelector('#project-count')
+const fragmentCount = document.querySelector('#fragment-count')
 
 function renderTemplate(project) {
     return `
-    <div class='col col-lg-4'>
     <div class='card' style='width: 18rem;'>
-        <img src="${project.image}" alt="${project.project_name}">
+        <img src="${project.image}" alt="${project.title}">
         <div class='card-body'>
             <h5 class='card-title'>${project.project_name}</h5>
             <p class='card-text'>
-                ${project.description}
+            ${project.description}
             </p>
-            <a href='/project/${project.author}/${project.project_name}' class='btn btn-primary'>Ver y editar</a>
-            <form id="delete-project">
-                <input type="hidden" name="id" value="${project._id}">
-                <button class='btn btn-danger'>Borrar proyecto</button>
-            </form>
+        <div class="d-flex" id="project-main-container">
+            <div class="col-4">
+                <a href='/project/${user.username}/${project.project_name}' class='btn bi bi-pencil-fill'></a>
+            </div>
+            <div class="col-4">
+                <form id="delete-project">
+                    <input type="hidden" name="id" value="${project._id}">
+                    <button class="btn bi bi-trash-fill btn-delete"></button>
+                </form>
+            </div>
+            <div class="col-4">
+                <a class='btn bi bi-file-arrow-down-fill' href="/download-project/${project._id}" download></a>
+            </div>
         </div>
+        
     </div>
 </div>
     `.trim()
@@ -56,7 +66,7 @@ $formUpdate.addEventListener('submit', async (event) => {
     }
 })
 
-$formDelete.forEach(function ($form) {
+$formDeleteProject.forEach(function ($form) {
     $form.addEventListener('submit', async (event) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
@@ -73,6 +83,7 @@ $formDelete.forEach(function ($form) {
             code += renderTemplate(project)
         }
         $project.innerHTML = code
+        projectCount.innerHTML = projectCount.innerHTML - 1
     })
 })
 

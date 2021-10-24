@@ -4,29 +4,33 @@ const $form = document.querySelector('#form')
 const $btnSend = document.querySelector('#send-option')
 const $inputFiles = document.querySelector('#files')
 const $listFiles = document.querySelector('#list-files')
+import { alertError } from './libs/alerts.js'
 
 $form.addEventListener('submit', async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    console.log('asdsa')
 
-    const formData = new FormData(e.currentTarget)
-    formData.set('projectName', formData.get('projectName').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\\/:"*?<>|]/g, ''))
+    $btnSend.setAttribute('disabled', 'disabled')
+    $btnSend.innerHTML = 'Enviando...'
     
-    console.log(formData.get('project_mode'))
-
-    const barProgress = document.querySelector('#bar-progress')
-    barProgress.classList.add('sending')
-    const response = await fetch('/add-project', {
+    const formData = new FormData(e.currentTarget)
+    formData.set('fragmentName', formData.get('fragmentName').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\\/:"*?<>|]/g, ''))
+    
+    
+    const response = await fetch('/add-fragment', {
         method: 'POST',
         body: formData
     })
     const data = await response.json()
-    barProgress.classList.remove('sending')
-    barProgress.classList.add('sent')
     // const username = getCookie('username')
-
+    
     console.log(data)
     if (data.success) {
         window.location.pathname = '/profile'
+    } else {
+        alertError(data.message)
+        $btnSend.removeAttribute('disabled')
+        $btnSend.innerHTML = 'Enviar'
     }
     
 })
@@ -44,8 +48,4 @@ $inputFiles.addEventListener('change', (event) => {
     } else {
         const para = document.createElement('p')
     }
-})
-
-$btnSend.addEventListener('click', (e) => {
-    $btnSend.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'
 })

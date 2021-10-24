@@ -42,7 +42,15 @@ def find_project(query):
 
 def update_project(filter, query):
     mongo = Mongodb().client
-    projects = mongo.db.projects.update_one(filter, query)
+    keys = list(query.keys())
+    query2 = {}
+
+    for key in keys:
+        if key == 'inc' and query2.get('$inc') == None:
+            query2['$inc'] = query[key]
+        if key == 'set' and query2.get('$set') == None:
+            query2['$set'] = query[key]
+    projects = mongo.db.projects.update_one(filter, query2)
 
     return projects
 
@@ -55,12 +63,6 @@ def update_many_project(filter, data):
     
     return user
 
-
-def delete_project_storage(path):
-    bucket = Cloud_Storage().bucket
-    blobs = bucket.list_blobs(prefix=path)
-    for blob in blobs:
-        blob.delete()
 
 def delete_project(query):
     mongo = Mongodb().client

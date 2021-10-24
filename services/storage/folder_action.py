@@ -57,3 +57,11 @@ def list_dir(route):
             (info['files']).append(filename)
 
     return data
+
+
+def delete_project_storage(path):
+    bucket = Cloud_Storage().bucket
+    blobs = bucket.list_blobs(prefix=path)
+    for blob in blobs:
+        blob.delete()
+        

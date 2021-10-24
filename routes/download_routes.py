@@ -2,9 +2,9 @@ from bson.objectid import ObjectId
 from flask import send_file
 
 from services.fragments import find_ejemplos
-from services.project import find_static_project
+from services.project import find_static_project,\
+    find_project, find_static_project, download_project, download_static_project
 
-from services.project import find_project, find_static_project, download_project, download_static_project
 from services.fragments import download_examples
 
 def downloads(app):

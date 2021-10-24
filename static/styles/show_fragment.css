@@ -1,0 +1,520 @@
+.ide-container {
+    --background-color: #071c34;
+    --background-code: rgb(11, 16, 21);
+    --background-header-ide: rgb(17, 24, 32);
+    background-color: var(--background-color);
+    display: grid;
+    grid-template-columns: min-content minmax(0, min-content) auto;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+.ide-container::-webkit-scrollbar {
+    width: 0;
+}
+
+.project-file {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    grid-gap: 15px;
+}
+
+.item-filename {
+    padding: 12px;
+    color: #eee;
+    background-color: #09f;
+    cursor: pointer;
+}
+
+.header_code {
+    display: flex;
+    align-items: stretch;
+    white-space: nowrap;
+    border: 1px solid gray;
+    background-color: var(--background-header-ide);
+    overflow: auto hidden;
+}
+
+.group-tab {
+    padding: 10px;
+    gap: 6px;
+    display: flex;
+}
+
+.circle {
+    border-radius: 50%;
+    width: 1px;
+    height: 1px;
+    cursor: pointer;
+}
+
+.editor-group {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+    overflow-x: auto;
+    width: -webkit-fill-available;
+    gap: 0 12px;
+}
+
+.editor-group::-webkit-scrollbar {
+    width: 0px;
+    height: 0;
+}
+
+.tab {
+    height: 100%;
+    color: #fff;
+    cursor: pointer;
+    flex-wrap: wrap;
+    padding: 2px 8px;
+    display: inline-block;
+}
+
+.tab.active {
+    border-bottom: 1px solid rgb(255, 141, 3);
+    color: #09f;
+}
+
+.close-tab {
+    margin-right: 8px;
+}
+
+.close-tab i img {
+    width: 12px;
+}
+
+.close-tab,
+.filename {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+}
+
+.filename p {
+    font-size: 13px;
+    margin-bottom: 0;
+}
+
+.sidenav-editor {
+    width: min-content;
+    font-family: Nunito;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: rgba(8, 11, 15);
+    overflow: hidden;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.sidenav-editor::-webkit-scrollbar {
+    width: 0;
+}
+
+.menu {
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: calc(0.5rem + 6px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px 0;
+}
+
+.btn.open-option-menu {
+    padding: 6px;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    height: 53px;
+}
+
+.btn.open-option-menu svg {
+    width: 28px;
+    height: 28px;
+}
+
+.btn.open-option-menu:hover svg path {
+    fill: #fff;
+}
+
+.open-option-menu.is-active {
+    background-color: #09f;
+}
+
+.open-option-menu.is-active svg path {
+    fill: #eee;
+}
+.menu-options {
+    /* width: auto; */
+    overflow: hidden auto;
+    background-color: rgba(8, 11, 15);
+}
+
+.menu-options::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+.explorer-option-container,
+.info-option-container,
+.download-option-container,
+.settings-option-container,
+.github-option-container {
+    display: none;
+    width: 300px;
+}
+
+.title-menu-option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #eee;
+    text-align: center;
+}
+
+.title-menu-option h3 {
+    margin-bottom: 0;
+    font-size: 18px;
+}
+
+.info-basic-user {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4px 12px;
+    color: #eee;
+}
+
+.profile-link {
+    color: var(--primary-color);
+}
+
+.description-project {
+    color: #eee;
+    padding-top: 22px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.description-project h5 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.description-project p {
+    color: #b7b7b7;
+    font-size: 12px;
+}
+
+.info-option-container.is-active {
+    display: block;
+}
+
+.explorer-option-container.is-active {
+    display: block;
+}
+
+.project-name {
+    color: #fff;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.form-add-folder {
+    padding-left: 18px;
+}
+
+.project-name h1 {
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.folder-container {
+    position: relative;
+}
+
+.add-folder-or-file {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.input-add-file {
+    width: 0;
+}
+
+.btn.btn-add {
+    padding: 0;
+    vertical-align: baseline;
+}
+
+.btn.btn-add:hover svg path {
+    stroke: #eee;
+}
+
+
+.github-option-container.is-active {
+    display: block;
+}
+
+.github-option-container {
+    color: #eee;
+}
+
+.btn-github {
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    margin: 12px 0;
+}
+
+.btn-github {
+    color: #fff;
+}
+
+.btn-github:hover {
+    color: #fff;
+    background-color: transparent;
+}
+
+.settings-option-container {
+    color: rgb(0, 255, 42);
+}
+
+.settings-option-container.is-active {
+    display: block;
+}
+
+.download-option-container.is-active {
+    display: block;
+}
+
+details {
+    padding-left: 1rem;
+}
+
+details > summary::before {
+    content: url(/static/icons/folder-icon.svg);
+    width: 1.6rem;
+    line-height: 100%;
+}
+
+.sidenav-explorer details[open] > summary::before {
+    content: url(/static/icons/folder-open-icon.svg);
+}
+
+.sidenav-explorer details[open] > summary {
+    color: rgb(255, 141, 3);
+}
+
+details > summary {
+    /*display: inline-flexbox;*/
+    /*justify-content: space-around;
+    /*padding: 1rem;*/
+    display: flex;
+    align-items: center;
+    list-style: none;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    color: #eee;
+    padding-left: 2px;
+    border-radius: 4px;
+}
+
+details > summary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.content .files {
+    padding-left: 16px;
+    list-style: none;
+    cursor: pointer;
+    color: #eee;
+    margin-bottom: 5px;
+}
+
+.container-file {
+    position: relative;
+}
+
+.file {
+    transition: 0.2s ease-in-out;
+    overflow: hidden;
+    font-size: 13px;
+    border-radius: 4px;
+    padding: 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
+
+.file-filename {
+    flex-basis: 150px;
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-delete-file {
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 12;
+}
+
+.btn-delete-file:hover svg path {
+    stroke: #eee;
+}
+
+.file:active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #4cd7d0;
+}
+
+.file:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #4cd7d0;
+}
+
+.file.c::before {
+    content: url("/static/icons/c-icon.png");
+    width: 1.6rem;
+    line-height: 100%;
+}
+
+.file.h::before {
+    content: url("/static/icons/header-file-icon.svg");
+    width: 1.6rem;
+    line-height: 100%;
+}
+
+.file.js::before {
+    width: 1.6rem;
+    content: url("/static/icons/javascript-icon.png");
+}
+
+.file.jsx::before {
+    width: 1.6rem;
+    content: url("/static/icons/javascript-icon.png");
+}
+
+.file.png::before {
+    width: 1.6rem;
+    content: url("/static/icons/image-icon.svg");
+}
+
+.file.jpg::before {
+    width: 1.6rem;
+    content: url("/static/icons/image-icon.svg");
+}
+
+.file.jpeg::before {
+    width: 1.6rem;
+    content: url("/static/icons/image-icon.svg");
+}
+
+.code_container {
+    width: 100%;
+    flex: 1;
+    padding: 0;
+    background-color: var(--background-code);
+    position: relative;
+    display: grid;
+    grid-template-rows: min-content auto;
+    overflow-y: auto;
+}
+
+.code_container::-webkit-scrollbar {
+    width: 0;
+}
+
+.copy-code {
+    position: absolute;
+    right: 10px;
+    top: 56px;
+    left: unset;
+    cursor: pointer;
+}
+
+#show_code {
+    overflow: auto;
+    padding: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    
+    .explorer-option-container, .info-option-container, .download-option-container, .settings-option-container, .github-option-container {
+        width: 250px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .ide-container {
+        position: relative;
+        grid-auto-flow: dense;
+        grid-template-columns: 100%;
+        grid-template-rows: 15% 85%;
+        width: 100%;
+    }
+
+    .sidenav-editor {
+        /* grid-column: 1 / 2;
+        grid-row: 2 / 3; */
+        display: block;
+        position: relative;
+        z-index: 16;
+        width: 100%;
+    }
+
+    .menu {
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+    
+    .code_container {
+        grid-template-rows: unset;
+    }
+
+    .menu-option {
+        width: 100%;
+    }
+    
+    .menu-options {
+        position: absolute;
+        width: 100%;
+        top: 15vh;
+        transform: translate(0, calc(-15vh - 350px));
+        z-index: 14;
+        transition: all .5s ease-in-out;
+        max-height: 0px;
+    }
+    
+    .menu-options.is-active {
+        max-height: 350px;
+        transform: translate(0, 0);
+    }
+
+}

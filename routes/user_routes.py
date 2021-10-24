@@ -91,7 +91,7 @@ def user(app):
 
             
             update_many_project({'users_id': ObjectId(user_info['user_id'])}, { 'author': newInfo['username'] })
-            user = update_user({ '_id': ObjectId(user_id) }, newInfo)
+            user = update_user({ '_id': ObjectId(user_id) }, { 'set': newInfo })
 
             data = jsonify({
                 'user': user.get('username'),

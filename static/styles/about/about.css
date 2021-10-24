@@ -3,7 +3,6 @@
     background-color: #0a192f;
     background-position: center;
     background-size: cover;
-    padding-bottom: 200px;
 }
 
 .about-section {
@@ -288,24 +287,13 @@
     margin-left: auto;
 }
 
-.gaby {
-    background: linear-gradient(90deg, rgba(41, 21, 68, 0.8) 0%, rgba(41, 21, 68, 0.8) 15.31%, rgba(32, 158, 175, 0.43) 100%);
-}
-
-.miguel {
-    background: linear-gradient(90deg, rgba(9, 145, 120, 0.8) 0%, rgba(16, 151, 193, 0.8) 27.61%, rgba(16, 93, 208, 0.43) 100%, rgba(114, 33, 245, 0.43) 100%);
-}
-
-.michelle {
-    background: linear-gradient(90deg, rgba(36, 9, 145, 0.8) 0%, rgba(147, 16, 193, 0.8) 27.61%, rgba(245, 33, 199, 0.43) 100%, rgba(102, 4, 227, 0.43) 100%);
-}
-
 .profile {
     max-width: 600px;
     margin-left: 10px;
     margin-right: 10px;
     color: rgb(158, 95, 95);
     display: flex;
+    flex-direction: column;
     align-items: center;
     /*flex-basis: 200px;*/
     /*margin-bottom: 5px;*/
@@ -320,7 +308,7 @@
 
 .profile .profile-img {
     width: 100%;
-    max-width: 140px;
+    max-width: 280px;
     /*height: 270px;
     width: 280px;*/
     border-radius: 50%;
@@ -343,7 +331,7 @@
 }
 
 .social {
-    margin-top: 0px;
+    margin-top: 60px;
 }
 
 .social ul {
@@ -374,8 +362,8 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     background-color: #fff;
     transition: .6s;

@@ -51,15 +51,14 @@
         </section>
     
         <section class="user-projects">
-            
-            <div class="my-4" id="projects">
-                <div class="col col-lg-12">
-                    <h3>Proyectos: {{ '0' if user['projects'] == None else user['projects'] | length }}</h3>
-                    <a href="/add-project" class="btn btn-primary my-2">Agregar proyecto</a>
-                </div>
+            <div class="col col-lg-12">
+                <h3 id="project-count">Proyectos: {{ '0' if user['projects'] == None else user['projects'] | length }}</h3>
+                <a href="/add-project" class="btn btn-primary my-2">Agregar proyecto</a>
+            </div>
+            <div class="my-4">
                 {% if user['projects'] %}
+                <div class="project-list" id="projects">
                 {% for project in user['projects'] %}
-                <div class="project-list">
                     <div class='card' style='width: 18rem;'>
                         <img src="{{project.image}}" alt="{{project.title}}">
                         <div class='card-body'>
@@ -84,30 +83,30 @@
                             
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
                 {% else %}
                 <h4>Aún no tienes proyectos :(</h4>
                 <!--<a href="/add-project">Agrega un proyecto a tu cuenta</a> -->
                 {% endif %}
             </div>    
+            <div class="col col-lg-12">
+                <h3 id="fragment-count">Fragments: {{ '0' if user['fragments'] == None else user['fragments'] | length }}</h3>
+                <a href="/add-fragment" class="btn btn-primary my-2">Agregar Fragment</a>
+            </div>
             <div class="my-4" id="fragments">
-                <div class="col col-lg-12">
-                    <h3>Fragments: {{ '0' if user['fragments'] == None else user['fragments'] | length }}</h3>
-                    <a href="/add-fragment" class="btn btn-primary my-2">Agregar Fragment</a>
-                </div>
                 {% if user['fragments'] %}
-                {% for fragment in user['fragments'] %}
                 <div class="project-list">
+                {% for fragment in user['fragments'] %}
                     <div class='card' style='width: 18rem;'>
                         <div class="image-fragment">
                             <img src="{{fragment.image}}" class="responsive-img" alt="{{fragment.name}}">
                         </div>
                         <div class='card-body'>
-                            <h5 class='card-title' title="{{fragment.name}}">{{fragment.name}}</h5>
+                            <h5 class='card-title' title="{{fragment.name}}">{{fragment.fragment_name}}</h5>
                             <div class="d-flex justify-content-center" id="fragment-main-container">
                                 <div class="col-4" align="center">
-                                    <a href='/fragment/{{user.username}}/{{fragment.name}}' class='btn bi bi-pencil-fill'></a>
+                                    <a href='/fragment/{{user.username}}/{{fragment.fragment_name}}' class='btn bi bi-pencil-fill'></a>
                                 </div>
                                 <div class="col-4" align="center">
                                     <form id="delete-fragment">
@@ -119,8 +118,8 @@
                             
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
                 {% else %}
                 <h4>Aún no tienes proyectos :(</h4>
                 <!--<a href="/add-project">Agrega un proyecto a tu cuenta</a> -->
