@@ -71,10 +71,7 @@
                                     <a href='/project/{{user.username}}/{{project.project_name}}' class='btn bi bi-pencil-fill'></a>
                                 </div>
                                 <div class="col-4">
-                                    <form id="delete-project">
-                                        <input type="hidden" name="id" value="{{project._id}}">
-                                        <button class="btn bi bi-trash-fill btn-delete"></button>
-                                    </form>
+                                    <button class="btn bi bi-trash-fill btn-delete-project" value="{{project._id}}"></button>
                                 </div>
                                 <div class="col-4">
                                     <a class='btn bi bi-file-arrow-down-fill' href="/download-project/{{project._id}}" download></a>
@@ -109,10 +106,7 @@
                                     <a href='/fragment/{{user.username}}/{{fragment.fragment_name}}' class='btn bi bi-pencil-fill'></a>
                                 </div>
                                 <div class="col-4" align="center">
-                                    <form id="delete-fragment">
-                                        <input type="hidden" name="id" value="{{fragment._id}}">
-                                        <button class="btn bi bi-trash-fill btn-delete"></button>
-                                    </form>
+                                    <button class="btn bi bi-trash-fill btn-delete-fragment" value="{{fragment._id}}"></button>
                                 </div>
                             </div>
                             

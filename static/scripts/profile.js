@@ -1,7 +1,7 @@
 'use strict'
 import { alertError, alertSuccess } from './libs/alerts.js'
 
-const $formDeleteProject = document.querySelectorAll('#delete-project')
+const $btnDeleteProject = document.querySelectorAll('.btn-delete-project')
 const $formUpdate = document.querySelector('#edit-info')
 const $project = document.querySelector('#projects')
 const $overlayModal = document.querySelector('#overlay-modal')
@@ -10,6 +10,7 @@ const $showModal = document.querySelector('#btn-modal-editar')
 const $btnUpdate = document.querySelector('#btn-update')
 const projectCount = document.querySelector('#project-count')
 const fragmentCount = document.querySelector('#fragment-count')
+const $btnDeleteFragment = document.querySelectorAll('.btn-delete-fragment')
 
 function renderTemplate(project) {
     return `
@@ -22,13 +23,10 @@ function renderTemplate(project) {
             </p>
         <div class="d-flex" id="project-main-container">
             <div class="col-4">
-                <a href='/project/${user.username}/${project.project_name}' class='btn bi bi-pencil-fill'></a>
+                <a href='/project/${project.author}/${project.project_name}' class='btn bi bi-pencil-fill'></a>
             </div>
             <div class="col-4">
-                <form id="delete-project">
-                    <input type="hidden" name="id" value="${project._id}">
-                    <button class="btn bi bi-trash-fill btn-delete"></button>
-                </form>
+                <button class="btn bi bi-trash-fill btn-delete-project" value="${project._id}"></button>
             </div>
             <div class="col-4">
                 <a class='btn bi bi-file-arrow-down-fill' href="/download-project/${project._id}" download></a>
@@ -66,24 +64,52 @@ $formUpdate.addEventListener('submit', async (event) => {
     }
 })
 
-$formDeleteProject.forEach(function ($form) {
-    $form.addEventListener('submit', async (event) => {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
+$btnDeleteProject.forEach(function ($btn) {
+    $btn.addEventListener('click', async function () {
+        const formData = new FormData()
+        formData.append('id', this.value)
+
+        this.setAttribute('disabled', true)
         const response = await fetch(`/delete-project`, {
             method: 'DELETE',
             body: formData
         })
 
-        const { data, delete_info} = await response.json()
-        let code = ''
-        $project.innerHTML = ''
-
-        for(const project of data) {
-            code += renderTemplate(project)
+        const data = await response.json()
+        console.log(data)
+        if(data.success) {
+            const { data, delete_info} = data
+            let code = ''
+            $project.innerHTML = ''
+    
+            for(const project of data) {
+                code += renderTemplate(project)
+            }
+            $project.innerHTML = code
+            projectCount.innerHTML = projectCount.innerHTML - 1
+            alertSuccess(`Proyecto ${delete_info.project_name}`)
+        } else {
+            this.removeAttribute('disabled')
+            alertError(data.message)
         }
-        $project.innerHTML = code
-        projectCount.innerHTML = projectCount.innerHTML - 1
+    })
+})
+
+$btnDeleteFragment.forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const formData = new FormData()
+        formData.append('id', this.value)
+        console.log(this.value)
+        const response = await fetch(`/delete-fragment`, {
+            method: 'DELETE',
+            body: formData
+        })
+        const data = await response.json()
+        if(data.success) {
+            alertSuccess('Borrado')
+        } else {
+            alertError(data.message)
+        }
     })
 })
 

@@ -13,6 +13,13 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[-1].lower() in ALLOWED_EXTENSIONS
 
 
+def get_fragments(query):
+    mongo = Mongodb().client
+
+    user = mongo.db.fragments.find(query)
+    
+    return user
+
 def find_fragment(query):
     mongo = Mongodb().client
 
@@ -34,6 +41,13 @@ def add_fragment(query):
     fragments = mongo.db.fragments.insert(query)
     
     return fragments
+
+def delete_fragment(query):
+    mongo = Mongodb().client
+
+    user = mongo.db.fragments.find_one_and_delete(query)
+    
+    return user
 
 
 def download_examples(path, depth):

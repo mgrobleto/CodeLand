@@ -2,12 +2,13 @@ from bson.objectid import ObjectId
 
 from flask import render_template, redirect, jsonify, request, flash, make_response
 from werkzeug.utils import secure_filename
+from services.fragments.fragment_action import get_fragments
 from services.storage.files_action import delete_file
 from services.user.auth import isLogged
 
-from services.fragments import add_fragment, find_fragment
+from services.fragments import add_fragment, find_fragment, delete_fragment, get_fragments
 from services.user import update_user
-from services.storage import add_folder, add_file, list_dir, get_file_data, delete_file
+from services.storage import add_folder, add_file, list_dir, get_file_data, delete_file, delete_fragment_storage
 
 from utils import timestamp
 
@@ -101,8 +102,8 @@ def fragments(app):
         user_payload = isLogged('USER_TOKEN')
         if user_payload.get('success'):
             fragment_id = ObjectId(fragment_id)
-            project = find_fragment({ '_id': fragment_id })
-            if project is None:
+            fragment = find_fragment({ '_id': fragment_id })
+            if fragment is None:
                 return jsonify({'success': False, 'message': 'No existe el proyecto', "error": 404})
             else:
                 if request.method == 'POST':
@@ -140,3 +141,46 @@ def fragments(app):
             return jsonify({'success': True, 'message': 'Es tu proyecto'})
         else:
             return jsonify({'success': False, 'message': 'No es tu proyecto'})
+
+    @app.route('/delete-fragment', methods=['DELETE'])
+    def _delete_fragment():
+        user_payload = isLogged('USER_TOKEN')
+        user_info = user_payload.get('info')
+        if user_info.get('user_id'):
+            fragment_id = ObjectId(request.form.get('id'))
+            _find_fragment = find_fragment({'_id': fragment_id})
+
+            if _find_fragment['users_id'] == ObjectId(user_info.get('user_id')):
+                fragment = delete_fragment({ 'users_id': ObjectId(user_info.get('user_id')), '_id': fragment_id})
+                update_user({'_id': ObjectId(user_info.get('user_id'))}, {'inc': {'fragments_count': -1}})
+            else:
+                return jsonify({'success': False, 'message': 'No tienes permisos', "error": 403})
+
+            if fragment is None:
+                return jsonify({'success': False, 'message': 'No existe el fragment', "error": 404})
+
+            delete_fragment_storage(fragment['path'])
+
+            # delete image in bucket
+            image_ext = fragment['image'].split('/')[-1].split('.')[-1]
+
+            data_cursor = get_fragments({ 'users_id': ObjectId(user_info.get('user_id'))})
+            data_list = []
+            for doc in data_cursor:
+                current_fragment_id = doc['_id'].__str__()
+                user_id = doc['users_id'].__str__()
+                data_list.append({
+                    '_id': current_fragment_id,
+                    'user_id': user_id,
+                    'fragment_name': doc['fragment_name'],
+                    'author': doc['author'],
+                    'description': doc['description'],
+                    'image': doc['image'],
+                    'path': doc['path'],
+                })
+            # data = dumps(data_list,default=json_util.default, ensure_ascii=False).encode('utf-8')
+            keys = {'_id', 'image', 'users_id'}
+            return jsonify({'success': True, 'data': data_list, 'delete_info': {x: fragment[x] for x in fragment if x not in keys  } }), 200
+        else:
+            return jsonify({'success': False, 'message': 'No tienes permisos', "error": 403})
+

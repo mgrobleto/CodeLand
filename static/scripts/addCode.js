@@ -37,6 +37,8 @@ $form.addEventListener('submit', async (e) => {
     if (data.success) {
         window.location.pathname = '/profile'
     } else {
+        $btnSend.innerHTML = 'Enviar'
+        $btnSend.removeAttribute('disabled')
         alertError(data.message)
     }
     

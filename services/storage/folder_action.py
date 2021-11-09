@@ -64,4 +64,10 @@ def delete_project_storage(path):
     blobs = bucket.list_blobs(prefix=path)
     for blob in blobs:
         blob.delete()
+
+def delete_fragment_storage(path):
+    bucket = Cloud_Storage().bucket
+    blobs = bucket.list_blobs(prefix=path)
+    for blob in blobs:
+        blob.delete()
         
