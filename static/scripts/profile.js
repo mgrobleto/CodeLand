@@ -75,10 +75,10 @@ $btnDeleteProject.forEach(function ($btn) {
             body: formData
         })
 
-        const data = await response.json()
-        console.log(data)
-        if(data.success) {
-            const { data, delete_info} = data
+        const result = await response.json()
+        console.log(result)
+        if(result.success) {
+            const { data, delete_info} = result
             let code = ''
             $project.innerHTML = ''
     
@@ -86,11 +86,11 @@ $btnDeleteProject.forEach(function ($btn) {
                 code += renderTemplate(project)
             }
             $project.innerHTML = code
-            projectCount.innerHTML = projectCount.innerHTML - 1
+            projectCount.innerHTML = `${projectCount.innerHTML - 1}`
             alertSuccess(`Proyecto ${delete_info.project_name}`)
         } else {
             this.removeAttribute('disabled')
-            alertError(data.message)
+            alertError(result.message)
         }
     })
 })

@@ -183,12 +183,11 @@ def project(app):
                     'description': doc['description'],
                     'mode': doc['mode'],
                     'image': doc['image'],
-                    'files': doc['files'],
                     'github': doc['github']
                 })
             # data = dumps(data_list,default=json_util.default, ensure_ascii=False).encode('utf-8')
             keys = {'_id', 'image', 'users_id'}
-            return jsonify({ 'data': data_list, 'delete_info': {x: project[x] for x in project if x not in keys  } }), 200
+            return jsonify({'success': True, 'data': data_list, 'delete_info': {x: project[x] for x in project if x not in keys  } }), 200
         else:
             return jsonify({'success': False, 'message': 'No tienes permisos', "error": 403})
 
