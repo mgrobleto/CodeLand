@@ -139,7 +139,8 @@ def download_turbo_c():
     file = BytesIO()
     blob = bucket.blob('programs/TCS Installer.exe')
     blob.download_to_file(file)
-    return send_file(file, mimetype='application/zip', as_attachment=True, attachment_filename='TurboC.zip')
+    file.seek(0)
+    return send_file(file, mimetype='application/x-msdownload', as_attachment=True, attachment_filename='TurboC.exe')
 
 
 @app.route('/about-us')
