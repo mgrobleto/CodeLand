@@ -107,6 +107,9 @@ $btnDeleteFragment.forEach(btn => {
         const data = await response.json()
         if(data.success) {
             alertSuccess('Borrado')
+            setTimeout(() => {
+                location.reload()
+            }, 1000)
         } else {
             alertError(data.message)
         }

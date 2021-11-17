@@ -68,7 +68,7 @@
                             </p>
                             <div class="d-flex" id="project-main-container">
                                 <div class="col-4">
-                                    <a href='/project/{{user.username}}/{{project.project_name}}' class='btn bi bi-pencil-fill'></a>
+                                    <a href='/project/{{user.username}}/{{project._id}}' class='btn bi bi-pencil-fill'></a>
                                 </div>
                                 <div class="col-4">
                                     <button class="btn bi bi-trash-fill btn-delete-project" value="{{project._id}}"></button>
@@ -115,7 +115,7 @@
                     {% endfor %}
                 </div>
                 {% else %}
-                <h4>Aún no tienes proyectos :(</h4>
+                <h4>Aún no tienes fragments :(</h4>
                 <!--<a href="/add-project">Agrega un proyecto a tu cuenta</a> -->
                 {% endif %}
             </div>    

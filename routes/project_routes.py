@@ -26,9 +26,13 @@ IMAGE_MIMETYPE = {'image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/pn
 
 def project(app):
     # Ruta para ver los proyectos en modo texto
-    @app.route('/project/<username>/<project_name>/', methods=['GET', 'POST'])
-    def show_project(username, project_name):
-        db_project = find_project({ 'author': username, 'project_name': project_name })
+    @app.route('/project/<username>/<project_id>/', methods=['GET', 'POST'])
+    def show_project(username, project_id):
+        # is ObjectId valid?
+        if not ObjectId.is_valid(project_id):
+            return jsonify({'error': 'Invalid ObjectId'}), 400
+            
+        db_project = find_project({ '_id': ObjectId(project_id) })
         if db_project is None:
             flash('El proyecto no existe')
             return render_template('404.html'), 404
@@ -42,7 +46,7 @@ def project(app):
 
         directory = list_dir(route=project_path)
         download_URI = f'/download-project/{db_project["_id"]}'
-        resp = make_response(render_template('show_project/index.html', project_info=db_project, directory=directory, name=project_name, download_URI=download_URI))
+        resp = make_response(render_template('show_project/index.html', project_info=db_project, directory=directory, name=db_project['project_name'], download_URI=download_URI))
         resp.set_cookie('project_id', db_project["_id"].__str__())
         resp.set_cookie('project_path', project_path)
         # set content-type
@@ -99,6 +103,7 @@ def project(app):
             for doc in projects:
                 data_list.append({
                     'project_name': doc['project_name'],
+                    '_id': doc['_id'].__str__(),
                     'author': doc['author'],
                     'description': doc['description'],
                     'mode': doc['mode'],
@@ -133,6 +138,7 @@ def project(app):
             })
             for doc in projects:
                 data_list['user'].append({
+                    '_id': doc['_id'].__str__(),
                     'project_name': doc['project_name'],
                     'mode': doc['mode'],
                     'image': doc['image'],

@@ -75,7 +75,6 @@ function deleteFile(div, path, filename) {
     div.appendChild($buttonDelete)
     
     $buttonDelete.addEventListener("click", async function() {
-        const getStore = storage.getStore();
         const formData = new FormData();
         
         formData.append('filename', path + filename)
@@ -351,6 +350,7 @@ class ListDirTemplate {
                 if(!data.success) {
                     console.log(data.message)
                     alertError(data.message)
+                    return;
                 }
                 
                 // Agrega una lista como la del método anterioe

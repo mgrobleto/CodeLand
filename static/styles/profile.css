@@ -27,6 +27,7 @@ h1,h2,h3,h4,h5,p{
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    flex-wrap: wrap;
     gap: 0 20px;
 }
 
@@ -36,8 +37,8 @@ h1,h2,h3,h4,h5,p{
 }
 
 .cover-image {
-    width: 8rem;
-    height: 8rem;
+    width: 4rem;
+    height: 4rem;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid #eee;
@@ -56,8 +57,10 @@ h1,h2,h3,h4,h5,p{
 }
 
 .progress-container {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: min-content;
+    margin: 40px 0;
     gap: 1rem;
 }
 
@@ -65,10 +68,8 @@ h1,h2,h3,h4,h5,p{
     color: #eee;
     background-color: #2a3648;
     padding: .75rem;
-    margin: 40px 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 33.3%;
 }
 
 .border-project {
@@ -101,10 +102,26 @@ h1,h2,h3,h4,h5,p{
     background-color: #111;
 }
 
+@media screen and (min-width: 412px) {
+    .progress-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media screen and (min-width: 639px) {
+    .progress-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 @media screen and (min-width: 996px) {
     .custom-container {
         margin: 0 auto;
         width: 80%;
+    }
+    .cover-image {
+        width: 8rem;
+        height: 8rem;
     }
 
     /* .hero_profile {
