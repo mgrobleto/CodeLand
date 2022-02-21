@@ -62,7 +62,7 @@ async function handleClick(filename, path) {
 }
 
 function deleteFile(div, path, filename) {
-    const project_id = getCookie('project_id')
+    const fragment_id = getCookie('fragment_id')
 
     const $buttonDelete = document.createElement("button");
     $buttonDelete.className = "btn btn-delete-file";
@@ -75,11 +75,13 @@ function deleteFile(div, path, filename) {
     div.appendChild($buttonDelete)
     
     $buttonDelete.addEventListener("click", async function() {
+        const getStore = storage.getStore();
         const formData = new FormData();
         
         formData.append('filename', path + filename)
+        console.log(path + filename)
 
-        const response = await fetch(`/project/${project_id}`, {
+        const response = await fetch(`/fragment/${fragment_id}`, {
             method: "DELETE",
             body: formData,
         })
@@ -103,181 +105,6 @@ function deleteFile(div, path, filename) {
     })
 }
 
-function addFolderContainer(isOwner, folderName, files = null, path) {
-    const template = new DocumentFragment();
-    const details = document.createElement("details");
-    const summary = document.createElement("summary");
-    const content = document.createElement("div");
-    const contentFiles = document.createElement("div");
-    const $files = document.createElement("div");
-
-    summary.innerHTML = folderName;
-    content.className = 'content'
-    contentFiles.className = 'files'
-    $files.className = 'files'
-
-    content.appendChild(contentFiles)
-    details.append(summary, content);
-    if(files) {
-        $files.appendChild(files)
-        contentFiles.appendChild($files)
-    }
-
-    if(isOwner) {
-        const folderContainer = document.createElement("div");
-
-        let actionFolder = 
-        `
-        <div class="add-folder-or-file" data-path-file="${path}">
-            <input type="file" class="input-add-file" />
-            <button class="btn btn-add add-file">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 13H15M12 10L12 16M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
-            <button class="btn btn-add add-folder">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 13H15M12 10V16M3 17V7C3 5.89543 3.89543 5 5 5H11L13 7H19C20.1046 7 21 7.89543 21 9V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17Z" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>                    
-            </button>
-        </div>
-        `
-        actionFolder = new DOMParser().parseFromString(actionFolder, "text/html").querySelector('.add-folder-or-file');
-
-        folderContainer.className = 'folder-container'
-        
-        folderContainer.append(details, actionFolder);
-        
-        template.appendChild(folderContainer);
-
-        // eventos para agregar archivos
-        console.log(actionFolder)
-        actionFolder.querySelector(`[data-path-file="${path}"] .add-file`).addEventListener('click', (event) => {
-            event.stopPropagation()
-            const $input = event.currentTarget.previousElementSibling;
-            $input.click();
-            // cuando le de click va a activar el input para seleccionar un archivo
-        })
-
-        const $input = actionFolder.querySelector(`[data-path-file="${path}"] .input-add-file`)
-        
-        $input.addEventListener('change', async function() {
-            const formData = new FormData()
-            if($input.files) {
-                formData.append('file', $input.files[0], $input.files[0].name)
-                console.log($input.files[0].name)
-            }
-            const path = this.parentNode.dataset.pathFile
-            const project_id = getCookie('project_id')
-
-            formData.append('path', path)
-            const response = await fetch(`/project/${project_id}`, {
-                method: 'POST',
-                body: formData
-            })
-            const data = await response.json()
-            console.log(data)
-            if(!data.success) {
-                alertError(data.message)
-                console.log(data.message)
-            }
-            
-            // Agrega una lista como la del método anterioe
-            const ext = data.filename.toLowerCase().split(".");
-            const div = document.createElement('div')
-            const fileContainer = document.createElement("li");
-
-            div.className = "container-file"
-            // fileContainer.id = "file";
-            fileContainer.className = `file ${ext[ext.length - 1]}`;
-            fileContainer.dataset.filename = data.filename;
-            fileContainer.dataset.location = path;
-            fileContainer.innerHTML = data.filename;
-            fileContainer.addEventListener(
-                "click",
-                handleClick.bind(this, data.filename, path)
-            );
-            if(isOwner) {
-                deleteFile(div, path, data.filename)
-            }
-
-            div.appendChild(fileContainer);
-
-            contentFiles.appendChild(div)
-            fileContainer.click()
-            
-        })
-        addFolder(isOwner, path, actionFolder)
-    } else {
-        template.appendChild(details);
-    }
-
-    return template;
-}
-
-function addFolder(isOwner, path, template, files = null) {
-    const $input = document.createElement("input");
-    const $form = document.createElement("form");
-    const $closeBtn = document.createElement("button");
-    
-    const btn = template.querySelector(`[data-path-file="${path}"] .add-folder`)
-
-    $closeBtn.innerHTML = 'X'
-    
-    $form.className = 'form-add-folder'
-    $closeBtn.type = "button"
-    
-    $input.name = 'folder-name'
-    $input.type = 'text'
-    $form.append($input, $closeBtn);
-    
-    $form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        
-        const project_id = getCookie('project_id')
-        const formData = new FormData()
-        
-        
-        formData.append('folder-name', $input.value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\\/:"*?<>|]/g, ''))
-        formData.append('folder-path', path)
-
-        const response = await fetch(`/project/${project_id}`, {
-            method: 'PUT',
-            body: formData
-        })
-
-        const data = await response.json()
-        console.log(data)
-        if(data.success == true) {
-            console.log('true')
-        }
-
-        const html = addFolderContainer(isOwner, formData.get('folder-name'), files, path + $input.value + '/')
-        let previousFolder = btn.parentNode.parentNode.querySelector('summary')
-        if(previousFolder) {
-            previousFolder = previousFolder.nextSibling
-            if(previousFolder) {
-                btn.parentNode.parentNode.querySelector('details').insertBefore(html, previousFolder)
-            } else {
-                btn.parentNode.parentNode.querySelector('details').appendChild(html)
-            }
-        } else {
-            previousFolder = document.querySelector('#project-content')
-            previousFolder.insertBefore(html, previousFolder.firstChild)
-        }
-        $form.remove()
-    })
-
-    $closeBtn.addEventListener('click', async (event) => {
-        event.preventDefault();
-        $form.remove()
-    })
-    btn.addEventListener("click", async function() {
-        this.parentNode.parentNode.appendChild($form)
-        $input.focus()
-    })
-}
-
 class ListDirTemplate {
     constructor() {
         this.listDir = [];
@@ -286,13 +113,13 @@ class ListDirTemplate {
 
     template(filesAndDirs, isOwner) {
         const template = new DocumentFragment();
-        const path = getCookie('project_path') ? getCookie('project_path').replaceAll("\"", ""): null
+        const path = getCookie('fragment_path') ? getCookie('fragment_path').replaceAll("\"", ""): null
         
         let content = 
         `
         <div class="container-project">
             <div class="project-name">
-                <h1>${this.projectName}</h1>
+                <h1>${this.fragmentName}</h1>
             </div>
             <div class="project-content" id="project-content">
             </div>
@@ -303,7 +130,7 @@ class ListDirTemplate {
 
         if(isOwner) {
 
-            let addFolderOrFile =
+            let addFile =
             `
                 <div data-path-file="${path}" class="add-folder-or-file">
                     <input type="file" class="input-add-file" />
@@ -312,18 +139,13 @@ class ListDirTemplate {
                             <path d="M9 13H15M12 10L12 16M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
-                    <button class="btn add-folder">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 13H15M12 10V16M3 17V7C3 5.89543 3.89543 5 5 5H11L13 7H19C20.1046 7 21 7.89543 21 9V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17Z" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>                    
-                    </button>
                 </div>
             `
-            addFolderOrFile = new DOMParser().parseFromString(addFolderOrFile, "text/html").querySelector('.add-folder-or-file');
+            addFile = new DOMParser().parseFromString(addFile, "text/html").querySelector('.add-folder-or-file');
             
-            template.querySelector('.project-name').appendChild(addFolderOrFile)
+            template.querySelector('.project-name').appendChild(addFile)
 
-            addFolderOrFile.querySelector(`.add-file`).addEventListener('click', (event) => {
+            addFile.querySelector(`.add-file`).addEventListener('click', (event) => {
                 event.stopPropagation()
                 // get before sibling 
                 const $input = event.currentTarget.previousElementSibling;
@@ -338,10 +160,11 @@ class ListDirTemplate {
                     console.log($input.files[0].name)
                 }
                 const path = this.parentNode.dataset.pathFile
-                const project_id = getCookie('project_id')
+                const fragment_id = getCookie('fragment_id')
 
+                console.log(path)
                 formData.append('path', path)
-                const response = await fetch(`/project/${project_id}`, {
+                const response = await fetch(`/fragment/${fragment_id}`, {
                     method: 'POST',
                     body: formData
                 })
@@ -380,7 +203,6 @@ class ListDirTemplate {
                 fileContainer.click()  
             })
 
-            addFolder(isOwner, path, content.querySelector('.project-name .add-folder-or-file'))
         }
 
         template.querySelector('#project-content').appendChild(filesAndDirs)
@@ -489,13 +311,12 @@ class ListDirTemplate {
                 const formData = new FormData()
                 if($input.files) {
                     formData.append('file', $input.files[0], $input.files[0].name)
-                    console.log($input.files[0].name)
                 }
                 const path = this.parentNode.dataset.pathFile
-                const project_id = getCookie('project_id')
+                const fragment_id = getCookie('fragment_id')
     
                 formData.append('path', path)
-                const response = await fetch(`/project/${project_id}`, {
+                const response = await fetch(`/fragment/${fragment_id}`, {
                     method: 'POST',
                     body: formData
                 })
@@ -536,7 +357,6 @@ class ListDirTemplate {
 
                 fileContainer.click()
             })
-            addFolder(isOwner, path, template)
         } else {
             template.appendChild(details);
         }

@@ -1,0 +1,71 @@
+{% extends 'layout/index.html' %}
+
+{% block title %}
+<title>Submit Fragment | CodeLand</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/static/styles/add-fragment.css">
+{% endblock %}
+
+{% block body %}
+
+<form class="form-fragment-container container-fluid" method="POST" id="form">
+	<section class="title">
+		<h2>Comparte Ejemplos con los demas estudiantes!</h2>
+		<img class="ilustracion" src="/static/images/share.svg" alt="Comparte tu código con los demas">
+	</section>
+	<div class="form-fragment">
+		<div class="fragment-info-1 no-translate">
+			<div class="fragment-basic-info">
+				<div class="title-fragment">
+					<label for="inputName" class="col-sm-2 col-form-label">Nombre del Fragment</label>
+					<div class="col-sm-10">
+						<input type="text" name="fragmentName" class="form-control" id="inputName" required>
+					</div>
+				</div>
+				<div class="description-fragment">
+					<label for="inputDescription" class="col-form-label">Descripción</label>
+					<div class="">
+						<input type="text" name="description" class="form-control" id="inputDescription">
+					</div>
+				</div>
+			</div>
+			<div class="select-option">
+				<div class="list-file">
+					<div class="file-fragment files">
+						<img src="/static/icons/file-btn-icon.svg" alt="archivo">
+						<span>Archivo por defecto</span>
+						<input class="input-file-fragment" id="files" title="Agrega archivos por defecto y luego añade más" name="files" multiple type="file" required>
+					</div>
+					<div class="fragment-file-list">
+						<div class="sidebar-files"></div>
+						<div id="list-files">
+						</div>
+					</div>
+					<div id="list-files">
+
+					</div>
+				</div>
+			</div>
+			<div class="next">
+				<div class="next-container" align="center">
+					<button type="submit" class="btn btn-primary next-option" id="send-option">Enviar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+		<!-- <div class="submit">
+			<div class="submit-container">
+				<button type="submit" class="btn btn-primar submit-project">Subir projecto</button>
+			</div>
+		</div> -->
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	CSS.paintWorklet.addModule('/static/scripts/libs/bezel.js')
+</script>
+<script src="/static/scripts/addFragment.js" type="module"></script>
+{% endblock %}

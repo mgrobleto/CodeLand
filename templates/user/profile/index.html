@@ -11,32 +11,54 @@
 <body class="main-container">
     <div class="custom-container">
         <section class="hero_profile">
-            <div class="my-5">
-                <h1>Hola, {{ user.username}}!</h1>
-                <small>{{ user['email'] }}</small>
-                <p>Se unió el {{ user.created_at.strftime('%d %b %Y') }}</p>
+            <div class="profile">
+                <div class="user-image">
+                    {# <a href="/edit/{{user._id}}" class="btn btn-primary">Edit</a> #}
+                    <img src="{{user.cover}}" class="cover-image" alt="user profile" alt="">
+                </div>
+                <div class="user-profile-info">
+                    <h1>{{ user.username}}</h1>
+                    <small>{{ user['email'] }}</small>
+                </div>
                 <div class="edit">
                     <button id="btn-modal-editar" class="btn btn-primary">Editar</button>
                 </div>
+                <!-- <p>Se unió el {{ user.created_at.strftime('%d %b %Y') }}</p> -->
             </div>
-            <div class="user-image">
-                {# <a href="/edit/{{user._id}}" class="btn btn-primary">Edit</a> #}
-                <img src="{{user.cover}}" alt="user profile" alt="">
+            <div class="progress-container">
+                <div class="progress-user">
+                    <span>Proyectos</span>
+                    <br>
+                    <div class="border-project">
+                        {{ user['projects_count'] }}
+                    </div>
+                </div>
+                <div class="progress-user">
+                    <span>Blogs</span>
+                    <br>
+                    <div class="border-project">
+                        {{ user['blogs_count'] }}
+                    </div>
+                </div>
+                <div class="progress-user">
+                    <span>Fragments</span>
+                    <br>
+                    <div class="border-project">
+                        {{ user['fragments_count'] }}
+                    </div>
+                </div>
             </div>
         </section>
     
-    
         <section class="user-projects">
-            <h3>Agrega un proyecto</h3>
-            <a href="/add-project"  class="btn btn-primary">Agregar proyecto</a>
-
-            <div class='row' id="projects">
+            <div class="col col-lg-12">
+                <h3 id="project-count">Proyectos: {{ '0' if user['projects'] == None else user['projects'] | length }}</h3>
+                <a href="/add-project" class="btn btn-primary my-2">Agregar proyecto</a>
+            </div>
+            <div class="my-4">
                 {% if user['projects'] %}
-                <div class="col col-lg-12">
-                    <h3>Proyectos: {{ '0' if user['projects'] == None else user['projects'] | length }}</h3>
-                </div>
+                <div class="project-list" id="projects">
                 {% for project in user['projects'] %}
-                <div class='col col-lg-4'>
                     <div class='card' style='width: 18rem;'>
                         <img src="{{project.image}}" alt="{{project.title}}">
                         <div class='card-body'>
@@ -44,27 +66,56 @@
                             <p class='card-text'>
                                 {{project.description}}
                             </p>
-                            <div class="row" id="project-main-container">
-                                <div class="col">
-                                    <a href='/project/{{user.username}}/{{project.project_name}}' class='btn bi bi-pencil-fill'></a>
+                            <div class="d-flex" id="project-main-container">
+                                <div class="col-4">
+                                    <a href='/project/{{user.username}}/{{project._id}}' class='btn bi bi-pencil-fill'></a>
                                 </div>
-                                <div class="col">
-                                    <form id="delete-project">
-                                        <input type="hidden" name="id" value="{{project._id}}">
-                                        <button class="btn bi bi-trash-fill btn-delete"></button>
-                                    </form>
+                                <div class="col-4">
+                                    <button class="btn bi bi-trash-fill btn-delete-project" value="{{project._id}}"></button>
                                 </div>
-                                <div class="col">
+                                <div class="col-4">
                                     <a class='btn bi bi-file-arrow-down-fill' href="/download-project/{{project._id}}" download></a>
                                 </div>
                             </div>
                             
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
                 {% else %}
                 <h4>Aún no tienes proyectos :(</h4>
+                <!--<a href="/add-project">Agrega un proyecto a tu cuenta</a> -->
+                {% endif %}
+            </div>    
+            <div class="col col-lg-12">
+                <h3 id="fragment-count">Fragments: {{ '0' if user['fragments'] == None else user['fragments'] | length }}</h3>
+                <a href="/add-fragment" class="btn btn-primary my-2">Agregar Fragment</a>
+            </div>
+            <div class="my-4" id="fragments">
+                {% if user['fragments'] %}
+                <div class="project-list">
+                {% for fragment in user['fragments'] %}
+                    <div class='card' style='width: 18rem;'>
+                        <div class="image-fragment">
+                            <img src="{{fragment.image}}" class="responsive-img" alt="{{fragment.name}}">
+                        </div>
+                        <div class='card-body'>
+                            <h5 class='card-title' title="{{fragment.name}}">{{fragment.fragment_name}}</h5>
+                            <div class="d-flex justify-content-center" id="fragment-main-container">
+                                <div class="col-4" align="center">
+                                    <a href='/fragment/{{user.username}}/{{fragment.fragment_name}}' class='btn bi bi-pencil-fill'></a>
+                                </div>
+                                <div class="col-4" align="center">
+                                    <button class="btn bi bi-trash-fill btn-delete-fragment" value="{{fragment._id}}"></button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <h4>Aún no tienes fragments :(</h4>
                 <!--<a href="/add-project">Agrega un proyecto a tu cuenta</a> -->
                 {% endif %}
             </div>    

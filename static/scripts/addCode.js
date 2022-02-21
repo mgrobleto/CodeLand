@@ -8,6 +8,8 @@ const $inputFiles = document.querySelector('#files')
 const $listFiles = document.querySelector('#list-files')
 const $inputImage = document.querySelector('#input-image')
 const $previewImage = document.querySelector('#preview-image')
+import { alertError } from './libs/alerts.js'
+
 
 $form.addEventListener('submit', async (e) => {
     e.preventDefault()
@@ -19,6 +21,9 @@ $form.addEventListener('submit', async (e) => {
 
     const barProgress = document.querySelector('#bar-progress')
     barProgress.classList.add('sending')
+    
+    $btnSend.disabled = true
+    $btnSend.innerHTML = 'Enviando...'
     const response = await fetch('/add-project', {
         method: 'POST',
         body: formData
@@ -31,6 +36,10 @@ $form.addEventListener('submit', async (e) => {
     console.log(data)
     if (data.success) {
         window.location.pathname = '/profile'
+    } else {
+        $btnSend.innerHTML = 'Enviar'
+        $btnSend.removeAttribute('disabled')
+        alertError(data.message)
     }
     
 })

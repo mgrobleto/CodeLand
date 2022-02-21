@@ -15,13 +15,13 @@ function templateProjectDefault(img, name) {
     `)
 }
 
-function templateProjectUser(img, author, projectName) {
+function templateProjectUser(img, author, projectName, id) {
     return (`
             <img src="${img}" id="conteinerImg">
             <div class="project-info">
                 <h5>${projectName}</h5>
                 <p style="color: #aaa;">${author}</p>
-                <a class="btn btn-primary bezel-btn" href="/project/${author}/${projectName}" role="button">Ver código</a>
+                <a class="btn btn-primary bezel-btn" href="/project/${author}/${id}" role="button">Ver código</a>
             </div>
     `)
 }
@@ -44,7 +44,7 @@ $btnAll.addEventListener('click', async function () {
     find.data.user.forEach((project) => {
         const $project = document.createElement('div');
         $project.className = 'project'
-        $project.innerHTML = templateProjectUser(project.image, project.author, project.project_name);
+        $project.innerHTML = templateProjectUser(project.image, project.author, project.project_name, project._id);
         $projectsSection.appendChild($project);
     })
 })
@@ -63,7 +63,7 @@ $btnUser.addEventListener('click', async function () {
     find.data.forEach((project) => {
         const $project = document.createElement('div');
         $project.className = 'project'
-        $project.innerHTML = templateProjectUser(project.image, project.author, project.project_name);
+        $project.innerHTML = templateProjectUser(project.image, project.author, project.project_name, project._id);
         $projectsSection.appendChild($project);
     })
 })

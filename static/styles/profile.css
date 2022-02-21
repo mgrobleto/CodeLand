@@ -1,6 +1,6 @@
 .main-container{
     min-height : 100vh;
-    background-color: #252836;
+    background-color: #1f2937;
 }
 
 label {
@@ -8,66 +8,126 @@ label {
 }
 
 .custom-container {
-    width: 100%;
+    width: 90%;
+    margin: 0 auto;
     /*padding-block-end: 12%;
     padding-top: 2%;*/
     /*margin: 0 auto;*/
    
 }
-h1,h2,h3,h4,h5,p,small{
+h1,h2,h3,h4,h5,p{
     color: whitesmoke !important;
-}
-.card-title,.card-text{
-    color: black !important;
-}
-.user-image img {
-    width: 20vw;
-    height: auto;
-    border-radius: 50%;
-    
-}
-.user-image{
-    width: 50%;
-    margin-right: 3%;
 }
 
 .hero_profile {
-    margin: 20px 0;
-    width:50%;
+    margin: 40px 0;
 }
-@media screen and (max-width:700px)  {
-    .hero_profile{
-        text-align:center;
-        justify-content: center;
-        width: 100%;
+
+.profile {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0 20px;
+}
+
+.user-image {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.cover-image {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #eee;
+}
+
+.user-profile-info {
+    text-align: left;
+}
+
+.user-profile-info h1 {
+    font-weight: bold;
+}
+
+.user-profile-info small {
+    color: rgb(156,163,175);
+}
+
+.progress-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: min-content;
+    margin: 40px 0;
+    gap: 1rem;
+}
+
+.progress-user {
+    color: #eee;
+    background-color: #2a3648;
+    padding: .75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.border-project {
+    border-left: 4px solid rgb(29, 78, 216);
+    padding-left: .5rem;
+}
+
+.project-list {
+    display: flex;
+    gap: 0 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.card {
+    flex: 0 0 auto;
+}
+
+.card-title,.card-text{
+    color: black !important;
+}
+
+.card-body, .card-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.image-fragment {
+    background-color: #111;
+}
+
+@media screen and (min-width: 412px) {
+    .progress-container {
+        grid-template-columns: repeat(3, 1fr);
     }
-    .user-image img {
-        width: 80%;
-        margin-left: 55%;
-    }
-    .user-projects{
-        text-align:center;
-        justify-content: center;
-        width: 100%;
-    }
-    .card{
-        text-align:center !important;
-        justify-content: center !important;
-        width: 60% !important;
-        margin-left: 20%;
+}
+
+@media screen and (min-width: 639px) {
+    .progress-container {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media screen and (min-width: 996px) {
     .custom-container {
-        margin-left: 40px;
+        margin: 0 auto;
+        width: 80%;
+    }
+    .cover-image {
+        width: 8rem;
+        height: 8rem;
     }
 
-    .hero_profile {
+    /* .hero_profile {
         display: flex;
         justify-content: space-evenly;
-        flex-direction: row-reverse;
-    }
+    } */
     
     .row {
         margin-top: 15px;

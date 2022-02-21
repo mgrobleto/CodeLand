@@ -1,12 +1,12 @@
-.form-project-container {
+.form-fragment-container {
     background-color: #252836;
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding-top: 3%;
-    gap: 30px 0;
+    grid-gap: 30px 0;
     padding: 50px 20px;
-    /* height: 100vh; */
+    min-height: 100vh;
 }
 
 .ilustracion {
@@ -14,7 +14,7 @@
     width: 100%;
 }
 
-.form-project {
+.form-fragment {
     display: flex;
     flex-direction: column;
     gap: 30px 0;
@@ -29,34 +29,42 @@
     color: #eee;
 }
 
-.project-info-1 {
-    display: flex;
-    flex-direction: column;
-    gap: 30px 0;
+.fragment-info-1 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas: "title files" "send send";
+    grid-gap: 30px;
     transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
-.project-info-1.no-translate {
+.fragment-info-1.no-translate {
     transition: transform 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
     transform: translate(0, 0);
 }
 
-.project-info-1.translate {
+.fragment-info-1.translate {
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     transform: translate(-100%, 0);
 }
 
+.fragment-basic-info {
+    grid-area: title;
+    display: flex;
+    flex-direction: column;
+}
+
 .select-option {
+    grid-area: files;
     margin-top: 20px;
 }
 
-.title-project, .select-option {
+.title-fragment, .select-option {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-.title-project {
+.title-fragment {
     flex-basis: 40%;
 }
 
@@ -118,7 +126,7 @@ input[type="file"]:hover {
     cursor: pointer;
 }
 
-.assets-project {
+.assets-fragment {
     font-size: 1.2em;
     color: #252836;
     margin-top: 10px;
@@ -127,7 +135,7 @@ input[type="file"]:hover {
     grid-gap: 0 20px;
 }
 
-.file-project {
+.file-fragment {
     position: relative;
     color: #eee;
     padding: 8px;
@@ -139,11 +147,11 @@ input[type="file"]:hover {
     font-size: 16px;
 }
 
-.file-project img {
+.file-fragment img {
     width: 32px;
 }
 
-.project-file-list {
+.fragment-file-list {
     margin-top: 15px;
     color: #eee;
     font-size: 14px;
@@ -166,32 +174,37 @@ input[type="file"]:hover {
     max-width: 100%;
 }
 
-.file-project.files {
+.file-fragment.files {
     background-color: #393D85;
 }
 
-.file-project.image {
+.file-fragment.image {
     background-color: #233F81;
 }
 
-.file-project span {
+.file-fragment span {
     user-select: none;
     cursor: pointer;
 }
 
-.file-project:hover {
+.file-fragment:hover {
     background-color: transparent;
     border: 1px solid #eee;
     color: #eee;
 }
 
-.input-file-project {
+.input-file-fragment {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     opacity: 0;
+}
+
+
+.next {
+    grid-area: send;
 }
 
 .btn-back {
@@ -237,7 +250,7 @@ input[type="file"]:hover {
     display: block;
 }
 
-.submit-project, .next-option {
+.next-option {
     --bezel-width: 2;
     --bezel-radius: 15px 0px 15px 0px;
     --bezel-color: #09f;
@@ -249,47 +262,9 @@ input[type="file"]:hover {
     padding: 12px 18px;
 }
 
-.submit-project:hover, .next-option:hover {
+.next-option:hover {
     color: #eee;
     background-color: transparent;
-}
-
-.project-info-2 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transform: translate(-100%, 0);
-}
-
-.project-info-2.translate {
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform: translate(-100%, 0);
-}
-
-.project-info-2.no-translate {
-    transition: transform .3s cubic-bezier(0.075, 0.82, 0.165, 1);
-    transform: translate(0, 0);
-}
-
-.project-info-3 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transform: translate(-100%, 0);
-}
-
-.project-info-3.translate {
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform: translate(-100%, 0);
-}
-
-.project-info-3.no-translate {
-    transition: transform .3s cubic-bezier(0.075, 0.82, 0.165, 1);
-    transform: translate(0, 0);
 }
 
 .bar-progress {
@@ -308,7 +283,7 @@ input[type="file"]:hover {
 }
 
 @media screen and (min-width: 768px) {
-    .project-basic-info {
+    .fragment-basic-info {
         display: flex;
         justify-content: space-between;
         align-items: stretch;    

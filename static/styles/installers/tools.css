@@ -1,3 +1,19 @@
+progress {
+    width: 100%;
+}
+
+progress::progress-value {
+    background-color: #f9bb26;
+}
+
+progress::-moz-progress-value {
+    background-color: #f9bb26;
+}
+
+progress::-webkit-progress-value {
+    background-color: #f9bb26;
+}
+
 .turbo-intro {
     width: 100%;
     /*background-color: #0b0c1b;*/
@@ -53,7 +69,8 @@
     color: #CCD6F6;
 }
 
-.turbo-description a {
+.turbo-description button {
+    border: none;
     text-decoration: none;
     /*color: #112D60;*/
     color: #0E3964;
@@ -103,14 +120,14 @@
         text-align: center;
     }
 
-    .turbo-description a {
+    .turbo-description button {
         font-size: 30px;
         max-width: 200px;
         height: unset;
     }
 }
 
-.turbo-description a:hover {
+.turbo-description button:hover {
     transform: translateY(7px);
     transition: .3s;
     cursor: pointer;

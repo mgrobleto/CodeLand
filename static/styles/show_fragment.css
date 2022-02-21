@@ -456,6 +456,12 @@ details > summary:hover {
 
 @media screen and (max-width: 768px) {
     body {
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    body {
         font-size: 14px;
     }
     
@@ -489,7 +495,7 @@ details > summary:hover {
     }
     
     .code_container {
-        grid-template-rows: min-content;
+        grid-template-rows: unset;
     }
 
     .menu-option {
