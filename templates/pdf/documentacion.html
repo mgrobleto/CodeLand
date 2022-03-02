@@ -13,9 +13,9 @@
       <div class="row"> 
         {% for documentation in db_documentation %}
           <div class="column">
-              <img src="{{documentation['image_route']}}" class="img">
-              <h5>{{documentation['document_title']}}</h5>
-              <a class="btn btn-primary" href="{{documentation['path']}}" role="button">Descargar</a>
+              <img src="{{db_documentation['image_route']}}" class="img">
+              <h5>{{db_documentation['document_title']}}</h5>
+              <a class="btn btn-primary" href="{{db_documentation['path']}}" role="button">Descargar</a>
           </div>
         {% endfor %}
       </div>

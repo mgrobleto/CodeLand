@@ -238,6 +238,7 @@ def project(app):
                 # Valida si el proyecto ya existe
                 new_folder = add_folder(directory)
 
+                print(new_folder)
                 if not new_folder:
                     return jsonify({'success': False, 'message': 'El proyecto ya existe'})
 

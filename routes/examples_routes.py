@@ -9,7 +9,11 @@ def examples(app):
     #para la parte de documentacion
     @app.route('/examples/basicos')
     def documentacion():
-        db_documentation = find_document('document')
+        db_documentation = find_document({
+            'type': 'document',
+        })
+        print('data:')
+        print(db_documentation)
         return render_template("pdf/documentacion.html",db_documentation=db_documentation)
 
     # Ruta para ver ejemplos

@@ -36,6 +36,7 @@ def fragments(app):
             file = (request.get_json())['filename']
             path_file = (request.get_json())['path']
             file_ext = file.split('.')[-1] # Siempre va a elegir la ultima extensión, por si el nombre es name.something.c
+            
             return jsonify(get_file_data(path_file, file, file_ext))
 
         directory = list_dir(route=fragment_path)
