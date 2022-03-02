@@ -36,7 +36,9 @@ def get_file_data(path_file, file, file_ext):
     bucket = Cloud_Storage().bucket
 
     if file_ext != 'png' and file_ext !='jpg' and file_ext != 'jpeg':
-        code = bucket.blob(f'{path_file}{file}').download_as_string().decode('utf-8')
+        code = bucket.blob(f'{path_file}{file}').download_as_string().decode('utf-8', errors='ignore')
+        print('F')
+        print(code)
         code_md = f'```{file_ext}\n{code}\n```'
 
         md_template_string = markdown.markdown(

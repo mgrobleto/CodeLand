@@ -43,6 +43,7 @@ def examples(app):
         return render_template('show_ejemplo/index.html', example_info=db_example, directory=directory, name=ejemplo_name, download_URI=download_URI, type="text mode")
 
     
+    # Ruta de ejemplos en modo texto
     @app.route('/examples/intro')
     def text_mode():
 
