@@ -1,0 +1,149 @@
+body {
+    background-color: #0F1527;
+    color: #fff;
+    min-height: 100vh;
+}
+
+.presentation-sidenav {
+    width: 90%;
+    margin: 1rem auto;
+}
+
+h1 {
+    font-weight: bold;
+}
+
+.option-selected {
+    background-color: #24385B;
+    padding: .75rem 1rem;
+    border-radius: 12px;
+}
+
+.nav-option-container {
+    position: relative;
+}
+
+.sidenav-option-container {
+    background-color: #24385B;
+    border-radius: 12px;
+    position: absolute;
+    top: calc(100% + 40px);
+    left: 0;
+    transform: scale(0);
+    width: 100%;
+    padding: 1rem;
+}
+
+@keyframes pop-in {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes pop-out {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(0);
+    }
+}
+
+.sidenav-option-container.active, .sidenav-option-container.deactive {
+    transition: transform ease .3s;
+}
+
+.sidenav-option-container.active {
+    animation: pop-in .3s ease-in-out;
+    transform: scale(1);
+}
+
+.sidenav-option-container.deactive {
+    animation: pop-out .3s ease-in-out;
+    transform: scale(0);
+}
+
+.sidenav-option-container strong {
+    color: #aaa;
+}
+
+.options-sidenav {
+    list-style: none;
+}
+
+.option-sidenav {
+    padding: .75rem 0;
+    border-radius: 12px;
+    cursor: pointer;
+    color: #ccc;
+}
+
+.option-sidenav i svg path {
+    fill: #ccc;
+}
+
+.option-sidenav.active {
+    color: #fff;
+    fill: #fff;
+}
+.option-sidenav.active i svg path {
+    fill: #fff;
+}
+
+.option-sidenav + .option-sidenav {
+    margin-top: 1rem;
+}
+
+.projects {
+    display: flex;
+    justify-content: center;
+}
+
+.project {
+    background-color: #24385B;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #fff;
+    transition: transform ease .3s;
+}
+
+.project:hover {
+    color: #bbb;
+    transform: scale(.9);
+}
+
+.user-container {
+    padding: 1rem 1.25rem;
+}
+
+.user-profile {
+    display: flex;
+}
+
+.user-profile img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+}
+
+.user-data p, .user-data span {
+    margin: 0;
+}
+
+.user-data p {
+    font-weight: bold;
+}
+
+.user-data span {
+    color: #00FF85;
+}

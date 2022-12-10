@@ -1,6 +1,6 @@
 const loginForm = document.querySelector('#login-form');
 const $loginBtn = document.querySelector('#login-btn');
-import { alertError } from './libs/alerts.js'
+import { alertError } from '/static/scripts/libs/alerts.js'
 
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault()

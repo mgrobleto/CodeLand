@@ -107,7 +107,7 @@ body {
     }
 }
 #btn-home{
-    font-family: roboto !important;
+    font-family: "Roboto" !important;
     text-align: center !important;
     font-size: 150%;
 }
@@ -119,7 +119,7 @@ body {
    padding-left: 5%;
 }
 #explorer{
-    font-family: roboto;
+    font-family: "Roboto";
     text-align: center;
 }
 .landing{
@@ -131,7 +131,7 @@ body {
     padding: 5%;
 }
 #intro{
-    font-family: roboto;
+    font-family: "Roboto";
     font-style: bold;
     margin-top: 20%;
 }
@@ -174,7 +174,7 @@ body {
     left: 95px;
     top: 35px;
 
-    font-family: Roboto;
+    font-family: "Roboto";
     font-style: normal;
     font-weight: bold;
     font-size: 54px;
@@ -196,7 +196,7 @@ body {
     left: 5px;
     top: 197px;
 
-    font-family: Roboto;
+    font-family: "Roboto";
     font-style: normal;
     font-weight: bold;
     font-size: 20px;

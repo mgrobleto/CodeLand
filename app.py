@@ -23,7 +23,8 @@ from libs import Mongodb
 import datetime
 
 # Rutas de la página
-from routes import auths, downloads, examples, project, user, statics, fragments
+from routes import auths, downloads, examples, project, user, statics, fragments, \
+    api
 
 # cookies
 from utils.cookies import compareValues
@@ -118,8 +119,10 @@ def home():
         user_info = validation.get('info')
         user_id = ObjectId(user_info.get('user_id'))
         user = mongo.db.users.find_one({"_id": user_id})
+        print(user)
+        return render_template('home.html', user=user)
 
-    return render_template('index.html', user=user)
+    return render_template('index.html')
 
 auths(app)
 downloads(app)
@@ -128,6 +131,8 @@ user(app)
 project(app)
 fragments(app)
 statics(app)
+api(app)
+
 
 @app.route('/tools')
 def installers():
