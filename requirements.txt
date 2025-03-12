@@ -1,5 +1,4 @@
 ﻿blinker==1.4
-cython==3.0.12
 cachelib==0.1.1
 cachetools==4.2.2
 certifi==2021.5.30
