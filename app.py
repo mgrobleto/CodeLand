@@ -51,6 +51,8 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['MONGO_URI'] = f'mongodb+srv://{USER_DB}:{PASSWORD_DB}@cluster0.73uuw.mongodb.net/cs50xni?retryWrites=true&w=majority'
 
+print('MongoDB URI:', app.config['MONGO_URI'])
+
 mongodb = Mongodb()
 mongodb.connect(app)
 mongo = mongodb.client
